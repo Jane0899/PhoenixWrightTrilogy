@@ -1,0 +1,40 @@
+# Abspann-Credits für GS1 Episode 5
+# Jede Zeile (außer Kommentaren) entspricht einem Credit-Bild, in Anzeigereihenfolge.
+# Leere Zeilen bleiben stumm. Zeilen mit # am Anfang sind Kommentare.
+# Format: "Funktion: Name" oder einfach der Textinhalt des Bildes.
+# F5 im Spiel drücken, um Änderungen neu zu laden.
+#
+# Hinweis: Die Abspann-Bilder zeigen diese Credits visuell.
+# Der Text unten muss eventuell an die eigene Spielversion angepasst werden.
+# Die Anzahl der Einträge sollte der Anzahl der Abspann-Bilder entsprechen (28 bei Englisch).
+
+Planung/Skript/Regie: Shu Takumi
+Planung: Takeshi Yamazaki
+Design: Kazuya Nuri
+
+Artwork: Yasuaki Kishimoto, Tetsuya Enomoto
+Artwork: Koujirou Ogiwara, Hirochika Nagaki
+Animation: Kouta Fukamachi, Takanori Ishikawa
+
+Grafik: Shuichi Muramoto, Kiyoko Takeda, Yasuhiro Morita
+Grafik: Kouji Aoki, Chie Nakajima, Toshihiko Yamamoto
+
+Programmierung: Fumiaki Sato
+Programmierung: Hitoshi Sakai, Shiro Mikata, Daisuke Kaneko
+
+Sound: Akemi Kimura
+
+Lokalisierung: Ben Judd
+Lokalisierung: Brandon Gay, Kaori Funakoshi
+
+Übersetzung: Bowne Global Solutions
+Übersetzung: J. Patrick Riley, Yuli Kim, Steve Anderson
+Übersetzung: Yoko Muto, Alexander O. Smith, Philip Soldini
+
+Besonderer Dank: Kimio Yamazoe, Ayatomo Tanimoto, Tatsuya Yoshikawa
+Besonderer Dank: Keiji Kubori, Tomohiro Masuda, Setsuo Yamamoto
+Besonderer Dank: Hideaki Katagiri, Miho Kobayashi
+Besonderer Dank: Kentaro Ohira, Ryohei Koyama
+
+Produzentin: Minae Matsukawa
+Ausführender Produzent: Tatsuya Minami

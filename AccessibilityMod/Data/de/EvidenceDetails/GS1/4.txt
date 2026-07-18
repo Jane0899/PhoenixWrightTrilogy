@@ -1,0 +1,7 @@
+Eine schematische Karte zeigt das Gelände der Global Studios mit zwei Studios, einem zentralen Tor und einem Mitarbeiterbereich.
+
+Der linke Abschnitt enthält zwei große quadratische Räume, die durch einen Flur verbunden sind. „Studio 1" liegt oben links. Der Flur verläuft von Studio 1 nach rechts, mit einem Abzweig nach unten in „Studio 2" unten in der Mitte.
+
+Rechts von der Abzweigung zu Studio 2 kreuzt eine senkrechte Barriere mit der Beschriftung „Tor" den Flur und trennt die beiden Studios optisch vom östlichen Teil der Karte. Das Tor ist mit diagonalen Streifen markiert.
+
+Rechts vom Tor gabelt sich der Korridor. Der nördliche Weg führt zu einem Ausgang mit der Beschriftung „Haupttor". Der südliche Weg führt in einen großen Raum mit der Beschriftung „Mitarbeiterbereich". Im Mitarbeiterbereich ist ein dunkler rechteckiger Abschnitt an der linken Wand als „Umkleide" gekennzeichnet.
