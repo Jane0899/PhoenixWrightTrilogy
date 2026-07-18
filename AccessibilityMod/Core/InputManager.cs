@@ -12,6 +12,29 @@ namespace AccessibilityMod.Core
     public static class InputManager
     {
         /// <summary>
+        /// True when the "navigate to previous item" key was pressed this frame.
+        /// Historically this was only [ (LeftBracket), but bracket keys do not exist
+        /// as direct keys on many non-US layouts - e.g. German QWERTZ only produces
+        /// [ via AltGr+8, and Unity's legacy Input never reports AltGr combinations
+        /// as a single key press, so bracket navigation is unreachable there.
+        /// Comma is a direct key on virtually every layout, so both are accepted.
+        /// </summary>
+        private static bool NavigatePreviousPressed()
+        {
+            return Input.GetKeyDown(KeyCode.LeftBracket) || Input.GetKeyDown(KeyCode.Comma);
+        }
+
+        /// <summary>
+        /// True when the "navigate to next item" key was pressed this frame.
+        /// ] (RightBracket) plus period as the layout-independent alternative;
+        /// see NavigatePreviousPressed for why the alternative is needed.
+        /// </summary>
+        private static bool NavigateNextPressed()
+        {
+            return Input.GetKeyDown(KeyCode.RightBracket) || Input.GetKeyDown(KeyCode.Period);
+        }
+
+        /// <summary>
         /// Process input each frame. Called from AccessibilityMod.OnUpdate().
         /// </summary>
         public static void ProcessInput()
@@ -108,12 +131,12 @@ namespace AccessibilityMod.Core
 
         private static void Handle3DEvidenceInput()
         {
-            if (Input.GetKeyDown(KeyCode.LeftBracket))
+            if (NavigatePreviousPressed())
             {
                 Evidence3DNavigator.NavigatePrevious();
             }
 
-            if (Input.GetKeyDown(KeyCode.RightBracket))
+            if (NavigateNextPressed())
             {
                 Evidence3DNavigator.NavigateNext();
             }
@@ -121,12 +144,12 @@ namespace AccessibilityMod.Core
 
         private static void HandleLuminolInput()
         {
-            if (Input.GetKeyDown(KeyCode.LeftBracket))
+            if (NavigatePreviousPressed())
             {
                 LuminolNavigator.NavigatePrevious();
             }
 
-            if (Input.GetKeyDown(KeyCode.RightBracket))
+            if (NavigateNextPressed())
             {
                 LuminolNavigator.NavigateNext();
             }
@@ -144,12 +167,12 @@ namespace AccessibilityMod.Core
         private static void HandleFingerprintInput()
         {
             // [ and ] - Navigate fingerprint locations during selection phase
-            if (Input.GetKeyDown(KeyCode.LeftBracket))
+            if (NavigatePreviousPressed())
             {
                 FingerprintNavigator.NavigatePrevious();
             }
 
-            if (Input.GetKeyDown(KeyCode.RightBracket))
+            if (NavigateNextPressed())
             {
                 FingerprintNavigator.NavigateNext();
             }
@@ -164,12 +187,12 @@ namespace AccessibilityMod.Core
         private static void HandleVideoTapeInput()
         {
             // [ and ] - Navigate to targets when paused
-            if (Input.GetKeyDown(KeyCode.LeftBracket))
+            if (NavigatePreviousPressed())
             {
                 VideoTapeNavigator.NavigateToPreviousTarget();
             }
 
-            if (Input.GetKeyDown(KeyCode.RightBracket))
+            if (NavigateNextPressed())
             {
                 VideoTapeNavigator.NavigateToNextTarget();
             }
@@ -193,12 +216,12 @@ namespace AccessibilityMod.Core
         private static void HandleDyingMessageInput()
         {
             // [ and ] - Navigate between dots
-            if (Input.GetKeyDown(KeyCode.LeftBracket))
+            if (NavigatePreviousPressed())
             {
                 DyingMessageNavigator.NavigatePrevious();
             }
 
-            if (Input.GetKeyDown(KeyCode.RightBracket))
+            if (NavigateNextPressed())
             {
                 DyingMessageNavigator.NavigateNext();
             }
@@ -230,12 +253,12 @@ namespace AccessibilityMod.Core
 
         private static void HandlePointingInput()
         {
-            if (Input.GetKeyDown(KeyCode.LeftBracket))
+            if (NavigatePreviousPressed())
             {
                 PointingNavigator.NavigatePrevious();
             }
 
-            if (Input.GetKeyDown(KeyCode.RightBracket))
+            if (NavigateNextPressed())
             {
                 PointingNavigator.NavigateNext();
             }
@@ -249,12 +272,12 @@ namespace AccessibilityMod.Core
 
         private static void HandleInvestigationInput()
         {
-            if (Input.GetKeyDown(KeyCode.LeftBracket))
+            if (NavigatePreviousPressed())
             {
                 HotspotNavigator.NavigatePrevious();
             }
 
-            if (Input.GetKeyDown(KeyCode.RightBracket))
+            if (NavigateNextPressed())
             {
                 HotspotNavigator.NavigateNext();
             }
