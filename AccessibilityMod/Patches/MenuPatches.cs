@@ -21,6 +21,15 @@ namespace AccessibilityMod.Patches
         internal static List<bool> SelectOptionsPsyLock = new List<bool>();
         internal static bool IsTalkMenu = false;
 
+        // Tracks whether the "choice dialog opened" intro (option count + key hint) has
+        // already been spoken for the currently open selection plate. There is no single
+        // reliable "dialog opened" method to hook on selectPlateCtrl, so instead we treat
+        // the FIRST playCursor after the options were (re)filled via setText as the moment
+        // the dialog opens. Reset in SetText_Postfix (new options incoming) and in
+        // End_Postfix (dialog closed), so the intro is spoken exactly once per dialog and
+        // never repeated while the player merely moves the cursor.
+        private static bool _choiceIntroAnnounced = false;
+
         // Main menu tracking
         private static int _lastSeriesTitle = -1;
 
@@ -859,6 +868,10 @@ namespace AccessibilityMod.Patches
                 // Reset read state when text is set (will be updated by setRead if this is a talk menu)
                 SelectOptionsRead[index] = false;
                 SelectOptionsPsyLock[index] = false;
+
+                // New option text means a new choice dialog is being built: arm the intro
+                // announcement so the next playCursor call speaks the "choice opened" hint.
+                _choiceIntroAnnounced = false;
             }
             catch (Exception ex)
             {
@@ -916,6 +929,22 @@ namespace AccessibilityMod.Patches
                             currentOption,
                             __instance.cursor_no
                         );
+
+                        // First playCursor after the options were filled = the choice
+                        // dialog just opened. Prepend an intro ("Choice, N options. Use
+                        // the arrow keys...") so screen reader users know they are in a
+                        // selection now (pattern borrowed from Disco-A11y). Combined into
+                        // ONE announcement so the option text cannot interrupt the hint.
+                        if (!_choiceIntroAnnounced)
+                        {
+                            _choiceIntroAnnounced = true;
+                            int optionCount = CountFilledSelectOptions();
+                            announcement =
+                                L.GetPlural("menu.choice_intro", optionCount)
+                                + " "
+                                + announcement;
+                        }
+
                         SpeechManager.Announce(announcement, GameTextType.MenuChoice);
                     }
                 }
@@ -962,6 +991,8 @@ namespace AccessibilityMod.Patches
                 SelectOptionsPsyLock.Clear();
                 IsTalkMenu = false;
                 _lastSelectCursor = -1;
+                // Dialog closed: the next selection plate must announce its intro again.
+                _choiceIntroAnnounced = false;
             }
             catch (Exception ex)
             {
@@ -969,6 +1000,22 @@ namespace AccessibilityMod.Patches
                     $"Error in End patch: {ex.Message}"
                 );
             }
+        }
+
+        /// <summary>
+        /// Counts how many option slots actually contain text. _selectOptions is an
+        /// index-addressed list that setText grows on demand, so it can contain empty
+        /// placeholder entries; counting non-empty slots gives the real option count.
+        /// </summary>
+        private static int CountFilledSelectOptions()
+        {
+            int count = 0;
+            for (int i = 0; i < _selectOptions.Count; i++)
+            {
+                if (!Net35Extensions.IsNullOrWhiteSpace(_selectOptions[i]))
+                    count++;
+            }
+            return count;
         }
 
         /// <summary>

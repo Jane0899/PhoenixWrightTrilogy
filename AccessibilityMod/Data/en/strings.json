@@ -334,6 +334,8 @@
   "menu.game_x": "Game {0}",
   "menu.topic_discussed": "(discussed)",
   "menu.move_prefix": "Move: ",
+  "menu.choice_intro.one": "Choice, {0} option. Use the arrow keys to select, Enter to confirm.",
+  "menu.choice_intro.other": "Choice, {0} options. Use the arrow keys to select, Enter to confirm.",
 
   "_section_gallery": "=== Gallery ===",
   "gallery.music_player": "Music Player",

@@ -334,6 +334,8 @@
   "menu.game_x": "Spiel {0}",
   "menu.topic_discussed": "(besprochen)",
   "menu.move_prefix": "Gehen: ",
+  "menu.choice_intro.one": "Auswahl, {0} Option. Mit den Pfeiltasten wählen, Eingabe bestätigt.",
+  "menu.choice_intro.other": "Auswahl, {0} Optionen. Mit den Pfeiltasten wählen, Eingabe bestätigt.",
 
   "_section_gallery": "=== Gallery ===",
   "gallery.music_player": "Musik-Player",
