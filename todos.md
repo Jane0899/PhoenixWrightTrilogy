@@ -90,12 +90,39 @@ Nicht ueber die verschluesselten Dateien, sondern ueber das laufende Spiel:
 - Zwei Punkte koennen dieselbe Nachricht teilen (z. B. der Studio-Van von zwei
   Seiten) — dann ist derselbe Name fuer beide richtig.
 
-### Stand der Abdeckung (GS1)
+### Stand der Abdeckung
 
 Benannt: 30 Punkte in 6 Szenen — Anwaltskanzlei Fey & Partner (Episode 2 und 3),
 Strafanstalt (Episode 2 und 3), Hotelzimmer, Kanzlei Grossberg, Global Studios
-Eingang. Insgesamt hat GS1 laut `inspect-tables.json` deutlich mehr Punkte; die
-uebrigen Szenen brauchen weitere Kapiteldurchlaeufe.
+Eingang.
+
+**Korrigierte Gesamtgroesse (Fund vom 19.07.2026 mittags):** Die Hotspot-Tabellen
+liegen in DREI Klassen — `scenario` (GS1), `scenario_GS2`, `scenario_GS3`. Der
+erste Abzug las nur die erste, deshalb stand vormittags faelschlich "757 Punkte
+gesamt" im Protokoll. Tatsaechlich:
+
+| Spiel | Szenen | Punkte |
+|-------|--------|--------|
+| GS1   | 109    | 757    |
+| GS2   | 91     | 677    |
+| GS3   | 71     | 505    |
+| Summe | 271    | 1939   |
+
+Damit sind die benannten 30 Punkte rund 1,5 % des Gesamtbestands. Die Pipeline
+funktioniert, aber alles von Hand durchzuspielen skaliert nicht: pro Szene fallen
+mehrere Minuten Zwischensequenz an.
+
+### Ideen zur Beschleunigung (fuer Lauf 3 zu pruefen)
+
+1. **Zwischensequenzen ueberspringen.** Das Spiel hat eine Skip-Funktion
+   (`optionSkip` in den Optionen, im Spiel vermutlich ueber eine Taste). Wenn
+   die greift, verkuerzt sich der teuerste Teil jedes Kapiteldurchlaufs drastisch.
+2. **Spielstaende als Sprungmarken.** Einmal in einer Ermittlungsszene speichern,
+   danach direkt laden statt das Kapitel neu zu spielen. Die Bridge koennte das
+   Speichern ausloesen; ein Vorrat an Spielstaenden waere fuer alle spaeteren
+   Laeufe wiederverwendbar.
+3. **Nur Szenen mit vielen Punkten zuerst.** `inspect-tables.json` sagt, welche
+   Szene wieviele Punkte hat — grosse zuerst bringt am meisten Nutzen je Minute.
 
 ## Lauf 1 (19.07.2026, 06:33–10:30) — Ergebnisse und Sackgassen
 
