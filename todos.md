@@ -53,6 +53,20 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   fertig getestet hat und den PR ausdrücklich freigibt (Regel vom 18.07.2026). Vorher
   entscheiden, ob `todos.md` aus dem PR-Branch herausgehalten wird (internes Protokoll).
 
+## Hinweis fuer den Lauf um 16:33 Uhr: Weckruf um 21:37 pruefen
+
+Es steht ein zusaetzlicher, selbst angelegter Weckruf fuer **21:37 Uhr**
+(ID per `CronList` ermitteln). Er wurde angelegt, als noch unklar war, wieviel
+der 16:33-Lauf schafft.
+
+**Am Ende des 16:33-Laufs entscheiden:** Reicht das Erreichte bzw. wurde die
+Arbeit abgeschlossen, den 21:37-Weckruf per `CronDelete` **loeschen**. Nur wenn
+noch nennenswert Arbeit offen ist und das Kontingent nicht reicht, stehen lassen.
+
+Grund (Jana, 19.07.2026): Weckrufe nur bei echtem Bedarf, nicht auf Vorrat —
+sonst startet abends ein Lauf, der nichts mehr zu tun hat, und belegt womoeglich
+ihren Rechner.
+
 ## Lauf 2 (19.07.2026, ab 11:33) — Durchbruch: Hotspots haben Namen
 
 **Die Namensgebung funktioniert jetzt vollstaendig.** Ansage im Spiel z. B.:
