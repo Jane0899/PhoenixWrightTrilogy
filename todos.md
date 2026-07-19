@@ -53,6 +53,38 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   fertig getestet hat und den PR ausdrücklich freigibt (Regel vom 18.07.2026). Vorher
   entscheiden, ob `todos.md` aus dem PR-Branch herausgehalten wird (internes Protokoll).
 
+## Lauf 4 (19.07.2026, ab 21:37) — Doppelarbeit behoben, Beinahe-Unfall
+
+### Behoben: keine doppelten Dialoge mehr
+
+`dump-hotspot-texts.ps1` liest jetzt die Namensdatei und ueberspringt Punkte,
+die schon einen Namen haben. Im ersten Testlauf: "2 Punkte schon benannt,
+uebersprungen" und "5 Punkte schon benannt, uebersprungen" — kein einziger
+Dialog wurde erneut gelesen. Genau der Punkt, den Jana angemerkt hatte.
+
+### Beinahe-Unfall: blindes Bestaetigen im Speichermenue
+
+Derselbe Lauf verfehlte sein Ziel. Die Menuepruefung schlug fehl
+("Menueeintrag 'Neues Spiel' nicht gefunden"), das Skript lief aber **trotzdem
+weiter**, landete bei "Spiel Laden" und bestaetigte vier Mal
+"Diese Speicherdaten laden?". Laden ist harmlos — bei "ueberschreiben?" waere
+Janas Fortschritt weg gewesen.
+
+**Ursache:** Nach dem Spielstart braucht der Titelbildschirm laenger als die
+feste Wartezeit; die Tastendruecke gingen ins Leere, und `Select-MenuItem`
+meldete zwar den Fehlschlag, wurde aber mit `[void](...)` verschluckt.
+
+**Drei Gegenmassnahmen umgesetzt:**
+1. Es wird gewartet, bis das Hauptmenue wirklich angesagt wurde, statt auf eine
+   feste Zeit zu vertrauen.
+2. Eine fehlgeschlagene Menuepruefung bricht ab (`throw`) statt weiterzulaufen.
+3. Vor jedem blinden Tastenschwall wird geprueft, ob ein Speicher-Dialog offen
+   ist ("Speicherdaten", "speichern", "ueberschreiben", "loeschen") — dann
+   Abbruch statt Bestaetigen.
+
+**Ausserdem:** Spielstaende werden jetzt vor jedem Lauf gesichert nach
+`~/.claude/backups/pwaat-savedata/<zeitstempel>/`. Erste Sicherung liegt vor.
+
 ## WICHTIG fuer den naechsten Lauf: Doppelarbeit abstellen (Janas Einwand, 19.07.)
 
 Jana hat zu Recht angemerkt, dass derzeit viele Dialoge mehrfach gelesen werden.

@@ -80,6 +80,17 @@ for ($r = 1; $r -le 25; $r++) {
         "   Runde ${r}: $short"
     }
 
+    # Vor jedem blinden Tastenschwall pruefen, ob gerade ein Speicher-Dialog
+    # offen ist. Am 19.07.2026 hat blindes Bestaetigen einen Spielstand geladen —
+    # bei "ueberschreiben?" waere Janas Fortschritt weg gewesen.
+    $letzte = Get-Content $log -Tail 20 |
+        Where-Object { $_ -match '\[Menu\]' } |
+        Select-Object -Last 1
+    if ($letzte -match 'Speicherdaten|speichern|überschreiben|ueberschreiben|löschen') {
+        Write-Warning "ABBRUCH: Speicher-Dialog erkannt ($letzte)"
+        exit 2
+    }
+
     & $key -Delay 350 ENTER ENTER ENTER ENTER ENTER ENTER ENTER ENTER | Out-Null
     Start-Sleep -Seconds 2
 }
