@@ -304,6 +304,13 @@ namespace AccessibilityMod.Core
                 CharacterNameService.ReloadFromFiles();
                 EvidenceDetailService.ReloadFromFiles();
                 HotspotNameService.ReloadFromFiles();
+
+                // Die Beschreibungen der Punkte werden beim Einlesen der Szene
+                // einmal gebaut und gespeichert. Ohne diesen Aufbau bliebe nach
+                // dem Neuladen die ALTE Ansage stehen — man aendert einen Namen,
+                // drueckt F5 und hoert trotzdem weiter "Punkt 1". Deshalb die
+                // Hotspot-Liste gleich mit neu aufbauen.
+                HotspotNavigator.RefreshHotspots();
                 StaffRollPatches.ReloadData();
                 SpeechManager.Announce(L.Get("system.config_reloaded"));
                 AccessibilityMod.Logger.Msg("Configuration files reloaded via F5");
