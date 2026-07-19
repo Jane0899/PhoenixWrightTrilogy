@@ -4,6 +4,25 @@
   "_comment3": "Die Namen sind aus dem abgeleitet, was das Spiel beim Untersuchen selbst sagt - nichts erfunden.",
   "_comment4": "Erzeugt mit AccessibilityMod/DevBridge/dump-hotspot-texts.ps1. F5 im Spiel lädt neu.",
 
+  "_bg19": "=== Anwaltskanzlei Wright & Partner, Episode 3 ===",
+  "7/19/131": "Charley, die Zimmerpflanze",
+  "7/19/132": "Bücherregal",
+  "7/19/133": "Schreibtisch",
+  "7/19/134": "Fenster",
+  "7/19/135": "Filmposter",
+
+  "_bg20": "=== Polizeipräsidium, Inspektorenbüro, Episode 3 ===",
+  "_hinweis20": "Nachricht 179 gehört zu fünf einzelnen Punkten - den einzelnen Schreibtischen. Gemeinsamer Name ist hier richtig.",
+  "7/20/174": "Polizeimaskottchen",
+  "7/20/176": "Inspektor",
+  "7/20/177": "Chef der Inspektoren",
+  "7/20/178": "Poster",
+  "7/20/179": "Schreibtische der Inspektoren",
+
+  "_bg18": "=== Strafanstalt, Besucherraum, Episode 3 ===",
+  "7/18/151": "Wachmann",
+  "7/18/152": "Überwachungskamera",
+
   "_bg21": "=== Schatzausstellung, Episode 2 (Der gestohlene Wandel) ===",
   "2/21/257": "Leeres Kissen",
   "2/21/258": "Alter Wandschirm",
