@@ -53,6 +53,28 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   fertig getestet hat und den PR ausdrücklich freigibt (Regel vom 18.07.2026). Vorher
   entscheiden, ob `todos.md` aus dem PR-Branch herausgehalten wird (internes Protokoll).
 
+## Lauf 3 — Abschluss: 81 Punkte in allen drei Spielen benannt
+
+| Spiel | benannt | gesamt | Abdeckung |
+|-------|---------|--------|-----------|
+| GS1   | 47      | 757    | 6,2 %     |
+| GS2   | 13      | 677    | 1,9 %     |
+| GS3   | 21      | 505    | 4,2 %     |
+| Summe | 81      | 1939   | 4,2 %     |
+
+**Im Spiel gegengehoert** (GS1 und GS2): "Punkt 1: Grosser Felsen (oben zentral)",
+"Punkt 3: Grosses Anwesen (Mitte rechts)". Zwei Punkte mit derselben Nachricht
+teilen sich korrekt einen Namen (derselbe Felsen aus zwei Blickwinkeln).
+
+**Zwei Fehler in Lauf 3 gefunden und behoben:**
+1. Menuefuehrung zaehlte Tastendruecke blind — das Hauptmenue merkt sich aber die
+   letzte Auswahl, wodurch der Lauf im Musikplayer landete. Jetzt liest sie die
+   Ansagen der Mod und blaettert bis zum Ziel. Erst dadurch sind GS2 und GS3
+   ueberhaupt erreichbar.
+2. F5 lud zwar die Namensdateien neu, baute aber die gespeicherten
+   Beschreibungen nicht neu auf — Namen aendern und F5 druecken zeigte weiter
+   die alte Ansage. Behoben; damit ist der F5-Arbeitsablauf erst brauchbar.
+
 ## Lauf 3 (19.07.2026, ab 16:33) — GS3 begonnen
 
 - **Menuefuehrung ist jetzt selbstpruefend.** Das Hauptmenue startet nicht immer
