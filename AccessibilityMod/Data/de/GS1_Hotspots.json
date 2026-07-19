@@ -10,12 +10,15 @@
   "1/159": "Mias Schreibtisch",
   "1/160": "Filmplakat",
 
-  "_bg1e3": "=== Anwaltskanzlei Fey & Partner (Episode 3) - gleicher Raum, eigene Nachrichten-IDs ===",
+  "_bg1e34": "=== Anwaltskanzlei Fey & Partner (Episoden 3 und 4) ===",
+  "_hinweis1": "Episode 3 und 4 verwenden hier dieselben Nachrichten-IDs. Bei 130-133 passt derselbe Name,",
+  "_hinweis2": "bei 134 nicht: Episode 3 zeigt ein altes Filmplakat, Episode 4 ein Steel-Samurai-Poster.",
+  "_hinweis3": "Deshalb steht dort der neutrale Name 'Poster'. Szenario-genaue Schlüssel (<szenario>/1/134) gehen vor.",
   "1/130": "Mias Topfpflanze",
   "1/131": "Bücherregal",
   "1/132": "Fenster",
   "1/133": "Mias Schreibtisch",
-  "1/134": "Filmplakat",
+  "1/134": "Poster",
 
   "_bg30": "=== Strafanstalt, Besucherraum (Episode 2) ===",
   "30/204": "Wachmann",
@@ -24,6 +27,10 @@
   "_bg30e3": "=== Strafanstalt, Besucherraum (Episode 3) ===",
   "30/148": "Überwachungskamera",
   "30/149": "Wachmann",
+
+  "_bg30e4": "=== Strafanstalt, Besucherraum (Episode 4) ===",
+  "30/146": "Wachmann",
+  "30/147": "Überwachungskamera",
 
   "_bg25": "=== Global Studios, Eingang (Episode 3) ===",
   "25/165": "Haupttor",
