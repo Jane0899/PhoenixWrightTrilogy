@@ -25,6 +25,26 @@ param(
     [int]$Delay = 350
 )
 
+# Bereits benannte Punkte werden uebersprungen.
+#
+# Hintergrund (Janas Einwand vom 19.07.2026): Ohne diese Pruefung wird jeder
+# Punkt bei jedem Durchlauf erneut untersucht — samt seines kompletten Dialogs.
+# Da sich Szenen zwischen Kapiteln wiederholen (die Anwaltskanzlei kam viermal
+# vor), war das der groesste Zeitfresser. Wer schon einen Namen hat, wird nicht
+# noch einmal angefasst.
+function Get-KnownKeys([string]$game) {
+    $file = "C:\Users\Jana Schmidt\games\SRC\PhoenixWrightTrilogy\AccessibilityMod\Data\de\${game}_Hotspots.json"
+    $known = @{}
+    if (-not (Test-Path $file)) { return $known }
+    try {
+        $o = Get-Content $file -Raw -Encoding UTF8 | ConvertFrom-Json
+        foreach ($p in $o.PSObject.Properties) {
+            if ($p.Name -notlike "_*") { $known[$p.Name] = $true }
+        }
+    } catch { }
+    return $known
+}
+
 $client = "C:\Users\Jana Schmidt\games\SRC\PhoenixWrightTrilogy\AccessibilityMod\DevBridge\bridge-client.ps1"
 $key    = "$env:USERPROFILE\.claude\scripts\gamekey.ps1"
 $log    = "D:\SteamLibrary\steamapps\common\Phoenix Wright Ace Attorney Trilogy\MelonLoader\Latest.log"
@@ -78,7 +98,20 @@ foreach ($line in ($raw | Select-Object -Skip 1)) {
 "Szene $game szenario=$scenario bg=$bgNo mit $($points.Count) Punkten"
 
 # --- Jeden Punkt untersuchen ------------------------------------------------
+$known = Get-KnownKeys $game
+$uebersprungen = 0
+
 foreach ($p in $points) {
+
+    # Schon benannt? Dann nicht noch einmal untersuchen — das spart den
+    # kompletten Dialog dieses Punktes.
+    $key = "$scenario/$bgNo/$($p.message)"
+    $altKey = "$bgNo/$($p.message)"
+    if ($known.ContainsKey($key) -or $known.ContainsKey($altKey)) {
+        $p.text = "(bereits benannt)"
+        $uebersprungen++
+        continue
+    }
 
     # Sicherstellen, dass wir ueberhaupt im Ermittlungsmodus sind. Nach einem
     # Punkt landet man manchmal im Detektivmenue statt direkt zurueck.
@@ -142,4 +175,5 @@ foreach ($p in $points) {
     }
 } | ConvertTo-Json -Depth 5 | Set-Content -Path $OutFile -Encoding utf8
 
+if ($uebersprungen -gt 0) { "  ($uebersprungen Punkte schon benannt, uebersprungen)" }
 "Geschrieben nach $OutFile"
