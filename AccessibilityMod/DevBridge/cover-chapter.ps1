@@ -12,6 +12,8 @@
 #     powershell -File cover-chapter.ps1 -Episode 3 -Chapter 1 -OutDir C:\...\texte
 
 param(
+    # 1 = GS1, 2 = GS2, 3 = GS3. Wird an enter-chapter.ps1 durchgereicht.
+    [int]$Game = 1,
     [int]$Episode = 2,
     [int]$Chapter = 2,
     [string]$OutDir = "C:\Users\JANASC~1\AppData\Local\Temp\claude\C--Users-Jana-Schmidt-games-SRC-PhoenixWrightTrilogy\78bf6283-4dd5-40bf-8325-1d585344bdf4\scratchpad\texts",
@@ -39,8 +41,8 @@ function BgNo {
 
 # --- Ins Kapitel ------------------------------------------------------------
 if (-not $SkipEnter) {
-    "== Kapitel betreten: Episode $Episode, Kapitel $Chapter =="
-    & "$env:USERPROFILE\.claude\scripts\enter-chapter.ps1" -Episode $Episode -Chapter $Chapter | Out-Null
+    "== Kapitel betreten: GS$Game, Episode $Episode, Kapitel $Chapter =="
+    & "$env:USERPROFILE\.claude\scripts\enter-chapter.ps1" -Game $Game -Episode $Episode -Chapter $Chapter | Out-Null
 }
 
 # --- Schnelldurchlauf einschalten ------------------------------------------

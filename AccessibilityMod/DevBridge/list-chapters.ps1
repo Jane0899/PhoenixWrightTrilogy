@@ -9,6 +9,8 @@
 # Aufruf: powershell -File list-chapters.ps1 -Episode 3 -Max 8
 
 param(
+    # 1 = GS1, 2 = GS2, 3 = GS3
+    [int]$Game = 1,
     [int]$Episode = 2,
     [int]$Max = 8,
     [int]$Delay = 600
@@ -33,6 +35,8 @@ function Step([string[]]$k, [int]$wait = 2) {
 Step @("ENTER") 4 | Out-Null
 Step @("LEFT") 2  | Out-Null
 Step @("ENTER") 4 | Out-Null
+# Spielauswahl: GS1 ist vorgewaehlt, fuer GS2/GS3 nach rechts blaettern
+for ($g = 1; $g -lt $Game; $g++) { Step @("RIGHT") 2 | Out-Null }
 Step @("DOWN") 2  | Out-Null
 Step @("ENTER") 4 | Out-Null
 Step @("LEFT") 2  | Out-Null
