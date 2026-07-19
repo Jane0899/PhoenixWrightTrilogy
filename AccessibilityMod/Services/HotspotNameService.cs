@@ -67,12 +67,45 @@ namespace AccessibilityMod.Services
             if (table == null || table.Count == 0)
                 return null;
 
-            string key = bgNo + "/" + messageId;
             string name;
-            if (table.TryGetValue(key, out name) && !Net35Extensions.IsNullOrWhiteSpace(name))
+
+            // Genauester Schluessel zuerst: <Szenario>/<Hintergrund>/<Nachricht>.
+            // Die Szenario-Nummer MUSS mit hinein, weil verschiedene Episoden
+            // im selben Raum dieselben Nachrichten-IDs mit anderem Inhalt
+            // verwenden — in der Kanzlei ist 134 in Episode 3 ein altes
+            // Filmplakat, in Episode 4 ein Steel-Samurai-Poster.
+            int scenario = GetCurrentScenario();
+            if (scenario >= 0)
+            {
+                string full = scenario + "/" + bgNo + "/" + messageId;
+                if (table.TryGetValue(full, out name) && !Net35Extensions.IsNullOrWhiteSpace(name))
+                    return name;
+            }
+
+            // Rueckfall auf das aeltere Format ohne Szenario. Damit bleiben
+            // frueher gepflegte Eintraege gueltig; sie sind ungenauer, aber in
+            // aller Regel richtig (ein Bett bleibt ein Bett).
+            string shortKey = bgNo + "/" + messageId;
+            if (table.TryGetValue(shortKey, out name) && !Net35Extensions.IsNullOrWhiteSpace(name))
                 return name;
 
             return null;
+        }
+
+        /// <summary>
+        /// Aktuelle Szenario-Nummer (entspricht dem Kapitel/der Episodenhaelfte).
+        /// -1, wenn sie nicht lesbar ist.
+        /// </summary>
+        private static int GetCurrentScenario()
+        {
+            try
+            {
+                return GSStatic.global_work_.scenario;
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
         private static Dictionary<string, string> GetTableForCurrentGame()

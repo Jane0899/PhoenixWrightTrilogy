@@ -56,6 +56,10 @@ if (($raw -join " ") -match 'keine Hotspots') {
 $header = $raw | Select-Object -First 1
 $bgNo = if ($header -match 'bg_no=(-?\d+)') { $Matches[1] } else { "?" }
 $game = if ($header -match 'game=(\w+)') { $Matches[1] } else { "?" }
+# Die Szenario-Nummer gehoert in den Schluessel: Nachrichten-IDs wiederholen
+# sich zwischen Episoden mit anderem Inhalt (Kanzlei, Nachricht 134: in
+# Episode 3 ein altes Filmplakat, in Episode 4 ein Steel-Samurai-Poster).
+$scenario = if ($header -match 'scenario=(-?\d+)') { $Matches[1] } else { "?" }
 
 $points = @()
 foreach ($line in ($raw | Select-Object -Skip 1)) {
@@ -71,7 +75,7 @@ foreach ($line in ($raw | Select-Object -Skip 1)) {
     }
 }
 
-"Szene $game bg=$bgNo mit $($points.Count) Punkten"
+"Szene $game szenario=$scenario bg=$bgNo mit $($points.Count) Punkten"
 
 # --- Jeden Punkt untersuchen ------------------------------------------------
 foreach ($p in $points) {
@@ -120,9 +124,22 @@ foreach ($p in $points) {
 }
 
 [pscustomobject]@{
-    game   = $game
-    bgNo   = $bgNo
-    points = $points
+    game     = $game
+    scenario = $scenario
+    bgNo     = $bgNo
+    # Fertiger Schluessel je Punkt, so wie ihn GS<n>_Hotspots.json erwartet —
+    # spart beim Uebertragen der Namen das Zusammenbauen von Hand.
+    points   = $points | ForEach-Object {
+        [pscustomobject]@{
+            key     = "$scenario/$bgNo/$($_.message)"
+            index   = $_.index
+            message = $_.message
+            x       = $_.x
+            y       = $_.y
+            item    = $_.item
+            text    = $_.text
+        }
+    }
 } | ConvertTo-Json -Depth 5 | Set-Content -Path $OutFile -Encoding utf8
 
 "Geschrieben nach $OutFile"

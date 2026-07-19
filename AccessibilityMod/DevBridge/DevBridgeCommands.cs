@@ -101,6 +101,8 @@ namespace AccessibilityMod.DevBridge
             {
                 sb.Append("game=");
                 sb.Append(GameName());
+                sb.Append(" scenario=");
+                sb.Append(SafeScenario());
                 sb.Append("\n");
             }
             catch { }
@@ -175,6 +177,7 @@ namespace AccessibilityMod.DevBridge
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("game=").Append(GameName());
+                sb.Append(" scenario=").Append(SafeScenario());
                 sb.Append(" bg_no=").Append(SafeBgNo());
                 sb.Append(" count=").Append(list.Count).Append("\n");
 
@@ -201,6 +204,24 @@ namespace AccessibilityMod.DevBridge
             catch (Exception ex)
             {
                 return "ERROR hotspots: " + ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Aktuelle Szenario-Nummer. Gehoert zwingend in jede Hotspot-Ausgabe:
+        /// Nachrichten-IDs wiederholen sich zwischen Episoden mit voellig
+        /// anderem Inhalt, erst zusammen mit dem Szenario ist ein Punkt
+        /// eindeutig bestimmt.
+        /// </summary>
+        private static int SafeScenario()
+        {
+            try
+            {
+                return GSStatic.global_work_.scenario;
+            }
+            catch
+            {
+                return -1;
             }
         }
 
