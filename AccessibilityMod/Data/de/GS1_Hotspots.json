@@ -32,6 +32,21 @@
   "30/146": "Wachmann",
   "30/147": "Überwachungskamera",
 
+  "_szenario5": "=== Szenario 5: Untersuchung Studio Eins (Episode 3) - genaue Schlüssel mit Szenario ===",
+  "5/26/242": "Kulisse",
+  "5/26/243": "Filmkamera",
+  "5/26/244": "Leichenumriss",
+  "5/26/245": "Regiestuhl",
+  "5/26/246": "Aufhellschirm",
+  "5/26/247": "Trittleiter",
+
+  "5/11/215": "Eingang zu Studio Eins",
+  "5/11/216": "Bank zum Ausruhen",
+  "5/11/217": "Studiomaskottchen",
+  "5/11/218": "Überwachungskamera",
+  "5/11/219": "Bank zum Ausruhen",
+  "5/11/220": "Willkommensschild",
+
   "_bg25": "=== Global Studios, Eingang (Episode 3) ===",
   "25/165": "Haupttor",
   "25/166": "Studio-Van",
