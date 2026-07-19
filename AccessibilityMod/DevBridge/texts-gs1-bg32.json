@@ -1,0 +1,54 @@
+﻿{
+    "game":  "GS1",
+    "bgNo":  "32",
+    "points":  [
+                   {
+                       "index":  1,
+                       "message":  242,
+                       "x":  675,
+                       "y":  333,
+                       "item":  255,
+                       "text":  "Phoenix: Ah. Ein GemÃ¤lde ohne Menschen. Moment, heiÃŸen die nicht \"Stillleben\"? Phoenix: Egal. So eines hÃ¤ngt an der Wand."
+                   },
+                   {
+                       "index":  2,
+                       "message":  240,
+                       "x":  1320,
+                       "y":  385,
+                       "item":  255,
+                       "text":  "Phoenix: Das Sonnenlicht des SpÃ¤tsommers fÃ¤llt durch das Fenster. Phoenix: Das ist ja das GebÃ¤ude mit den BÃ¼ros von Fey \u0026 Partner. Phoenix: Man kann recht gut in die RÃ¤ume hineinsehen. Phoenix: Trotzdem denke ich, es wÃ¤re schwer ein Gesicht auf diese Entfernung zu erkennen."
+                   },
+                   {
+                       "index":  3,
+                       "message":  238,
+                       "x":  341,
+                       "y":  423,
+                       "item":  255,
+                       "text":  "Phoenix: Die Blumen sind aus Plastik. War ja klar. Phoenix: Ich erkenne Sonnenblumen und Tulpen, und das ist alles, was ich Ã¼ber Blumen weiÃŸ."
+                   },
+                   {
+                       "index":  4,
+                       "message":  243,
+                       "x":  356,
+                       "y":  656,
+                       "item":  255,
+                       "text":  "Phoenix: (Ein Schraubenzieher ist in die Schublade geklemmt.) Phoenix: (Ich frage mich, was da wohl drin ist. Mal sehen...) April: He! He!!! April: Was machen Sie denn da? Fassen Sie nichts an! April: Ohh. Sie Schlimmer sie! April: S-sie sollten nicht in fremden Zimmern herumschnÃ¼ffeln. April: Sie wollen mich doch nicht verÃ¤rgern, oder? Phoenix: (VerÃ¤rgern!?! Einen Moment lang dachte ich, sie wÃ¼rde gleich explodieren!) Phoenix: (Ich mÃ¶chte zu gern wissen, was in dieser Schublade ist.)"
+                   },
+                   {
+                       "index":  5,
+                       "message":  239,
+                       "x":  1168,
+                       "y":  746,
+                       "item":  255,
+                       "text":  "Phoenix: Eine Flasche und zwei GlÃ¤ser stehen auf dem Tisch. Phoenix: Hier muss also noch jemand anderes wohnen."
+                   },
+                   {
+                       "index":  6,
+                       "message":  241,
+                       "x":  1787,
+                       "y":  1006,
+                       "item":  255,
+                       "text":  "Phoenix: Ein einfaches Bett. Phoenix: Es wurde kÃ¼rzlich gemacht. Nichts AuffÃ¤lliges hier."
+                   }
+               ]
+}
