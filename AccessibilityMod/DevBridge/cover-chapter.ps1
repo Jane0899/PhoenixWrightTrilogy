@@ -43,6 +43,13 @@ if (-not $SkipEnter) {
     & "$env:USERPROFILE\.claude\scripts\enter-chapter.ps1" -Episode $Episode -Chapter $Chapter | Out-Null
 }
 
+# --- Schnelldurchlauf einschalten ------------------------------------------
+# Ohne diesen Schalter ist die Zwischensequenz vor der Ermittlung der mit
+# Abstand teuerste Teil (Episode 2 Kapitel 1: ueber 190 Tastendruecke ohne
+# Erfolg). Mit ihm dauert derselbe Weg wenige Sekunden.
+$fast = & $client "fast on"
+"== Schnelldurchlauf: $($fast -join ' ') =="
+
 # --- Bis zum Ermittlungsmodus vorspulen ------------------------------------
 # Manche Kapitel beginnen mit sehr langen Zwischensequenzen (Episode 2 brauchte
 # ueber 190 Tastendruecke). Deshalb wird der Fortschritt laufend gemeldet statt

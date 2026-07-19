@@ -128,6 +128,22 @@ mehrere Minuten Zwischensequenz an.
 5. Datei zusaetzlich nach `UserData/AccessibilityMod/de/` kopieren und F5
    druecken, dann mit der Punkt-Taste im Spiel gegenhoeren.
 
+### Fehlalarm: "Spiel steht auf Japanisch" — es ist keiner
+
+Beim Start meldet die Mod regelmaessig `Loaded 0 strings for ja` und
+`LocalizationService initialized for language: JAPAN`. Das sieht aus, als waere
+die Spielsprache verstellt, ist es aber nicht: Die Mod initialisiert sich schon
+auf dem allerersten Ladebildschirm, bevor das Spiel seine Spracheinstellung
+gesetzt hat, und faellt dabei auf den Vorgabewert JAPAN zurueck. Sobald der
+Titelbildschirm steht, korrigiert sie sich selbst — im Log steht dann
+`Language changed from JAPAN to GERMAN, reloading localization`.
+
+**Lehre:** Vor dem "Reparieren" eines alarmierenden Signals erst pruefen, ob
+ueberhaupt etwas kaputt ist. Ein Bildschirmfoto (`shot`) haette hier sofort
+"Druecke Enter" auf Deutsch gezeigt. Die naheliegende "Reparatur" waere gewesen,
+in der binaeren `systemdata` von Steam herumzuschreiben — das haette echten
+Schaden anrichten koennen.
+
 ### Ideen zur Beschleunigung (fuer Lauf 3 zu pruefen)
 
 1. **Zwischensequenzen ueberspringen.** Das Spiel hat eine Skip-Funktion
