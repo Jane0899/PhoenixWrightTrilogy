@@ -53,6 +53,66 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   fertig getestet hat und den PR ausdrücklich freigibt (Regel vom 18.07.2026). Vorher
   entscheiden, ob `todos.md` aus dem PR-Branch herausgehalten wird (internes Protokoll).
 
+## Lauf 1 (19.07.2026, 06:33–10:30) — Ergebnisse und Sackgassen
+
+### Erledigt
+
+- [x] **Loesung 1 fertig**: Hotspots mit Beweisbezug sagen jetzt den offiziellen
+  Spielnamen an ("Punkt 3: Diebeswerkzeug (oben links)"). Weg:
+  `piceDataCtrl.instance.note_data` -> Eintrag mit `no == item` -> `.name`
+  (das Spiel loest die Sprach-Text-ID selbst auf). **Wichtig**: Der Marker fuer
+  "kein Beweisbezug" ist **255**, nicht 0.
+- [x] **ALLE Hotspot-Daten ausgelesen — ohne das Spiel zu spielen.** Die Klasse
+  `scenario` in `Assembly-CSharp.dll` enthaelt statische Tabellen
+  `Sce<Episode>_<Teil>_room<Nr>_ck_mess_tbl : INSPECT_DATA[]`. Per Reflection
+  auslesbar. Ergebnis: **757 Punkte in 109 Szenen**, gespeichert als
+  `AccessibilityMod/DevBridge/inspect-tables.json`.
+  Skript: `AccessibilityMod/DevBridge/dump-inspect-tables.ps1`.
+  **Achtung Namensfalle**: `Sce1_`, `Sce2_`... ist die EPISODE, nicht das Spiel.
+  Die Teilnummern 0/2/4 sind Ermittlungsabschnitte, ungerade sind Prozesse.
+- [x] **DevBridge live erprobt**: `ping`, `state`, `hotspots`, `shot`, `say`,
+  `loadbg`, `crop`, `scenarios`, `mdtpath`, `mes`, `mesraw`, `mesfile`.
+- [x] **Menuefuehrung automatisiert**: `~/.claude/scripts/enter-chapter.ps1`
+  faehrt vom Titelbildschirm bis in ein beliebiges Kapitel. Menuestruktur ist
+  dort dokumentiert (Hauptmenue waagerecht, Spielauswahl senkrecht, zwei
+  Rueckfragen mit Vorauswahl "Nein").
+
+### Sackgassen (nicht noch einmal versuchen)
+
+- **SendKeys taugt nicht fuer Unity.** Fenster-Nachrichten werden ignoriert;
+  nur `keybd_event` wirkt. Pfeiltasten brauchen zwingend das
+  Extended-Key-Kennzeichen. (`~/.claude/scripts/gamekey.ps1`)
+- **Spiel-Assembly ausserhalb des Spiels aufrufen geht nicht** — Unity-Methoden
+  scheitern mit "ECall-Methoden muessen in ein Systemmodul gepackt werden".
+  Reine Datenfelder lesen (siehe scenario-Tabellen) funktioniert dagegen.
+- **`.mdt`- und `.unity3d`-Dateien sind verschluesselt/komprimiert.**
+  `new MdtData(bytes)` mit rohen Dateibytes wirft "Array index out of range".
+  Offline-Extraktion von Texten und Hintergrundbildern ist damit versperrt.
+- **`getPageMessage`/`getPageString` des Debug-Viewers scheitern** mit einer
+  Nullreferenz, obwohl die Datei geladen ist (`mdt=ok`, `count=203`). Sie
+  brauchen Datenstrukturen, die erst im echten Spielablauf gefuellt werden.
+  Der Viewer laedt ausserdem nur die japanische Basisdatei; die Sprachfassungen
+  liegen als eigene Dateien daneben (`_g` deutsch, `_u` englisch, ...).
+- **`bgCtrl.sprite_data` ist bei per `loadbg` geladenen Hintergruenden leer**;
+  ueber `sprite_renderer_` kommt nur eine 4x4-Platzhaltertextur. `loadbg` wirkt
+  ausserdem nicht sichtbar, solange eine Szene laeuft — sie ueberschreibt das Bild.
+
+### Naechster Schritt (empfohlen fuer Lauf 2)
+
+Der tragfaehigste Weg ist **im Spiel ueber die Mod**, nicht offline:
+Die Mod protokolliert bereits zuverlaessig den deutschen Text jeder Dialogzeile.
+Ablauf pro Szene: Ermittlungsmodus erreichen -> `hotspots` liefert die Liste ->
+je Punkt `hotspot <n>` + Enter -> die Untersuchungsbeschreibung landet im Log ->
+daraus einen Kurznamen ableiten.
+
+**Offenes Hindernis**: In der getesteten Szene meldete die Mod dauerhaft
+"0 Hotspots", obwohl der Untersuchen-Modus aktiv war (Lupe sichtbar).
+`GSStatic.inspect_data_` war also leer. Zu klaeren: Fuellt das Spiel dieses Feld
+erst spaeter im Kapitel, oder liest die Mod es zum falschen Zeitpunkt? Die
+Eroeffnung von Episode 2 ist eine sehr lange Zwischensequenz — 190 Tastendruecke
+reichten nicht bis zur eigentlichen Ermittlung. Besser ein Kapitel waehlen, das
+direkt mit der Ermittlung beginnt (z. B. "Untersuchung des Hotels").
+
 ## Nachtschicht 19.07.2026 — Stand
 
 - [x] **DevBridge gebaut** (Commit siehe unten). Zeilenbasiertes TCP auf 127.0.0.1,

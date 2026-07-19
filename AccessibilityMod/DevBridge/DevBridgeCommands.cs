@@ -60,6 +60,10 @@ namespace AccessibilityMod.DevBridge
                     return MessageRaw(arg);
                 case "mesfile":
                     return MessageFromFile(arg);
+                case "loadbg":
+                    return LoadBackground(arg);
+                case "crop":
+                    return CropCurrentBackground(arg);
                 default:
                     return "ERROR unbekannter Befehl: " + cmd + " (help zeigt alle)";
             }
@@ -391,6 +395,161 @@ namespace AccessibilityMod.DevBridge
 
             File.WriteAllBytes(file, crop.EncodeToPNG());
             UnityEngine.Object.Destroy(crop);
+        }
+
+        /// <summary>
+        /// Sucht die Textur des aktuell angezeigten Hintergrunds.
+        ///
+        /// Warum mehrere Quellen? Das Feld sprite_data ist nur ein Zwischenspeicher
+        /// und bleibt bei direkt per SetSprite geladenen Hintergruenden leer
+        /// (live festgestellt am 19.07.2026). Das tatsaechlich angezeigte Bild
+        /// haengt am SpriteRenderer. Deshalb werden die Quellen der Reihe nach
+        /// abgeklopft, statt sich auf eine zu verlassen.
+        /// </summary>
+        private static Texture2D GetBackgroundTexture()
+        {
+            if (bgCtrl.instance == null)
+                return null;
+
+            // 1) Der offizielle Zwischenspeicher — wenn gefuellt, der einfachste Weg.
+            try
+            {
+                if (bgCtrl.instance.sprite_data != null && bgCtrl.instance.sprite_data.texture != null)
+                    return bgCtrl.instance.sprite_data.texture;
+            }
+            catch { }
+
+            // 2) Die Renderer, die das Bild wirklich darstellen.
+            string[] rendererFields = new string[] { "sprite_renderer_", "image_", "sub_sprite_" };
+            foreach (string name in rendererFields)
+            {
+                try
+                {
+                    var f = typeof(bgCtrl).GetField(
+                        name,
+                        System.Reflection.BindingFlags.NonPublic
+                            | System.Reflection.BindingFlags.Public
+                            | System.Reflection.BindingFlags.Instance
+                    );
+                    if (f == null)
+                        continue;
+
+                    var sr = f.GetValue(bgCtrl.instance) as SpriteRenderer;
+                    if (sr != null && sr.sprite != null && sr.sprite.texture != null)
+                        return sr.sprite.texture;
+                }
+                catch { }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// loadbg &lt;nummer&gt; — laedt einen beliebigen Hintergrund direkt.
+        ///
+        /// Der Schluessel zur Automatisierung: Damit lassen sich alle Schauplaetze
+        /// der Reihe nach anzeigen, ohne die Geschichte zu spielen. Das Spiel
+        /// bringt die Methode selbst mit (bgCtrl.SetSprite), sie wird hier nur
+        /// von aussen ausloesbar gemacht.
+        /// </summary>
+        private static string LoadBackground(string arg)
+        {
+            int no;
+            if (!int.TryParse(arg, out no) || no < 0)
+                return "ERROR Aufruf: loadbg <nummer>";
+
+            try
+            {
+                if (bgCtrl.instance == null)
+                    return "ERROR bgCtrl noch nicht bereit (Spiel im Titelbildschirm?)";
+
+                bgCtrl.instance.SetSprite(no, true);
+
+                string name = "?";
+                try
+                {
+                    name = bgCtrl.instance.GetBGName(no);
+                }
+                catch { }
+
+                return "ok bg=" + no + " name=" + name;
+            }
+            catch (Exception ex)
+            {
+                return "ERROR loadbg: " + Unwrap(ex).Message;
+            }
+        }
+
+        /// <summary>
+        /// crop &lt;x&gt; &lt;y&gt; &lt;radius&gt; &lt;datei&gt; — schneidet einen Bereich des aktuell
+        /// geladenen Hintergrunds aus und speichert ihn als PNG.
+        ///
+        /// Koordinaten sind Spielkoordinaten (1920x1080, Ursprung oben links),
+        /// also genau das, was in den Hotspot-Tabellen steht. So laesst sich zu
+        /// jedem Untersuchungspunkt das passende Bild erzeugen, ohne dass die
+        /// Szene tatsaechlich im Spielverlauf erreicht werden muss.
+        /// </summary>
+        private static string CropCurrentBackground(string arg)
+        {
+            string[] parts = arg.Split(new char[] { ' ' }, 4);
+            int cx, cy, radius;
+
+            if (
+                parts.Length < 4
+                || !int.TryParse(parts[0], out cx)
+                || !int.TryParse(parts[1], out cy)
+                || !int.TryParse(parts[2], out radius)
+            )
+                return "ERROR Aufruf: crop <x> <y> <radius> <datei>";
+
+            string file = parts[3];
+
+            try
+            {
+                Texture2D source = GetBackgroundTexture();
+                if (source == null)
+                    return "ERROR kein Hintergrund geladen (keine Textur gefunden)";
+
+                string dir = Path.GetDirectoryName(file);
+                if (!string.IsNullOrEmpty(dir))
+                    Directory.CreateDirectory(dir);
+
+                Texture2D readable = MakeReadable(source);
+                try
+                {
+                    const float GameWidth = 1920f;
+                    const float GameHeight = 1080f;
+
+                    float scaleX = readable.width / GameWidth;
+                    float scaleY = readable.height / GameHeight;
+
+                    int px = Mathf.RoundToInt(cx * scaleX);
+                    // Y spiegeln: Spiel rechnet von oben, Unity-Texturen von unten.
+                    int py = readable.height - Mathf.RoundToInt(cy * scaleY);
+                    int half = Mathf.RoundToInt(radius * scaleX);
+
+                    int x0 = Mathf.Clamp(px - half, 0, readable.width - 1);
+                    int y0 = Mathf.Clamp(py - half, 0, readable.height - 1);
+                    int w = Mathf.Clamp(half * 2, 1, readable.width - x0);
+                    int h = Mathf.Clamp(half * 2, 1, readable.height - y0);
+
+                    Texture2D crop = new Texture2D(w, h, TextureFormat.RGB24, false);
+                    crop.SetPixels(readable.GetPixels(x0, y0, w, h));
+                    crop.Apply();
+                    File.WriteAllBytes(file, crop.EncodeToPNG());
+                    UnityEngine.Object.Destroy(crop);
+
+                    return "ok " + w + "x" + h + " -> " + file;
+                }
+                finally
+                {
+                    UnityEngine.Object.Destroy(readable);
+                }
+            }
+            catch (Exception ex)
+            {
+                return "ERROR crop: " + Unwrap(ex).Message;
+            }
         }
 
         private static string Screenshot(string arg)
