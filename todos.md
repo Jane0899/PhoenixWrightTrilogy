@@ -53,6 +53,18 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   fertig getestet hat und den PR ausdrücklich freigibt (Regel vom 18.07.2026). Vorher
   entscheiden, ob `todos.md` aus dem PR-Branch herausgehalten wird (internes Protokoll).
 
+## Lauf 3 (19.07.2026, ab 16:33) — GS3 begonnen
+
+- **Menuefuehrung ist jetzt selbstpruefend.** Das Hauptmenue startet nicht immer
+  auf demselben Eintrag (das Spiel merkt sich die letzte Auswahl); blindes
+  Tastenzaehlen landete im Musikplayer. `enter-chapter.ps1` liest jetzt die
+  Ansagen der Mod und blaettert, bis der gewuenschte Eintrag steht. Dadurch ist
+  erstmals ein anderes Spiel als GS1 erreichbar (`-Game 1|2|3`).
+- **GS3 angefangen**: 9 Punkte in 2 Szenen benannt (Schatzausstellung und
+  Lagerbereich aus Episode 2), Datei `Data/de/GS3_Hotspots.json`. Alle Schluessel
+  bereits im genauen Format `<szenario>/<hintergrund>/<nachricht>`.
+- Damit ist die Pipeline in zwei verschiedenen Spielen erprobt.
+
 ## Offen: Werkzeug-Abhaengigkeit vor dem Pull Request aufloesen
 
 Die Skripte im Repo (`cover-chapter.ps1`, `visit-location.ps1`, `list-chapters.ps1`)
