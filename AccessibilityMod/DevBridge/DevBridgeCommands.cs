@@ -171,6 +171,12 @@ namespace AccessibilityMod.DevBridge
                     sb.Append(" x=").Append((int)h.CenterX);
                     sb.Append(" y=").Append((int)h.CenterY);
                     sb.Append(" examined=").Append(h.IsExamined ? "1" : "0");
+                    // Beweisbezug mit ausgeben: So ist von aussen sofort sichtbar,
+                    // welche Punkte ueber Loesung 1 schon einen echten Spielnamen
+                    // haben und welche noch von Hand benannt werden muessen.
+                    sb.Append(" item=").Append(h.ItemId);
+                    if (!string.IsNullOrEmpty(h.ItemName))
+                        sb.Append(" name=\"").Append(h.ItemName).Append("\"");
                     sb.Append("\n");
                 }
 

@@ -68,6 +68,7 @@
   "navigation.press_enter_examine": "Press Enter to examine",
   "navigation.use_brackets_navigate": "Use [ and ] to navigate",
   "navigation.point_position": "Point {0} ({1})",
+  "navigation.point_position_named": "Point {0}: {1} ({2})",
   "navigation.examined_suffix": "(examined)",
   "navigation.examined_remaining": "{0} examined, {1} remaining.",
   "navigation.unexamined_list": "Unexamined:",

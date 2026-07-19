@@ -68,6 +68,7 @@
   "navigation.press_enter_examine": "Drücke Eingabe zum Untersuchen",
   "navigation.use_brackets_navigate": "Mit Komma und Punkt navigieren",
   "navigation.point_position": "Punkt {0} ({1})",
+  "navigation.point_position_named": "Punkt {0}: {1} ({2})",
   "navigation.examined_suffix": "(untersucht)",
   "navigation.examined_remaining": "{0} untersucht, {1} verbleibend.",
   "navigation.unexamined_list": "Nicht untersucht:",

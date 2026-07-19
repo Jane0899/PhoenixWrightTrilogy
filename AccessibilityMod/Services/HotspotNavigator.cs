@@ -27,6 +27,86 @@ namespace AccessibilityMod.Services
             public float CenterY;
             public bool IsExamined;
             public string Description;
+
+            /// <summary>
+            /// Rohwert des item-Feldes aus INSPECT_DATA. 0 bedeutet "kein Bezug
+            /// zu einem Beweisstueck".
+            /// </summary>
+            public uint ItemId;
+
+            /// <summary>
+            /// Offizieller, lokalisierter Name des zugehoerigen Beweisstuecks —
+            /// oder null, wenn der Punkt keinen Bezug hat bzw. nicht aufloesbar
+            /// war. Kommt aus den Spieldaten selbst (piceDataCtrl), ist also
+            /// spielbegriffstreu und automatisch in der Spielsprache.
+            /// </summary>
+            public string ItemName;
+        }
+
+        /// <summary>
+        /// Loest die item-Nummer eines Hotspots in den offiziellen Namen des
+        /// Beweisstuecks auf.
+        ///
+        /// Weg durch die Spieldaten (per Reflection ueber Assembly-CSharp.dll
+        /// ermittelt, es gibt keinen Decompiled-Ordner in diesem Checkout):
+        ///   piceDataCtrl.instance.note_data -> List&lt;piceData&gt; des laufenden Spiels
+        ///   piceData.no                     -> Nummer, passt zu INSPECT_DATA.item
+        ///   piceData.name                   -> fertiger, lokalisierter Anzeigename
+        /// Die Text-ID-Aufloesung (name_id_j_/u_/g_ je Sprache) macht das Spiel
+        /// selbst in der name-Eigenschaft — deshalb hier kein eigenes Mapping.
+        /// </summary>
+        /// <summary>
+        /// Baut die gesprochene Beschreibung eines Punktes. Die Nummer bleibt
+        /// immer erhalten — Jana navigiert auch ueber sie ("Punkt 3") und braucht
+        /// sie zur Orientierung. Der Beweisstueck-Name kommt nur dazu, wenn er
+        /// aufloesbar war.
+        /// </summary>
+        private static string BuildDescription(int number, HotspotInfo info, string posDesc)
+        {
+            if (!Net35Extensions.IsNullOrWhiteSpace(info.ItemName))
+                return L.Get("navigation.point_position_named", number, info.ItemName, posDesc);
+
+            return L.Get("navigation.point_position", number, posDesc);
+        }
+
+        private static string ResolveItemName(uint itemId)
+        {
+            // 0 = kein Beweisbezug. Sehr grosse Werte sind Fuellwerte am
+            // Listenende und ebenfalls keine echten Items.
+            if (itemId == 0 || itemId >= 0xFFFF)
+                return null;
+
+            try
+            {
+                var ctrl = piceDataCtrl.instance;
+                if (ctrl == null)
+                    return null;
+
+                var notes = ctrl.note_data;
+                if (notes == null)
+                    return null;
+
+                for (int i = 0; i < notes.Count; i++)
+                {
+                    var pice = notes[i];
+                    if (pice == null)
+                        continue;
+
+                    if (pice.no == (int)itemId)
+                    {
+                        string name = pice.name;
+                        return Net35Extensions.IsNullOrWhiteSpace(name) ? null : name;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Warning(
+                    $"[Hotspot] Item {itemId} nicht aufloesbar: {ex.Message}"
+                );
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -154,17 +234,34 @@ namespace AccessibilityMod.Services
                     // Generate position description
                     string posDesc = GetPositionDescription(centerX, centerY);
 
-                    _hotspots.Add(
-                        new HotspotInfo
-                        {
-                            MessageId = data.message,
-                            DataIndex = i,
-                            CenterX = centerX,
-                            CenterY = centerY,
-                            IsExamined = examined,
-                            Description = L.Get("navigation.point_position", i + 1, posDesc),
-                        }
-                    );
+                    // Beweisbezug aufloesen, solange wir die Rohdaten hier haben.
+                    uint itemId = data.item;
+                    string itemName = ResolveItemName(itemId);
+
+                    // Jede gefundene Zuordnung protokollieren: So laesst sich im
+                    // Log nachvollziehen, ob die Namen sinnvoll sind — und ob sie
+                    // womoeglich verraten, was man beim Untersuchen erst finden
+                    // soll (dann muesste die Ansage auf "erst nach Untersuchen"
+                    // umgestellt werden).
+                    if (itemName != null)
+                    {
+                        AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                            $"[Hotspot] msg={data.message} item={itemId} -> \"{itemName}\""
+                        );
+                    }
+
+                    var info = new HotspotInfo
+                    {
+                        MessageId = data.message,
+                        DataIndex = i,
+                        CenterX = centerX,
+                        CenterY = centerY,
+                        IsExamined = examined,
+                        ItemId = itemId,
+                        ItemName = itemName,
+                    };
+                    info.Description = BuildDescription(i + 1, info, posDesc);
+                    _hotspots.Add(info);
                 }
 
                 // Capture max X BEFORE filtering (so OnInvestigationStart can know this is a wide scene)
@@ -238,7 +335,7 @@ namespace AccessibilityMod.Services
                 {
                     var h = _hotspots[i];
                     string posDesc = GetPositionDescription(h.CenterX, h.CenterY);
-                    h.Description = L.Get("navigation.point_position", i + 1, posDesc);
+                    h.Description = BuildDescription(i + 1, h, posDesc);
                 }
 
                 // Restore position to previously selected hotspot if it still exists
