@@ -53,6 +53,32 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   fertig getestet hat und den PR ausdrücklich freigibt (Regel vom 18.07.2026). Vorher
   entscheiden, ob `todos.md` aus dem PR-Branch herausgehalten wird (internes Protokoll).
 
+## BLOCKIEREND: Hintergrundlaeufe koennen das Spielfenster nicht fokussieren
+
+**Das ist die Ursache aller drei Fehlschlaege am Abend des 19.07.2026.**
+Windows erlaubt `SetForegroundWindow` nur Prozessen mit Vordergrund-Recht. Ein
+per `run_in_background` gestarteter Lauf hat das nicht: Die Tastendruecke gehen
+ins Leere, das Spiel bleibt im Startbildschirm ("Druecke Enter") stehen, und
+jede Menuepruefung meldet danach voellig zu Recht "nichts gefunden".
+
+Zwei Reparaturversuche gingen daneben, weil sie Symptome behandelten
+(Wartezeit verlaengert, Protokollfenster vergroessert). Erst ein **Screenshot**
+zeigte den wahren Zustand — daher Janas neue Regel, jede Aktion per Screenshot
+oder Sprachprotokoll zu bestaetigen.
+
+Bereits umgesetzt: `gamekey.ps1` versucht den Fokus ueber `AttachThreadInput` zu
+erzwingen und **prueft danach nach**; ohne Fokus wird mit klarer Meldung
+abgebrochen statt still ins Leere getippt. Der Kniff allein reicht aber nicht.
+
+**Fuer den naechsten Lauf, in dieser Reihenfolge probieren:**
+1. **Laeufe im Vordergrund statt im Hintergrund**, in Haeppchen unter zehn
+   Minuten (Zeitgrenze pro Werkzeugaufruf). Mit dem Schnelldurchlauf passt
+   "Kapitel betreten + eine Szene auslesen" gut hinein. Das umgeht das Problem
+   vollstaendig, statt es zu bekaempfen.
+2. Falls Hintergrund noetig bleibt: vor dem Start `SystemParametersInfo` mit
+   `SPI_SETFOREGROUNDLOCKTIMEOUT = 0` setzen, danach `SetForegroundWindow`.
+3. Alternativ `SwitchToThisWindow(hWnd, true)` statt `SetForegroundWindow`.
+
 ## Lauf 4 (19.07.2026, ab 21:37) — Doppelarbeit behoben, Beinahe-Unfall
 
 ### Behoben: keine doppelten Dialoge mehr
