@@ -53,6 +53,50 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   fertig getestet hat und den PR ausdrücklich freigibt (Regel vom 18.07.2026). Vorher
   entscheiden, ob `todos.md` aus dem PR-Branch herausgehalten wird (internes Protokoll).
 
+## Lauf 2 (19.07.2026, ab 11:33) — Durchbruch: Hotspots haben Namen
+
+**Die Namensgebung funktioniert jetzt vollstaendig.** Ansage im Spiel z. B.:
+"Punkt 1: Gemaelde (oben zentral)", "Punkt 6: Bett (unten rechts)".
+
+### Wie die Namen entstehen (der tragfaehige Weg)
+
+Nicht ueber die verschluesselten Dateien, sondern ueber das laufende Spiel:
+1. `dump-hotspot-texts.ps1` faehrt per DevBridge jeden Punkt an, druckt Enter und
+   liest mit, was die Mod ins Log schreibt — das ist der deutsche Untersuchungstext.
+2. Aus dem Text wird ein Kurzname abgeleitet ("Ein einfaches Bett." -> "Bett").
+   Die Namen bleiben damit spielbegriffstreu, nichts ist erfunden.
+3. `HotspotNameService` liest sie aus `GS<n>_Hotspots.json`, F5 laedt neu.
+
+### Werkzeuge (alle unter AccessibilityMod/DevBridge/)
+
+- `dump-hotspot-texts.ps1` — alle Punkte der aktuellen Szene auslesen
+- `visit-location.ps1` — ueber "Bewegen" zum naechsten Ort und dort auslesen
+- `cover-chapter.ps1` — ganzes Kapitel abgrasen (Szene + alle Orte)
+- `list-chapters.ps1` — Kapitelnamen einer Episode auflisten
+- `~/.claude/scripts/enter-chapter.ps1` — vom Titelbildschirm ins Kapitel
+
+### Wichtige Erkenntnisse
+
+- **Schluessel muss Hintergrund UND Nachrichten-ID enthalten.** Derselbe Raum hat
+  je Episode andere Nachrichten-IDs (Kanzlei: 156–160 in Episode 2, 130–134 in
+  Episode 3), weil jede Episode eine eigene Szenariodatei hat.
+- **Ortswechsel statt Kapitelneustart.** Das Detektivmenue fuehrt zu allen
+  freigeschalteten Orten; ein Kapitelneustart kostet dagegen Minuten an
+  Zwischensequenz.
+- **Nur Ermittlungskapitel anfahren.** Prozesskapitel liefern keine Punkte. Erst
+  `list-chapters.ps1`, dann gezielt waehlen.
+- **Zeitgrenze pro Befehl sind 10 Minuten.** Laengere Durchlaeufe im Hintergrund
+  starten, sonst bricht der Aufruf mitten in der Menuefuehrung ab.
+- Zwei Punkte koennen dieselbe Nachricht teilen (z. B. der Studio-Van von zwei
+  Seiten) — dann ist derselbe Name fuer beide richtig.
+
+### Stand der Abdeckung (GS1)
+
+Benannt: 30 Punkte in 6 Szenen — Anwaltskanzlei Fey & Partner (Episode 2 und 3),
+Strafanstalt (Episode 2 und 3), Hotelzimmer, Kanzlei Grossberg, Global Studios
+Eingang. Insgesamt hat GS1 laut `inspect-tables.json` deutlich mehr Punkte; die
+uebrigen Szenen brauchen weitere Kapiteldurchlaeufe.
+
 ## Lauf 1 (19.07.2026, 06:33–10:30) — Ergebnisse und Sackgassen
 
 ### Erledigt
