@@ -30,24 +30,44 @@ Get-ChildItem "$Managed\*.dll" | ForEach-Object {
 $asm = [System.Reflection.Assembly]::LoadFile("$Managed\Assembly-CSharp.dll")
 $flags = [System.Reflection.BindingFlags]'Public,NonPublic,Static'
 
-$scenario = $asm.GetType('scenario')
-if ($null -eq $scenario) { Write-Error "Klasse 'scenario' nicht gefunden."; exit 1 }
+# Jedes Spiel hat eine eigene Klasse mit seinen Szenentabellen. Das war beim
+# ersten Auslesen am 19.07.2026 uebersehen worden — dadurch enthielt der erste
+# Abzug nur GS1. Alle drei muessen gelesen werden.
+$classNames = @{
+    "scenario"     = 1
+    "scenario_GS2" = 2
+    "scenario_GS3" = 3
+}
 
-$tables = $scenario.GetFields($flags) | Where-Object { $_.FieldType.ToString() -match 'INSPECT_DATA' }
+$tables = @()
+foreach ($className in $classNames.Keys) {
+    $cls = $asm.GetType($className)
+    if ($null -eq $cls) {
+        Write-Warning "Klasse '$className' nicht gefunden - uebersprungen."
+        continue
+    }
+    foreach ($f in ($cls.GetFields($flags) | Where-Object { $_.FieldType.ToString() -match 'INSPECT_DATA' })) {
+        $tables += [pscustomobject]@{ Field = $f; Game = $classNames[$className] }
+    }
+}
 
 $result = @()
 $skipped = 0
 
-foreach ($t in $tables) {
+foreach ($entry in $tables) {
+    $t = $entry.Field
     $rows = $null
     try { $rows = $t.GetValue($null) } catch { $skipped++; continue }
     if ($null -eq $rows) { $skipped++; continue }
 
     # Szenenname zerlegen: Sce2_2_room003_3_ck_mess_tbl
-    #   -> Spiel 2, Teil 2, Raum 003, Variante 3
-    $game = $null; $part = $null; $room = $null; $variant = $null
+    #   -> Episode 2, Teil 2, Raum 003, Variante 3
+    # ACHTUNG: Die erste Zahl ist die EPISODE, nicht das Spiel. Das Spiel steht
+    # in der Klasse, aus der die Tabelle stammt (scenario / _GS2 / _GS3).
+    $game = $entry.Game
+    $episode = $null; $part = $null; $room = $null; $variant = $null
     if ($t.Name -match '^Sce(\d+)_(\d+)_room([0-9a-z]+?)(?:_(\d+))?_ck_mess_tbl(?:_(\d+))?$') {
-        $game    = [int]$Matches[1]
+        $episode = [int]$Matches[1]
         $part    = [int]$Matches[2]
         $room    = $Matches[3]
         $variant = if ($Matches[4]) { $Matches[4] } elseif ($Matches[5]) { $Matches[5] } else { $null }
@@ -81,6 +101,7 @@ foreach ($t in $tables) {
     $result += [pscustomobject]@{
         table   = $t.Name
         game    = $game
+        episode = $episode
         part    = $part
         room    = $room
         variant = $variant
