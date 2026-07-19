@@ -90,6 +90,19 @@ Nicht ueber die verschluesselten Dateien, sondern ueber das laufende Spiel:
 - Zwei Punkte koennen dieselbe Nachricht teilen (z. B. der Studio-Van von zwei
   Seiten) — dann ist derselbe Name fuer beide richtig.
 
+### Abschluss Lauf 2
+
+**47 Untersuchungspunkte benannt** (4,6 % von GS1, 1,8 % vom Gesamtbestand).
+Zwoelf davon bereits mit dem genauen Schluessel `<szenario>/<hintergrund>/<nachricht>`,
+die uebrigen mit dem aelteren zweiteiligen Schluessel (funktioniert weiter).
+
+Erfasste Szenen: Anwaltskanzlei Fey & Partner (Episoden 2, 3, 4), Strafanstalt
+(Episoden 2, 3, 4), Hotelzimmer, Kanzlei Grossberg, Global Studios Eingang,
+Gourd-See Parkeingang, Studio Eins (Filmset und Studioweg).
+
+**Der Schnelldurchlauf hat sich bewaehrt**: Der letzte Kapitellauf erreichte die
+Ermittlung in der ersten Runde statt nach 190 vergeblichen Tastendruecken.
+
 ### Stand der Abdeckung
 
 Benannt: 30 Punkte in 6 Szenen — Anwaltskanzlei Fey & Partner (Episode 2 und 3),
