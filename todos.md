@@ -53,6 +53,19 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   fertig getestet hat und den PR ausdrücklich freigibt (Regel vom 18.07.2026). Vorher
   entscheiden, ob `todos.md` aus dem PR-Branch herausgehalten wird (internes Protokoll).
 
+## Offen: Werkzeug-Abhaengigkeit vor dem Pull Request aufloesen
+
+Die Skripte im Repo (`cover-chapter.ps1`, `visit-location.ps1`, `list-chapters.ps1`)
+rufen Helfer auf, die NICHT im Repo liegen, sondern unter
+`~/.claude/scripts/` (`enter-chapter.ps1`, `gamekey.ps1`, `nav.ps1`, `say.ps1`).
+Fuer Jana funktioniert das, fuer jeden anderen nicht.
+
+Vor dem Pull Request entscheiden: entweder die Helfer nach
+`AccessibilityMod/DevBridge/` mitnehmen (dann sind die harten Pfade darin zu
+ersetzen), oder die Entwicklerskripte ganz aus dem PR heraushalten und nur die
+Mod-Aenderungen einreichen. Zweiteres ist wahrscheinlich sauberer — die
+DevBridge ist ein Arbeitswerkzeug, kein Teil der Mod fuer Spielerinnen.
+
 ## Hinweis fuer den Lauf um 16:33 Uhr: Weckruf um 21:37 pruefen
 
 Es steht ein zusaetzlicher, selbst angelegter Weckruf fuer **21:37 Uhr**
