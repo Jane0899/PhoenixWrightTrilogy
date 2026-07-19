@@ -303,6 +303,7 @@ namespace AccessibilityMod.Core
                 LocalizationService.ReloadFromFiles();
                 CharacterNameService.ReloadFromFiles();
                 EvidenceDetailService.ReloadFromFiles();
+                HotspotNameService.ReloadFromFiles();
                 StaffRollPatches.ReloadData();
                 SpeechManager.Announce(L.Get("system.config_reloaded"));
                 AccessibilityMod.Logger.Msg("Configuration files reloaded via F5");

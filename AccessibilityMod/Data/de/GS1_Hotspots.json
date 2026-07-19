@@ -1,0 +1,13 @@
+{
+  "_comment": "Namen für Untersuchungspunkte in GS1. Schlüssel: <Hintergrundnummer>/<Nachrichten-ID>.",
+  "_comment2": "Die Namen sind aus dem abgeleitet, was das Spiel beim Untersuchen selbst sagt - nichts erfunden.",
+  "_comment3": "Erzeugt mit AccessibilityMod/DevBridge/dump-hotspot-texts.ps1. F5 im Spiel lädt neu.",
+
+  "_bg32": "=== Hotelzimmer (Episode 2, Untersuchung des Hotels) ===",
+  "32/238": "Plastikblumen",
+  "32/239": "Tisch mit Flasche und Gläsern",
+  "32/240": "Fenster",
+  "32/241": "Bett",
+  "32/242": "Gemälde",
+  "32/243": "Schublade"
+}

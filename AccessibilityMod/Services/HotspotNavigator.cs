@@ -63,6 +63,20 @@ namespace AccessibilityMod.Services
         /// </summary>
         private static string BuildDescription(int number, HotspotInfo info, string posDesc)
         {
+            // Reihenfolge der Namensquellen, beste zuerst:
+            // 1. Gepflegter Hotspot-Name (aus dem, was das Spiel beim Untersuchen
+            //    sagt — "Ein einfaches Bett." -> "Bett"). Am aussagekraeftigsten.
+            // 2. Name des zugehoerigen Beweisstuecks, falls der Punkt einen hat.
+            // 3. Nur die Nummer, wie bisher.
+            try
+            {
+                int bgNo = bgCtrl.instance != null ? bgCtrl.instance.bg_no : -1;
+                string configured = HotspotNameService.GetName(bgNo, info.MessageId);
+                if (!Net35Extensions.IsNullOrWhiteSpace(configured))
+                    return L.Get("navigation.point_position_named", number, configured, posDesc);
+            }
+            catch { }
+
             if (!Net35Extensions.IsNullOrWhiteSpace(info.ItemName))
                 return L.Get("navigation.point_position_named", number, info.ItemName, posDesc);
 
