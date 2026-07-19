@@ -3,16 +3,27 @@
   "_comment2": "Die Namen sind aus dem abgeleitet, was das Spiel beim Untersuchen selbst sagt - nichts erfunden.",
   "_comment3": "Erzeugt mit AccessibilityMod/DevBridge/dump-hotspot-texts.ps1. F5 im Spiel lädt neu.",
 
-  "_bg1": "=== Anwaltskanzlei Fey & Partner ===",
+  "_bg1": "=== Anwaltskanzlei Fey & Partner (Episode 2) ===",
   "1/156": "Mias Topfpflanze",
   "1/157": "Bücherregal",
   "1/158": "Fenster",
   "1/159": "Mias Schreibtisch",
   "1/160": "Filmplakat",
 
-  "_bg30": "=== Strafanstalt, Besucherraum ===",
+  "_bg1e3": "=== Anwaltskanzlei Fey & Partner (Episode 3) - gleicher Raum, eigene Nachrichten-IDs ===",
+  "1/130": "Mias Topfpflanze",
+  "1/131": "Bücherregal",
+  "1/132": "Fenster",
+  "1/133": "Mias Schreibtisch",
+  "1/134": "Filmplakat",
+
+  "_bg30": "=== Strafanstalt, Besucherraum (Episode 2) ===",
   "30/204": "Wachmann",
   "30/205": "Überwachungskamera",
+
+  "_bg30e3": "=== Strafanstalt, Besucherraum (Episode 3) ===",
+  "30/148": "Überwachungskamera",
+  "30/149": "Wachmann",
 
   "_bg32": "=== Hotelzimmer (Episode 2) ===",
   "32/238": "Plastikblumen",
