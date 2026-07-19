@@ -53,6 +53,42 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   fertig getestet hat und den PR ausdrücklich freigibt (Regel vom 18.07.2026). Vorher
   entscheiden, ob `todos.md` aus dem PR-Branch herausgehalten wird (internes Protokoll).
 
+## WICHTIG fuer den naechsten Lauf: Doppelarbeit abstellen (Janas Einwand, 19.07.)
+
+Jana hat zu Recht angemerkt, dass derzeit viele Dialoge mehrfach gelesen werden.
+Das stimmt:
+
+- Jeder Kapitellauf startet das Spiel neu und beginnt am **Kapitelanfang** —
+  die Eroeffnungssequenz laeuft jedes Mal erneut durch (nur eben schnell).
+- Beim Ortswechsel landet man immer wieder in schon erfassten Szenen
+  ("bg=1 schon erfasst, weiter") — die Wege dorthin werden trotzdem gespielt.
+- Dieselben Raeume wurden mehrfach erfasst: die Anwaltskanzlei viermal, die
+  Strafanstalt dreimal.
+
+**Zwei Auswege, in dieser Reihenfolge pruefen:**
+
+1. **Spielstaende als Sprungmarken (einfach, sicher).** Einmal in einer
+   Ermittlungsszene angekommen, dort speichern. Spaetere Laeufe laden den Stand
+   direkt — kein Menue, keine Sequenz, kein doppelter Dialog. Das Spiel hat
+   mehrere Speicherplaetze; ein Vorrat "ein Spielstand je Szene" waere fuer
+   alle weiteren Laeufe wiederverwendbar. Die Bridge braucht dafuer je einen
+   Befehl zum Speichern und Laden (SaveLoadUICtrl ist bereits gepatcht, die
+   noetigen Einstiegspunkte sind also bekannt).
+
+2. **Direktsprung ueber die spieleigene Kapitelmechanik (maechtiger).**
+   Gefunden: `ChapterDataLoader.Load(String, ChapterData)`, dazu
+   `LoadCoroutine`, `SceneLoad()`, `LetsGoLabelTop()`, `LetsGoSsCommand()`.
+   `ChapterJumpCtrl.set_isEnable(bool)` schaltet die Kapitelauswahl frei.
+   **Offen:** `ChapterData` ist ein VERSCHACHTELTER Typ — nicht ueber
+   `GetType("ChapterData")` erreichbar, sondern ueber
+   `GetType("ChapterDataLoader+ChapterData")` bzw. ueber `GetNestedTypes()`.
+   Zuerst dessen Felder ansehen: Enthaelt er eine Nachrichten-/Label-Position,
+   liesse sich direkt in die Ermittlung springen statt an den Kapitelanfang.
+   `GlobalWork` haelt dazu `scenario`, `sce_flag`, `bk_start_mess`, `Bk_end_mess`.
+
+Beides spart deutlich mehr Zeit als der Schnelldurchlauf, weil es die
+Wiederholung ganz vermeidet statt sie nur zu beschleunigen.
+
 ## Lauf 3 — Abschluss: 81 Punkte in allen drei Spielen benannt
 
 | Spiel | benannt | gesamt | Abdeckung |
