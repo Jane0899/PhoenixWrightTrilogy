@@ -938,7 +938,7 @@ namespace AccessibilityMod.Patches
                         if (!_choiceIntroAnnounced)
                         {
                             _choiceIntroAnnounced = true;
-                            int optionCount = CountFilledSelectOptions();
+                            int optionCount = GetActiveOptionCount(__instance);
                             announcement =
                                 L.GetPlural("menu.choice_intro", optionCount)
                                 + " "
@@ -1000,6 +1000,42 @@ namespace AccessibilityMod.Patches
                     $"Error in End patch: {ex.Message}"
                 );
             }
+        }
+
+        // Cached reflection handle for selectPlateCtrl.cursor_num_ (private): the
+        // game's own count of selectable entries in the currently open plate.
+        private static readonly System.Reflection.FieldInfo _cursorNumField =
+            typeof(selectPlateCtrl).GetField(
+                "cursor_num_",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+            );
+
+        /// <summary>
+        /// Returns how many options the currently open selection plate really has.
+        /// Primary source is the game's own cursor_num_ field. Counting our captured
+        /// _selectOptions texts instead is WRONG whenever the game reuses the plate
+        /// without calling end(): text slots from a previous, larger dialog survive
+        /// in the list, so the mod announced e.g. "3 options" for a 2-option dialog.
+        /// </summary>
+        private static int GetActiveOptionCount(selectPlateCtrl instance)
+        {
+            try
+            {
+                if (_cursorNumField != null)
+                {
+                    int count = (int)_cursorNumField.GetValue(instance);
+                    if (count > 0)
+                        return count;
+                }
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error reading cursor_num_: {ex.Message}"
+                );
+            }
+            // Fallback only: count non-empty captured text slots.
+            return CountFilledSelectOptions();
         }
 
         /// <summary>

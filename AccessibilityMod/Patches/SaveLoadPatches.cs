@@ -1084,6 +1084,38 @@ namespace AccessibilityMod.Patches
             AnnounceOptionValue(__instance);
         }
 
+        // Dedup state for key config rebind announcements: ChangeKeyConfig may be
+        // invoked more than once per rebind (and during initialisation), so only a
+        // row whose bound key actually CHANGED since the last announcement speaks.
+        private static optionSummaryLAKeyConfig _lastKeyConfigRow;
+        private static UnityEngine.KeyCode _lastKeyConfigCode = UnityEngine.KeyCode.None;
+
+        // Announce the newly bound key after the player rebinds a function in the
+        // key config screen, e.g. "Confirm: Enter".
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(optionSummaryLAKeyConfig), "ChangeKeyConfig")]
+        public static void KeyConfig_ChangeKeyConfig_Postfix(optionSummaryLAKeyConfig __instance)
+        {
+            try
+            {
+                if (__instance == _lastKeyConfigRow && __instance.current_key_code == _lastKeyConfigCode)
+                    return;
+
+                _lastKeyConfigRow = __instance;
+                _lastKeyConfigCode = __instance.current_key_code;
+
+                string name = GetOptionName(__instance);
+                string key = DialoguePatches.GetKeyCodeNameLocalized(__instance.current_key_code);
+                SpeechManager.Announce($"{name}: {key}", GameTextType.Menu);
+            }
+            catch (Exception ex)
+            {
+                AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                    $"Error in KeyConfig ChangeKeyConfig patch: {ex.Message}"
+                );
+            }
+        }
+
         private static void AnnounceOptionValue(optionItem item)
         {
             try
@@ -1161,6 +1193,17 @@ namespace AccessibilityMod.Patches
         {
             try
             {
+                // Key config rows (Options -> Key Config): their "value" is the currently
+                // bound keyboard key. Without this branch the generic announcement only
+                // speaks the function name, so screen reader users cannot tell which key
+                // triggers which function. current_key_code is public game state that the
+                // row itself renders as a sprite. Localised via DialoguePatches so the key
+                // is spoken in the user's language ("Eingabe" instead of "Return").
+                if (item is optionSummaryLAKeyConfig keyConfigItem)
+                {
+                    return DialoguePatches.GetKeyCodeNameLocalized(keyConfigItem.current_key_code);
+                }
+
                 Type itemType = item.GetType();
 
                 // Try gauge type pattern first (optionBgm, optionSe)

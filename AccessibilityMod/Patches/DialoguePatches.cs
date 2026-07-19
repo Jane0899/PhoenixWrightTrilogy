@@ -724,6 +724,14 @@ namespace AccessibilityMod.Patches
             }
         }
 
+        // Internal alias so other patches (e.g. the key config announcement in
+        // SaveLoadPatches) can reuse the LOCALISED key names instead of duplicating
+        // the mapping with hardcoded English names.
+        internal static string GetKeyCodeNameLocalized(KeyCode keyCode)
+        {
+            return GetKeyCodeName(keyCode);
+        }
+
         private static string GetKeyCodeName(KeyCode keyCode)
         {
             switch (keyCode)

@@ -5,6 +5,30 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
 ## Offene Punkte
 
+- [ ] **J3 Tastenbelegungs-Menü: zugewiesene Taste wird nicht angesagt** (19.07.2026).
+  Symptom: Unter Optionen → Tastenbelegung wird nur der Funktionsname gesprochen, nicht
+  die gebundene Taste. Ursache: Die Zeilen sind `optionSummaryLAKeyConfig`-Items;
+  `GetOptionValue` kannte den Typ nicht → kein Wert. Fix: Branch in `GetOptionValue`
+  liest das öffentliche Feld `current_key_code` und spricht den lokalisierten
+  Tastennamen ("Bestätigen: Eingabe"); zusätzlich Postfix auf `ChangeKeyConfig`,
+  damit nach dem Umbelegen die neue Taste angesagt wird (mit Dedup). Typ-Struktur per
+  Reflection über die Spiel-DLL ermittelt (kein Decompiled-Ordner vorhanden).
+  **Fix gebaut — Janas Gegentest steht aus.**
+- [ ] **J4 Untersuchungspunkte heißen nur „Punkt 1, Punkt 2 …"** (19.07.2026).
+  Befund: Die Spieldaten (`INSPECT_DATA`) enthalten NUR Message-ID, Place-ID, ein
+  `item`-Feld und vier Eckkoordinaten — das Spiel kennt selbst keine Namen für
+  Untersuchungspunkte (Sehende sehen einfach die Grafik unter dem Cursor).
+  **Kein Fix ohne Janas Entscheidung** — Lösungsvorschläge siehe Chat vom 19.07.2026
+  (handgepflegte Namensdateien à la EvidenceDetails, item-Feld-Auflösung,
+  Dialog-Caching nach Erstuntersuchung).
+- [ ] **J5 Auswahldialog sagt mehr Optionen an, als wählbar sind** (19.07.2026).
+  Symptom: „3 Optionen" angesagt, nur 2 mit Pfeiltasten erreichbar. Ursache: Die Mod
+  zählte ihre per `setText` mitgeschnittenen Text-Slots — wenn das Spiel die Platte
+  ohne `end()` wiederverwendet, überleben Slots eines früheren, größeren Dialogs.
+  Fix: Zahl kommt jetzt aus dem spieleigenen Feld `selectPlateCtrl.cursor_num_`
+  (per Reflection, mit Fallback auf die alte Zählung).
+  **Fix gebaut — Janas Gegentest steht aus.**
+
 - [ ] **Unsichere deutsche Begriffe im Spiel gegenprüfen** (aus der Übersetzung vom 18.07.2026,
   Jana: „sieht auf den ersten Blick gut aus", Detailprüfung läuft nebenbei weiter):
   „Psyche-Lock" (englisch gelassen), „Blue Badger" (englisch gelassen), Sprecher-IDs
