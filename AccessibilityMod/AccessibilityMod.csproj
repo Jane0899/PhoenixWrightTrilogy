@@ -36,6 +36,15 @@
       <HintPath>$(GamePath)\PWAAT_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <!-- Fuer die DevBridge: EncodeToPNG (Hotspot-Ausschnitte) und Bildschirmfotos -->
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(GamePath)\PWAAT_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ScreenCaptureModule">
+      <HintPath>$(GamePath)\PWAAT_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>$(GamePath)\PWAAT_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>false</Private>

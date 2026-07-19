@@ -53,6 +53,33 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   fertig getestet hat und den PR ausdrücklich freigibt (Regel vom 18.07.2026). Vorher
   entscheiden, ob `todos.md` aus dem PR-Branch herausgehalten wird (internes Protokoll).
 
+## Nachtschicht 19.07.2026 — Stand
+
+- [x] **DevBridge gebaut** (Commit siehe unten). Zeilenbasiertes TCP auf 127.0.0.1,
+  Port in `UserData/AccessibilityMod/DevBridge/port.txt`, Antworten enden mit
+  `<<END>>`, Ereignisse beginnen mit `! `. Netzwerk in Hintergrund-Threads,
+  Ausfuehrung ausschliesslich im Unity-Hauptthread (aus `OnUpdate` abgepumpt) —
+  Unity-Objekte ausserhalb des Hauptthreads anzufassen crasht das Spiel hart
+  (Lehre aus Disco-A11y). Befehle: `ping`, `help`, `state`, `hotspots`,
+  `hotspot <n>`, `dump [ordner]`, `shot [datei]`, `say <text>`.
+  Client: `AccessibilityMod/DevBridge/bridge-client.ps1`.
+  **Build gruen, im Spiel noch ungetestet.**
+- [ ] **DevBridge live testen** — Spiel starten, `ping`/`state`/`hotspots`/`dump`
+  gegen eine echte Untersuchungsszene laufen lassen. Erst danach ist die
+  Automatisierung belastbar.
+- [ ] **Wichtige Erkenntnis fuer `dump`**: Die Hotspot-Bilder werden NICHT per
+  Bildschirmfoto geholt, sondern direkt aus der Hintergrundtextur geschnitten
+  (`bgCtrl.instance.sprite_data.texture`, ueber RenderTexture lesbar gemacht,
+  dann `EncodeToPNG`). Vorteil: unabhaengig von Fenstergroesse und Fokus, und
+  enthaelt auch die gerade nicht sichtbaren Teile breiter Schwenk-Szenen.
+  Das heisst auch: fuer die Bilderfassung muss Janas Rechner viel weniger lange
+  blockiert werden als urspruenglich gedacht.
+- [ ] **Loesung 1 (item-Feld zu Beweisstueck-Namen aufloesen) noch offen** — war
+  als erstes geplant, ist aber noch nicht umgesetzt.
+- [ ] Crons fuer die drei Laeufe stehen: 6:33 (GS1), 11:33 (GS2), 16:33 (GS3).
+  **Achtung: Crons leben nur in der laufenden Claude-Sitzung**, nicht auf der
+  Platte — wird das Terminal geschlossen, sind sie weg.
+
 ## Erledigt
 
 - [x] **Deutsche Lokalisierung komplett hinzugefügt** (18.07.2026, Commit `e33b4b4`):

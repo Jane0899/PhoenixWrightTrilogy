@@ -495,6 +495,36 @@ namespace AccessibilityMod.Services
             return _hotspots.Count;
         }
 
+        /// <summary>
+        /// Lesezugriff auf die geparste Hotspot-Liste. Fuer die DevBridge, damit
+        /// die Automatisierung die Punkte aufzaehlen und ihre Bildausschnitte
+        /// schneiden kann, ohne die Parselogik ein zweites Mal zu bauen.
+        /// </summary>
+        public static List<HotspotInfo> GetHotspots()
+        {
+            if (_hotspots.Count == 0)
+                RefreshHotspots();
+            return _hotspots;
+        }
+
+        /// <summary>
+        /// Springt direkt auf einen Punkt (0-basiert) statt schrittweise zu
+        /// navigieren — gedacht fuer die DevBridge-Automatisierung. Gibt false
+        /// zurueck, wenn es den Punkt nicht gibt.
+        /// </summary>
+        public static bool NavigateToIndex(int index)
+        {
+            if (_hotspots.Count == 0)
+                RefreshHotspots();
+
+            if (index < 0 || index >= _hotspots.Count)
+                return false;
+
+            _currentIndex = index;
+            MoveCursorToCurrentHotspot();
+            return true;
+        }
+
         public static int GetUnexaminedCount()
         {
             RefreshExaminedStatus();

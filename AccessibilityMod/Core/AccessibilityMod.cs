@@ -76,6 +76,11 @@ namespace AccessibilityMod.Core
                 GameObject managerObject = new GameObject("AccessibilityMod_CoroutineRunner");
                 managerObject.AddComponent<CoroutineRunner>();
 
+                // DevBridge erst hier starten (nicht in OnInitializeMelon): Sie
+                // greift auf Unity-Objekte zu, die vor dem ersten Szenenladen
+                // noch nicht existieren.
+                DevBridge.DevBridgeServer.Start();
+
                 Logger.Msg("Accessibility systems initialized successfully");
                 _isInitialized = true;
             }
@@ -101,6 +106,11 @@ namespace AccessibilityMod.Core
                 UpdateNavigators();
 
                 InputManager.ProcessInput();
+
+                // DevBridge-Befehle abarbeiten. MUSS hier passieren: Netzwerk und
+                // Einlesen laufen in Hintergrund-Threads, aber Spielobjekte duerfen
+                // nur im Unity-Hauptthread angefasst werden.
+                DevBridge.DevBridgeServer.PumpMainThread();
             }
             catch (Exception ex)
             {
@@ -124,6 +134,10 @@ namespace AccessibilityMod.Core
 
         public override void OnDeinitializeMelon()
         {
+            // Zuerst die Bridge stoppen, damit der Listener den Port freigibt und
+            // ein Neustart des Spiels ihn wiederverwenden kann.
+            DevBridge.DevBridgeServer.Stop();
+
             if (CoroutineRunner.Instance != null)
             {
                 UnityEngine.Object.Destroy(CoroutineRunner.Instance.gameObject);
