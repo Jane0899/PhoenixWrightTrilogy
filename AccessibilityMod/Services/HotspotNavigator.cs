@@ -71,9 +71,12 @@ namespace AccessibilityMod.Services
 
         private static string ResolveItemName(uint itemId)
         {
-            // 0 = kein Beweisbezug. Sehr grosse Werte sind Fuellwerte am
-            // Listenende und ebenfalls keine echten Items.
-            if (itemId == 0 || itemId >= 0xFFFF)
+            // Fuellwerte, die "kein Beweisbezug" bedeuten. 255 (0xFF) ist der in
+            // den Spieldaten tatsaechlich verwendete Marker — beim Auslesen der
+            // Szenentabellen am 19.07.2026 trugen praktisch alle Punkte ohne
+            // Beweisbezug genau diesen Wert. 0 und sehr grosse Werte werden
+            // vorsichtshalber ebenfalls abgewiesen.
+            if (itemId == 0 || itemId == 255 || itemId >= 0xFFFF)
                 return null;
 
             try

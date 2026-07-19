@@ -50,6 +50,16 @@ namespace AccessibilityMod.DevBridge
                     return Screenshot(arg);
                 case "say":
                     return Say(arg);
+                case "mdtpath":
+                    return MdtPath(arg);
+                case "mes":
+                    return MessageText(arg);
+                case "scenarios":
+                    return Scenarios(arg);
+                case "mesraw":
+                    return MessageRaw(arg);
+                case "mesfile":
+                    return MessageFromFile(arg);
                 default:
                     return "ERROR unbekannter Befehl: " + cmd + " (help zeigt alle)";
             }
@@ -68,6 +78,8 @@ namespace AccessibilityMod.DevBridge
                     "dump [ordner]        - Bildausschnitt je Hotspot als PNG speichern",
                     "shot [datei]         - Bildschirmfoto speichern",
                     "say <text>           - Text ueber den Screenreader ausgeben",
+                    "mdtpath <t> <s>      - Nachrichtendatei eines Szenarios anzeigen",
+                    "mes <t> <s> <nr> [p] - Text einer Nachricht (Untersuchungstext)",
                 }
             );
         }
@@ -405,6 +417,508 @@ namespace AccessibilityMod.DevBridge
             {
                 return "ERROR shot: " + ex.Message;
             }
+        }
+
+        // --- Zugriff auf den spieleigenen Debug-Nachrichtenleser -------------
+        //
+        // Das Spiel bringt eine interne Klasse DebugMdtViewer+otherLangMessage
+        // mit, die genau das kann, was hier gebraucht wird: die Nachrichtendatei
+        // eines Szenarios laden und den Text einer Nachricht liefern. Sie wird
+        // per Reflection angesprochen, weil sie nicht Teil der oeffentlichen
+        // Spiel-API ist — faellt sie in einer Spielversion weg, scheitert nur
+        // dieser Befehl und nicht die ganze Bruecke.
+        //
+        // Warum das wichtig ist: Damit lassen sich die Untersuchungstexte ALLER
+        // Szenen abrufen, ohne sie im Spiel anzusteuern. Das ersetzt das
+        // urspruenglich geplante stundenlange Durchspielen.
+        private static Type _viewerType;
+        private static object _viewerInstance;
+
+        private static object GetViewer()
+        {
+            if (_viewerInstance != null)
+                return _viewerInstance;
+
+            if (_viewerType == null)
+            {
+                // Verschachtelter Typ: der Laufzeitname nutzt '+' als Trenner.
+                _viewerType = typeof(GSStatic).Assembly.GetType("DebugMdtViewer+otherLangMessage");
+            }
+
+            if (_viewerType == null)
+                return null;
+
+            // Der Konstruktor verlangt eine Sprache — ohne sie wuerde er die
+            // Texte gar nicht aufloesen koennen. Es wird die aktuell im Spiel
+            // eingestellte Sprache genommen, damit die Untersuchungstexte in
+            // derselben Sprache herauskommen, die Jana auch hoert.
+            object language = GSStatic.global_work_.language;
+            _viewerInstance = Activator.CreateInstance(_viewerType, new object[] { language });
+            return _viewerInstance;
+        }
+
+        /// <summary>
+        /// scenarios &lt;title&gt; — listet die Nachrichtendateien aller Szenarien
+        /// eines Spiels. Damit laesst sich zuordnen, welche Szenario-Nummer zu
+        /// welchem Kapitel gehoert (noetig, um die Hotspot-Tabellen aus der
+        /// scenario-Klasse mit den richtigen Texten zusammenzubringen).
+        /// </summary>
+        private static string Scenarios(string arg)
+        {
+            int title;
+            if (!int.TryParse(arg, out title) || title < 0 || title > 2)
+                return "ERROR Aufruf: scenarios <title 0-2>";
+
+            try
+            {
+                object viewer = GetViewer();
+                if (viewer == null)
+                    return "ERROR DebugMdtViewer nicht verfuegbar";
+
+                string fieldName = "GS" + (title + 1) + "_scenario_mdt_path_table";
+                var field = _viewerType.GetField(
+                    fieldName,
+                    System.Reflection.BindingFlags.Public
+                        | System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Instance
+                        | System.Reflection.BindingFlags.Static
+                );
+                if (field == null)
+                    return "ERROR Feld " + fieldName + " nicht gefunden";
+
+                string[] paths = field.GetValue(viewer) as string[];
+                if (paths == null)
+                    return "ERROR Pfadtabelle ist leer";
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("count=").Append(paths.Length).Append("\n");
+                for (int i = 0; i < paths.Length; i++)
+                {
+                    sb.Append(i).Append(" ").Append(paths[i]).Append("\n");
+                }
+                return sb.ToString().TrimEnd('\n');
+            }
+            catch (Exception ex)
+            {
+                return "ERROR scenarios: " + Unwrap(ex).Message;
+            }
+        }
+
+        /// <summary>
+        /// mdtpath &lt;title&gt; &lt;scenario&gt; — zeigt, welche Nachrichtendatei zu einer
+        /// Szenario-Nummer gehoert. Dient zum Abgleich, welche Nummer welchem
+        /// Kapitel entspricht.
+        /// </summary>
+        private static string MdtPath(string arg)
+        {
+            string[] parts = arg.Split(' ');
+            int title, scenario;
+            if (
+                parts.Length < 2
+                || !int.TryParse(parts[0], out title)
+                || !int.TryParse(parts[1], out scenario)
+            )
+                return "ERROR Aufruf: mdtpath <title 0-2> <scenario>";
+
+            try
+            {
+                object viewer = GetViewer();
+                if (viewer == null)
+                    return "ERROR DebugMdtViewer nicht verfuegbar";
+
+                _viewerType
+                    .GetMethod("LoadByTitle_Scenario")
+                    .Invoke(viewer, new object[] { title, scenario });
+
+                object path = _viewerType
+                    .GetMethod("getMdtPath")
+                    .Invoke(viewer, new object[] { scenario });
+
+                return "ok " + (path == null ? "(null)" : path.ToString());
+            }
+            catch (Exception ex)
+            {
+                return "ERROR mdtpath: " + Unwrap(ex).Message;
+            }
+        }
+
+        /// <summary>
+        /// mes &lt;title&gt; &lt;scenario&gt; &lt;messageNo&gt; [seite] — liefert den Text einer
+        /// Nachricht. Das ist der Untersuchungstext eines Hotspots und damit die
+        /// Grundlage, um ihm einen sinnvollen Namen zu geben.
+        /// </summary>
+        private static string MessageText(string arg)
+        {
+            string[] parts = arg.Split(' ');
+            int title, scenario, mesNo;
+            int page = 0;
+
+            if (
+                parts.Length < 3
+                || !int.TryParse(parts[0], out title)
+                || !int.TryParse(parts[1], out scenario)
+                || !int.TryParse(parts[2], out mesNo)
+            )
+                return "ERROR Aufruf: mes <title 0-2> <scenario> <messageNo> [seite]";
+
+            if (parts.Length >= 4)
+                int.TryParse(parts[3], out page);
+
+            // Jeder Schritt wird einzeln berichtet. Beim ersten Anlauf schlug der
+            // Abruf mit einer nichtssagenden Nullreferenz fehl — ohne
+            // Zwischenmeldungen ist nicht erkennbar, ob schon das Laden scheitert
+            // oder erst das Auslesen.
+            StringBuilder diag = new StringBuilder();
+
+            object viewer;
+            try
+            {
+                viewer = GetViewer();
+                if (viewer == null)
+                    return "ERROR DebugMdtViewer nicht verfuegbar";
+            }
+            catch (Exception ex)
+            {
+                return "ERROR Viewer: " + Unwrap(ex).Message;
+            }
+
+            try
+            {
+                _viewerType
+                    .GetMethod("LoadByTitle_Scenario")
+                    .Invoke(viewer, new object[] { title, scenario });
+                diag.Append("load=ok ");
+            }
+            catch (Exception ex)
+            {
+                diag.Append("load=FEHLER(").Append(Unwrap(ex).Message).Append(") ");
+            }
+
+            // Wurde die Datei wirklich geladen? Das Feld mdt verraet es.
+            try
+            {
+                var mdtField = _viewerType.GetField(
+                    "mdt",
+                    System.Reflection.BindingFlags.Public
+                        | System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Instance
+                );
+                object mdt = mdtField != null ? mdtField.GetValue(viewer) : null;
+
+                if (mdt == null)
+                {
+                    diag.Append("mdt=null ");
+                }
+                else
+                {
+                    diag.Append("mdt=ok ");
+                    var cnt = mdt.GetType().GetMethod("get_message_count");
+                    if (cnt != null)
+                        diag.Append("count=").Append(cnt.Invoke(mdt, null)).Append(" ");
+                }
+            }
+            catch (Exception ex)
+            {
+                diag.Append("mdt=FEHLER(").Append(Unwrap(ex).Message).Append(") ");
+            }
+
+            // Beide Textgetter versuchen — getPageMessage liefert den fertigen
+            // Text, getPageString eine rohere Variante. Welcher funktioniert,
+            // ist von aussen nicht ersichtlich, also einfach beide probieren.
+            foreach (string getter in new string[] { "getPageMessage", "getPageString" })
+            {
+                try
+                {
+                    object text = _viewerType
+                        .GetMethod(getter)
+                        .Invoke(viewer, new object[] { scenario, (ushort)mesNo, page });
+
+                    if (text != null && text.ToString().Length > 0)
+                    {
+                        return text.ToString().Replace("\r", " ").Replace("\n", " ")
+                            + "   [" + diag.ToString().Trim() + " via " + getter + "]";
+                    }
+
+                    diag.Append(getter).Append("=leer ");
+                }
+                catch (Exception ex)
+                {
+                    diag.Append(getter).Append("=FEHLER(").Append(Unwrap(ex).Message).Append(") ");
+                }
+            }
+
+            return "(kein Text) " + diag.ToString().Trim();
+        }
+
+        /// <summary>
+        /// mesraw &lt;title&gt; &lt;scenario&gt; &lt;messageNo&gt; [anzahl] — gibt die Rohwerte
+        /// einer Nachricht aus.
+        ///
+        /// Warum roh? Die fertigen Textgetter des Spiels (getPageMessage /
+        /// getPageString) scheitern ausserhalb des normalen Spielablaufs mit
+        /// einer Nullreferenz — sie brauchen Datenstrukturen, die erst waehrend
+        /// einer echten Szene gefuellt werden. Die Nachrichtendatei selbst ist
+        /// aber geladen und liefert ueber GetMessageOffset/GetMessage direkt die
+        /// 16-Bit-Werte. Aus denen laesst sich der Text selbst zusammensetzen —
+        /// dieser Befehl zeigt sie, damit die Kodierung bestimmt werden kann.
+        /// </summary>
+        private static string MessageRaw(string arg)
+        {
+            string[] parts = arg.Split(' ');
+            int title, scenario, mesNo;
+            int count = 60;
+
+            if (
+                parts.Length < 3
+                || !int.TryParse(parts[0], out title)
+                || !int.TryParse(parts[1], out scenario)
+                || !int.TryParse(parts[2], out mesNo)
+            )
+                return "ERROR Aufruf: mesraw <title 0-2> <scenario> <messageNo> [anzahl]";
+
+            if (parts.Length >= 4)
+                int.TryParse(parts[3], out count);
+
+            try
+            {
+                object viewer = GetViewer();
+                if (viewer == null)
+                    return "ERROR DebugMdtViewer nicht verfuegbar";
+
+                _viewerType
+                    .GetMethod("LoadByTitle_Scenario")
+                    .Invoke(viewer, new object[] { title, scenario });
+
+                var mdtField = _viewerType.GetField(
+                    "mdt",
+                    System.Reflection.BindingFlags.Public
+                        | System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Instance
+                );
+                object mdt = mdtField.GetValue(viewer);
+                if (mdt == null)
+                    return "ERROR mdt nicht geladen";
+
+                Type mdtType = mdt.GetType();
+
+                uint offset = (uint)
+                    mdtType
+                        .GetMethod("GetMessageOffset")
+                        .Invoke(mdt, new object[] { (ushort)mesNo });
+
+                var getMsg = mdtType.GetMethod("GetMessage");
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("offset=").Append(offset).Append("\n");
+
+                // Zwei Sichten auf dieselben Werte: einmal als Zahl, einmal als
+                // Zeichen (sofern druckbar). So ist auf einen Blick erkennbar,
+                // ob es sich um Unicode handelt oder um eine eigene Tabelle.
+                StringBuilder nums = new StringBuilder();
+                StringBuilder chars = new StringBuilder();
+
+                for (int i = 0; i < count; i++)
+                {
+                    ushort v = (ushort)getMsg.Invoke(mdt, new object[] { (uint)(offset + i) });
+                    nums.Append(v).Append(" ");
+                    chars.Append(v >= 32 && v < 0xFFF0 ? (char)v : '.');
+                }
+
+                sb.Append("werte: ").Append(nums.ToString().Trim()).Append("\n");
+                sb.Append("zeichen: ").Append(chars.ToString());
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                return "ERROR mesraw: " + Unwrap(ex).Message;
+            }
+        }
+
+        // Einmal geladene Nachrichtendateien werden behalten: Beim stapelweisen
+        // Auslesen hunderter Punkte wuerde sonst dieselbe Datei immer wieder neu
+        // eingelesen und entpackt.
+        private static readonly Dictionary<string, object> _mdtCache =
+            new Dictionary<string, object>();
+
+        /// <summary>
+        /// mesfile &lt;datei&gt; &lt;messageNo&gt; [seiten] — laedt eine Nachrichtendatei
+        /// direkt von der Platte und gibt den Text einer Nachricht zurueck.
+        ///
+        /// Warum nicht ueber den Debug-Viewer des Spiels?
+        /// Der laedt nur die japanische Basisdatei (sc..._text.mdt) und seine
+        /// fertigen Textgetter scheitern ausserhalb einer echten Szene. Die
+        /// Sprachfassungen liegen aber als eigene Dateien daneben
+        /// (_g deutsch, _u englisch, _f franzoesisch ...), und MdtData kann aus
+        /// rohen Dateibytes gebaut werden. Damit ist jede Sprache und jedes
+        /// Szenario frei zugaenglich — unabhaengig vom Spielfortschritt.
+        ///
+        /// &lt;datei&gt; ist relativ zu StreamingAssets, z. B.
+        ///     GS1/scenario/sc1_2_text_g.mdt
+        /// </summary>
+        private static string MessageFromFile(string arg)
+        {
+            string[] parts = arg.Split(' ');
+            int mesNo;
+            int pages = 1;
+
+            if (parts.Length < 2 || !int.TryParse(parts[1], out mesNo))
+                return "ERROR Aufruf: mesfile <datei> <messageNo> [seiten]";
+
+            if (parts.Length >= 3)
+                int.TryParse(parts[2], out pages);
+
+            string relative = parts[0];
+
+            try
+            {
+                object mdt = GetMdtFromFile(relative);
+                if (mdt == null)
+                    return "ERROR Datei nicht ladbar: " + relative;
+
+                string decoded = DecodeMessage(mdt, (ushort)mesNo, pages);
+
+                // Wenn nichts herauskommt, stimmt die Annahme ueber das Format
+                // nicht. Statt nur "(leer)" zu melden, werden dann die Rohwerte
+                // mitgeliefert — daran laesst sich die Kodierung ablesen, ohne
+                // erneut bauen und das Spiel neu starten zu muessen.
+                if (decoded == "(leer)")
+                    return decoded + "\n" + RawDump(mdt, (ushort)mesNo, 48);
+
+                return decoded;
+            }
+            catch (Exception ex)
+            {
+                return "ERROR mesfile: " + Unwrap(ex).Message;
+            }
+        }
+
+        private static object GetMdtFromFile(string relative)
+        {
+            object cached;
+            if (_mdtCache.TryGetValue(relative, out cached))
+                return cached;
+
+            string full = Path.Combine(Application.streamingAssetsPath, relative.Replace('/', Path.DirectorySeparatorChar));
+            if (!File.Exists(full))
+                return null;
+
+            byte[] bytes = File.ReadAllBytes(full);
+
+            Type mdtType = typeof(GSStatic).Assembly.GetType("MdtData");
+            if (mdtType == null)
+                return null;
+
+            object mdt = Activator.CreateInstance(mdtType, new object[] { bytes });
+            _mdtCache[relative] = mdt;
+            return mdt;
+        }
+
+        /// <summary>
+        /// Gibt Offset und die ersten Rohwerte einer Nachricht aus — als
+        /// Diagnosehilfe, wenn die Dekodierung nichts liefert.
+        /// </summary>
+        private static string RawDump(object mdt, ushort mesNo, int count)
+        {
+            try
+            {
+                Type mdtType = mdt.GetType();
+                uint offset = (uint)
+                    mdtType.GetMethod("GetMessageOffset").Invoke(mdt, new object[] { mesNo });
+                var getMsg = mdtType.GetMethod("GetMessage");
+
+                object mc = null;
+                var cnt = mdtType.GetMethod("get_message_count");
+                if (cnt != null)
+                    mc = cnt.Invoke(mdt, null);
+
+                StringBuilder nums = new StringBuilder();
+                StringBuilder chars = new StringBuilder();
+                for (int i = 0; i < count; i++)
+                {
+                    ushort v = (ushort)getMsg.Invoke(mdt, new object[] { (uint)(offset + i) });
+                    nums.Append(v).Append(" ");
+                    chars.Append(v >= 32 && v < 0xFFF0 ? (char)v : '.');
+                }
+
+                return "count=" + mc + " offset=" + offset
+                    + "\nwerte: " + nums.ToString().Trim()
+                    + "\nzeichen: " + chars.ToString();
+            }
+            catch (Exception ex)
+            {
+                return "RawDump-Fehler: " + Unwrap(ex).Message;
+            }
+        }
+
+        /// <summary>
+        /// Setzt den Text einer Nachricht aus den 16-Bit-Rohwerten zusammen.
+        ///
+        /// Aufbau (empirisch bestimmt): Werte ab 32 sind direkte Unicode-Zeichen,
+        /// kleinere Werte sind Steuercodes (Seitenumbruch, Sprecherwechsel,
+        /// Wartezeiten ...). Steuercodes werden uebersprungen; ein Seitenende
+        /// beendet die Ausgabe, sofern nicht mehr Seiten angefordert wurden.
+        /// Die Laenge ist zusaetzlich hart begrenzt, damit ein unerwartetes
+        /// Format nicht in eine Endlosschleife laeuft.
+        /// </summary>
+        private static string DecodeMessage(object mdt, ushort mesNo, int pages)
+        {
+            Type mdtType = mdt.GetType();
+
+            uint offset = (uint)
+                mdtType.GetMethod("GetMessageOffset").Invoke(mdt, new object[] { mesNo });
+
+            var getMsg = mdtType.GetMethod("GetMessage");
+
+            StringBuilder sb = new StringBuilder();
+            int pagesSeen = 0;
+            const int MaxChars = 2000;
+
+            for (int i = 0; i < MaxChars; i++)
+            {
+                ushort v;
+                try
+                {
+                    v = (ushort)getMsg.Invoke(mdt, new object[] { (uint)(offset + i) });
+                }
+                catch
+                {
+                    break; // ueber das Dateiende hinaus
+                }
+
+                if (v == 0)
+                {
+                    // Nachrichtenende
+                    break;
+                }
+
+                if (v == 1 || v == 2 || v == 3)
+                {
+                    // Seiten-/Zeilenwechsel: als Leerzeichen darstellen und
+                    // gegebenenfalls nach der gewuenschten Seitenzahl aufhoeren.
+                    pagesSeen++;
+                    if (pagesSeen >= pages)
+                        break;
+                    sb.Append(" ");
+                    continue;
+                }
+
+                if (v < 32)
+                    continue; // sonstige Steuercodes ueberspringen
+
+                sb.Append((char)v);
+            }
+
+            string text = sb.ToString().Trim();
+            return text.Length == 0 ? "(leer)" : text;
+        }
+
+        /// <summary>
+        /// Reflection verpackt Fehler aus dem aufgerufenen Code in eine
+        /// TargetInvocationException — die eigentliche Ursache steht innen.
+        /// </summary>
+        private static Exception Unwrap(Exception ex)
+        {
+            return ex.InnerException != null ? ex.InnerException : ex;
         }
 
         private static string Say(string arg)
