@@ -74,8 +74,25 @@ Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
   enthaelt auch die gerade nicht sichtbaren Teile breiter Schwenk-Szenen.
   Das heisst auch: fuer die Bilderfassung muss Janas Rechner viel weniger lange
   blockiert werden als urspruenglich gedacht.
-- [ ] **Loesung 1 (item-Feld zu Beweisstueck-Namen aufloesen) noch offen** — war
-  als erstes geplant, ist aber noch nicht umgesetzt.
+- [ ] **Loesung 1 (item-Feld zu Beweisstueck-Namen aufloesen) noch offen.**
+  Vorarbeit ist erledigt, damit der naechste Lauf nicht neu forschen muss —
+  alles per Reflection ueber `Assembly-CSharp.dll` ermittelt (es gibt in diesem
+  Checkout KEINEN `Decompiled/`-Ordner, obwohl CLAUDE.md ihn erwaehnt):
+  * Beweismittel sind vom Typ **`piceData`** (Tippfehler im Spielcode fuer
+    "piece"). Zugriff auf den aktuellen Eintrag: `recordListCtrl.instance.current_pice_`.
+  * Felder von `piceData`: `name_id_j_`, `name_id_u_`, `name_id_g_` (Namens-Text-IDs
+    je Sprache), `comment_id_`, `detail_id`, `obj_id`, `no`, `type`, `path`,
+    `file_id`. Der Name ist also eine **Text-ID**, kein String — deshalb erscheint
+    er automatisch in der eingestellten Spielsprache. Die Mod nutzt an anderer
+    Stelle bereits einen `.name`-Zugriff (siehe `CourtRecordPatches`), der die
+    Aufloesung uebernimmt.
+  * **Offener Schritt**: Die Zuordnung finden von `INSPECT_DATA.item` (uint) auf
+    den passenden `piceData`-Eintrag — vermutlich ueber `piceData.no` oder
+    `obj_id`. In `GSStatic` gibt es kein Feld mit "pice" oder "item" im Namen,
+    die Tabelle liegt also woanders (Kandidaten: `recordListCtrl`, ein
+    Ressourcen-Loader oder eine statische Tabelle in einer anderen Klasse).
+  * `TextDataCtrl` bietet KEINE Item-Namen an (nur Common/Title/Option/Language/
+    Save/Platform/System/Gallery) — dieser Weg ist eine Sackgasse.
 - [ ] Crons fuer die drei Laeufe stehen: 6:33 (GS1), 11:33 (GS2), 16:33 (GS3).
   **Achtung: Crons leben nur in der laufenden Claude-Sitzung**, nicht auf der
   Platte — wird das Terminal geschlossen, sind sie weg.
