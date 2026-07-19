@@ -105,13 +105,16 @@ Ablauf pro Szene: Ermittlungsmodus erreichen -> `hotspots` liefert die Liste ->
 je Punkt `hotspot <n>` + Enter -> die Untersuchungsbeschreibung landet im Log ->
 daraus einen Kurznamen ableiten.
 
-**Offenes Hindernis**: In der getesteten Szene meldete die Mod dauerhaft
-"0 Hotspots", obwohl der Untersuchen-Modus aktiv war (Lupe sichtbar).
-`GSStatic.inspect_data_` war also leer. Zu klaeren: Fuellt das Spiel dieses Feld
-erst spaeter im Kapitel, oder liest die Mod es zum falschen Zeitpunkt? Die
-Eroeffnung von Episode 2 ist eine sehr lange Zwischensequenz — 190 Tastendruecke
-reichten nicht bis zur eigentlichen Ermittlung. Besser ein Kapitel waehlen, das
-direkt mit der Ermittlung beginnt (z. B. "Untersuchung des Hotels").
+**Zur "0 Hotspots"-Beobachtung — KEIN Fehler in der Mod.** In der getesteten
+Szene meldete die Mod dauerhaft "0 Hotspots", obwohl der Untersuchen-Modus aktiv
+war (Lupe sichtbar). Geprueft: `GSStatic.inspect_data_` ist eine Eigenschaft, die
+korrekt auf `GSStatic.inspect_work_.inspect_data_` weiterleitet — die Mod liest
+also die richtige Quelle. Die Eroeffnung von Episode 2 hat schlicht noch keine
+Untersuchungspunkte; 190 Tastendruecke reichten nicht bis zur eigentlichen
+Ermittlung. **Konsequenz fuer Lauf 2**: ein Kapitel waehlen, das direkt mit der
+Ermittlung beginnt (in Episode 2 z. B. "Untersuchung des Hotels", also Kapitel 2
+statt 1), und die Punktzahl per `hotspots` pruefen, bevor Zeit ins Weiterklicken
+geht.
 
 ## Nachtschicht 19.07.2026 — Stand
 
