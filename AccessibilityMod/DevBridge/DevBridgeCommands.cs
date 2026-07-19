@@ -64,6 +64,8 @@ namespace AccessibilityMod.DevBridge
                     return LoadBackground(arg);
                 case "crop":
                     return CropCurrentBackground(arg);
+                case "fast":
+                    return FastForward(arg);
                 default:
                     return "ERROR unbekannter Befehl: " + cmd + " (help zeigt alle)";
             }
@@ -1099,6 +1101,99 @@ namespace AccessibilityMod.DevBridge
         private static Exception Unwrap(Exception ex)
         {
             return ex.InnerException != null ? ex.InnerException : ex;
+        }
+
+        /// <summary>
+        /// fast on|off — schaltet den eingebauten Schnelldurchlauf des
+        /// Nachrichtensystems.
+        ///
+        /// Warum das wichtig ist: Der mit Abstand teuerste Teil beim Erfassen der
+        /// Untersuchungspunkte sind die Zwischensequenzen vor jeder Ermittlung —
+        /// in Episode 2 reichten 190 Tastendruecke nicht bis zum Ermittlungsteil.
+        /// Das Spiel bringt dafuer Entwicklerschalter mit: `debug_skip_` laesst
+        /// Text durchlaufen, `debug_no_key_wait_` entfernt das Warten auf einen
+        /// Tastendruck. Beide werden per Reflection gesetzt, weil sie nicht Teil
+        /// der oeffentlichen Spiel-API sind.
+        ///
+        /// ACHTUNG: Das veraendert nur die Anzeigegeschwindigkeit, nicht den
+        /// Spielstand. Trotzdem gehoert es ausgeschaltet, bevor Jana wieder
+        /// selbst spielt — sonst rauscht der Text an ihr vorbei.
+        /// </summary>
+        private static string FastForward(string arg)
+        {
+            bool on = !string.Equals(arg.Trim(), "off", StringComparison.OrdinalIgnoreCase);
+
+            try
+            {
+                Type advType = typeof(GSStatic).Assembly.GetType("advCtrl");
+                if (advType == null)
+                    return "ERROR advCtrl nicht gefunden";
+
+                // Instanz besorgen: erst ueber die uebliche Singleton-Eigenschaft,
+                // sonst ueber ein statisches Feld gleichen Zwecks.
+                object adv = null;
+                var instProp = advType.GetProperty(
+                    "instance",
+                    System.Reflection.BindingFlags.Public
+                        | System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Static
+                );
+                if (instProp != null)
+                    adv = instProp.GetValue(null, null);
+
+                if (adv == null)
+                {
+                    var instField = advType.GetField(
+                        "instance_",
+                        System.Reflection.BindingFlags.Public
+                            | System.Reflection.BindingFlags.NonPublic
+                            | System.Reflection.BindingFlags.Static
+                    );
+                    if (instField != null)
+                        adv = instField.GetValue(null);
+                }
+
+                if (adv == null)
+                    return "ERROR advCtrl-Instanz nicht verfuegbar (laeuft eine Szene?)";
+
+                var msField = advType.GetField(
+                    "message_system_",
+                    System.Reflection.BindingFlags.Public
+                        | System.Reflection.BindingFlags.NonPublic
+                        | System.Reflection.BindingFlags.Instance
+                );
+                if (msField == null)
+                    return "ERROR Feld message_system_ nicht gefunden";
+
+                object ms = msField.GetValue(adv);
+                if (ms == null)
+                    return "ERROR MessageSystem noch nicht erzeugt";
+
+                Type msType = ms.GetType();
+                var flags =
+                    System.Reflection.BindingFlags.Public
+                    | System.Reflection.BindingFlags.NonPublic
+                    | System.Reflection.BindingFlags.Instance;
+
+                StringBuilder sb = new StringBuilder();
+                foreach (string name in new string[] { "debug_skip_", "debug_no_key_wait_" })
+                {
+                    var f = msType.GetField(name, flags);
+                    if (f == null)
+                    {
+                        sb.Append(name).Append("=fehlt ");
+                        continue;
+                    }
+                    f.SetValue(ms, on);
+                    sb.Append(name).Append("=").Append(on ? "an" : "aus").Append(" ");
+                }
+
+                return "ok " + sb.ToString().Trim();
+            }
+            catch (Exception ex)
+            {
+                return "ERROR fast: " + Unwrap(ex).Message;
+            }
         }
 
         private static string Say(string arg)
