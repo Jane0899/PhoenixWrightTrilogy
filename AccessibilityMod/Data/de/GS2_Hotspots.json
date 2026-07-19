@@ -1,0 +1,26 @@
+{
+  "_comment": "Namen für Untersuchungspunkte in GS2 (Justice for All).",
+  "_comment2": "Schlüssel: <Szenario>/<Hintergrundnummer>/<Nachrichten-ID>.",
+  "_comment3": "Die Namen sind aus dem abgeleitet, was das Spiel beim Untersuchen selbst sagt - nichts erfunden.",
+  "_comment4": "Erzeugt mit AccessibilityMod/DevBridge/dump-hotspot-texts.ps1. F5 im Spiel lädt neu.",
+
+  "_bg28": "=== Dorf Kurain, Ortseingang (Episode 2) ===",
+  "_hinweis28": "156 und 159 gehören zu je zwei Punkten - derselbe Felsen bzw. dasselbe Gebäude aus zwei Blickwinkeln.",
+  "2/28/156": "Großer Felsen",
+  "2/28/157": "Bushaltestelle",
+  "2/28/158": "Telefonzelle",
+  "2/28/159": "Großes Anwesen",
+  "2/28/160": "Strohgedeckte Häuser",
+
+  "_bg29": "=== Anwesen der Feys, Flur (Episode 2) ===",
+  "2/29/183": "Schriftrolle",
+  "2/29/184": "Tür zum Beschwörungsraum",
+  "2/29/185": "Stoffstück mit Schrift",
+  "2/29/186": "Tür zum Holzsteg",
+
+  "_bg30": "=== Beschwörungsraum (Episode 2) ===",
+  "2/30/220": "Tatami-Matten",
+  "2/30/222": "Altar",
+  "2/30/223": "Platz hinter dem Wandschirm",
+  "2/30/240": "Alter Wandschirm"
+}
