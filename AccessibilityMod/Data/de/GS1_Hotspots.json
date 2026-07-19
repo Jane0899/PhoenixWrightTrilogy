@@ -3,11 +3,29 @@
   "_comment2": "Die Namen sind aus dem abgeleitet, was das Spiel beim Untersuchen selbst sagt - nichts erfunden.",
   "_comment3": "Erzeugt mit AccessibilityMod/DevBridge/dump-hotspot-texts.ps1. F5 im Spiel lädt neu.",
 
-  "_bg32": "=== Hotelzimmer (Episode 2, Untersuchung des Hotels) ===",
+  "_bg1": "=== Anwaltskanzlei Fey & Partner ===",
+  "1/156": "Mias Topfpflanze",
+  "1/157": "Bücherregal",
+  "1/158": "Fenster",
+  "1/159": "Mias Schreibtisch",
+  "1/160": "Filmplakat",
+
+  "_bg30": "=== Strafanstalt, Besucherraum ===",
+  "30/204": "Wachmann",
+  "30/205": "Überwachungskamera",
+
+  "_bg32": "=== Hotelzimmer (Episode 2) ===",
   "32/238": "Plastikblumen",
   "32/239": "Tisch mit Flasche und Gläsern",
   "32/240": "Fenster",
   "32/241": "Bett",
   "32/242": "Gemälde",
-  "32/243": "Schublade"
+  "32/243": "Schublade",
+
+  "_bg39": "=== Anwaltskanzlei Grossberg ===",
+  "39/254": "Gemälde",
+  "39/255": "Schreibtisch",
+  "39/256": "Kliententisch",
+  "39/257": "Topfpflanze",
+  "39/258": "Bücherregale"
 }
