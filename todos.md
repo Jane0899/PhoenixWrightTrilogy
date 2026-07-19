@@ -112,6 +112,22 @@ Damit sind die benannten 30 Punkte rund 1,5 % des Gesamtbestands. Die Pipeline
 funktioniert, aber alles von Hand durchzuspielen skaliert nicht: pro Szene fallen
 mehrere Minuten Zwischensequenz an.
 
+### Empfohlener Ablauf fuer den naechsten Lauf
+
+1. `list-chapters.ps1 -Episode <n>` — nur Kapitel mit "Ermittlung" oder
+   "Untersuchung" im Namen taugen; Prozesskapitel ueberspringen.
+2. `cover-chapter.ps1 -Episode <n> -Chapter <m>` **im Hintergrund starten**
+   (`run_in_background`), weil ein Aufruf hoechstens 10 Minuten laufen darf und
+   Kapitelanfaenge laenger dauern koennen.
+3. Waehrend der Lauf arbeitet: NICHT parallel die Bridge abfragen. Zwei
+   gleichzeitige Zugriffe blockieren sich gegenseitig (am 19.07. passiert,
+   beide Laeufe mussten abgebrochen werden).
+4. Aus den erzeugten JSON-Dateien die Kurznamen ableiten und in
+   `Data/de/GS1_Hotspots.json` eintragen — der Schluessel steht als `key` schon
+   fertig in der Datei.
+5. Datei zusaetzlich nach `UserData/AccessibilityMod/de/` kopieren und F5
+   druecken, dann mit der Punkt-Taste im Spiel gegenhoeren.
+
 ### Ideen zur Beschleunigung (fuer Lauf 3 zu pruefen)
 
 1. **Zwischensequenzen ueberspringen.** Das Spiel hat eine Skip-Funktion
