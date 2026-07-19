@@ -26,6 +26,7 @@ $client = "C:\Users\Jana Schmidt\games\SRC\PhoenixWrightTrilogy\AccessibilityMod
 $key    = "$env:USERPROFILE\.claude\scripts\gamekey.ps1"
 $dump   = "C:\Users\Jana Schmidt\games\SRC\PhoenixWrightTrilogy\AccessibilityMod\DevBridge\dump-hotspot-texts.ps1"
 $visit  = "C:\Users\Jana Schmidt\games\SRC\PhoenixWrightTrilogy\AccessibilityMod\DevBridge\visit-location.ps1"
+$log    = "D:\SteamLibrary\steamapps\common\Phoenix Wright Ace Attorney Trilogy\MelonLoader\Latest.log"
 
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
@@ -43,17 +44,31 @@ if (-not $SkipEnter) {
 }
 
 # --- Bis zum Ermittlungsmodus vorspulen ------------------------------------
+# Manche Kapitel beginnen mit sehr langen Zwischensequenzen (Episode 2 brauchte
+# ueber 190 Tastendruecke). Deshalb wird der Fortschritt laufend gemeldet statt
+# stumm zu warten — sonst ist von aussen nicht unterscheidbar, ob das Skript
+# arbeitet oder haengt.
 "== Warte auf Ermittlungsmodus =="
 $reached = $false
 for ($r = 1; $r -le 25; $r++) {
+
     if ((State) -match 'investigation=yes') { $reached = $true; break }
 
     $h = & $client hotspots
     if (($h -join " ") -notmatch 'keine Hotspots') {
         # Punkte geladen -> im Detektivmenue "Untersuchen" bestaetigen
+        "   Runde ${r}: Punkte geladen, waehle Untersuchen"
         & $key -Delay 500 ENTER | Out-Null
         Start-Sleep -Seconds 3
         if ((State) -match 'investigation=yes') { $reached = $true; break }
+    } else {
+        # Letzte gesprochene Zeile mitloggen, damit man sieht, wo die Sequenz steht
+        $last = Get-Content $log -Tail 25 |
+            Where-Object { $_ -match '\[(Dialogue|Menu)\]' } |
+            Select-Object -Last 1
+        $short = ($last -replace '^.*\] \[(Dialogue|Menu)\] ', '')
+        if ($short.Length -gt 70) { $short = $short.Substring(0, 70) + "..." }
+        "   Runde ${r}: $short"
     }
 
     & $key -Delay 350 ENTER ENTER ENTER ENTER ENTER ENTER ENTER ENTER | Out-Null
