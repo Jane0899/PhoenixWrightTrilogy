@@ -472,3 +472,136 @@ geht.
 - **Kein `Decompiled/`-Ordner im Repo vorhanden** (obwohl CLAUDE.md ihn erwähnt) —
   neue Patches möglichst über bereits verifizierte, existierende Hooks lösen; sonst
   müsste das Spiel erst selbst dekompiliert werden.
+
+## Offline-Textauslese der Untersuchungstexte (24.07.2026)
+
+Ziel: die restlichen ~1858 Untersuchungspunkte benennen, OHNE das Spiel fernzusteuern
+(das scheiterte dreimal am Fensterfokus und war zu teuer). Idee: Untersuchungstexte
+direkt aus den Nachrichtendateien entschlüsseln, das Spiel nur als passiver Decoder im
+Titelbildschirm (Bridge über TCP, kein Fokus nötig).
+
+- [x] **Phase 0 — Spiel als Decoder starten**: `PWAAT.exe` gestartet, Bridge auf Port
+  48620 antwortet mit `pong`, keine Tasten geschickt. Läuft zuverlässig ohne
+  Fokusproblem. **Erfolgreich.**
+- [x] **Phase 1 — Decoder gegen bekannte Namen prüfen** (`scratchpad/verify-decode.ps1`,
+  `scan-scenario.ps1`): **Decoder bestätigt**, aber **ID-Zuordnung offen**.
+  - Die `-128`-Regel stimmt: Rohwerte 160–255 → ASCII (Wert−128), 12416 → Leerzeichen,
+    172 → Komma, 174 → Punkt, 0/1/2/3 → Seiten-/Nachrichtenende, 512/kleine Werte →
+    Steuercodes. Ergab überall sauberes Deutsch („7. September, 14:24 Bezirksgericht
+    Angeklagter…", „Der Samurai-Speer! Der ist total cool…").
+  - **ABER**: `(Szenario, Nachricht)` aus der Hotspot-Tabelle trifft NICHT den
+    Untersuchungstext. GS2 `1/2/156` („Großer Felsen") → Gerichtstag-Kopf; GS3
+    `2/7/132` („Bücherregal") → Steel-Samurai-Dialog. GS1-Untersuchungs-IDs (242–247)
+    existieren in KEINEM der 36 Szenario-mdt (Array-out-of-range) — Szenarien haben nur
+    ~200 Nachrichten, die Untersuchungs-IDs liegen darüber.
+  - **Schlussfolgerung**: Die Untersuchungstexte liegen NICHT in den ADV-Dialog-mdt,
+    die `LoadByTitle_Scenario` lädt, sondern in einer separaten Nachrichtenquelle
+    (vermutlich pro Raum/Inspektion). Der frühere Treffer „Eine Vase" war Zufall.
+  - **Nächster Schritt (offline, billig)**: herausfinden, aus welcher Datei/welchem
+    mdt-Pfad `inspectCtrl` den Untersuchungstext zieht. `Decompiled/` fehlt im Repo →
+    Spiel-Assembly per Reflection/ILSpy prüfen, welche mdt beim Untersuchen aktiv ist.
+  - **Lehre**: Immer gegen BEKANNTE Namen verifizieren, bevor man einer Auslese
+    vertraut. Ein einzelner plausibel aussehender Treffer („Eine Vase") ist kein Beweis
+    für die richtige Zuordnung.
+- [x] **Spiel dekompiliert** (24.07.2026, `ilspycmd 8.2.0.7535` via dotnet-Tool — net9
+  scheiterte, net8-Pin nötig; choco hat nur GUI-ILSpy). PWAAT ist **Mono/net35**, also
+  volle Methodenkörper. Ausgabe: 505 Klassen im Scratchpad (`pwaat-src/`, NICHT im Repo).
+  **Ursache der falschen Zuordnung gefunden** in `MessageSystem.SetMessage2`:
+  - Es sind ZWEI mdt gleichzeitig geladen: `GSStatic.mdt_datas_[0]` = Szenario-Datei
+    (`LoadScenarioMdtFromStreamingAssets`), `[1]` = System-Datei
+    (`LoadSystemMdtFromStreamingAssets`).
+  - **ID ≥ 128 → Szenario-Datei, echter Index = ID − 128. ID < 128 → System-Datei.**
+  - mdt-Dateien sind **verschlüsselt** (`decryptionCtrl.load`) → NICHT roh von Platte
+    parsebar, das Spiel muss als Entschlüsseler laufen (Bridge). Aber nur Titelbildschirm.
+- [x] **`−128`-Fix bewiesen für GS1** (`scratchpad/verify-decode.ps1`): Szenario 5 liefert
+  exakt passende Texte (242→„…Kulisse für eine Bühne…", 244→„Umriss von Jack Hammers
+  Leiche…", 247→„…Tritt-Leiter."). Decoder+Datei+Index stimmen.
+- [ ] **OFFEN — Szenario-Index-Mapping für GS2/GS3**: `global_work_.scenario` (Quelle
+  unserer Schlüssel) ≠ `LoadByTitle_Scenario`-Index bei GS2/GS3. GS2 Szen. 2 → Gerichts-
+  dialog (falsche Datei); GS3 Szen. 7 → richtige Büro-Texte, aber gegen alte Handnotizen
+  verschoben. **Nächster Schritt (offline, aus Decompilat)**: pro Inspect-Tabelle
+  (`Sce<Ep>_<Part>_room<N>_ck_mess_tbl` in `scenario`/`_GS2`/`_GS3`) den korrekten
+  Szenario-mdt-Index bestimmen, statt den fehleranfälligen Handnotizen zu trauen.
+  **Erkenntnis**: Die Auslese ist vertrauenswürdiger als die alten in-game mitgeschriebenen
+  Namen → am Ende komplett aus Decompilat + Auslese neu aufbauen.
+- [x] **Schritt 1 — Szenario-Index-Mapping gelöst** (24.07.2026, `scratchpad/map-scenarios.ps1`
+  → `scratchpad/scenario-map.json`). Grundlage: die drei Pfad-Tabellen aus
+  `DebugMdtViewer.cs` (GS1 36, GS2 22, GS3 23 Einträge), die Szenario-Index → Datei
+  `sc<Ep>_<Part>...mdt` abbilden. Inspect-Tabellen heißen `Sce<Ep>_<Part>_room<N>` →
+  über (Episode, Teil) den Pfad-Index bestimmt. **Unabhängig von global_work_.scenario**
+  (der war bei GS2/GS3 der falsche Index). Ergebnis von 271 Tabellen: **238 eindeutig,
+  27 mehrdeutig** (v. a. GS1-Ep4-Splits sc4_Xa/sc4_Xb → 2 Kandidaten, per Auslese
+  auflösbar), **6 ohne Kandidat** (Sprachvarianten `Sce4_0/4_2/4_4_room006_ger/usa` —
+  Ep/Teil beim alten Dump nicht geparst; per Namen nachholbar).
+  - **Sprachvarianten**: 3 Räume haben `_ger_ck_mess_tbl` (deutsch) neben `_usa`/Basis.
+    Für Deutsch die `_ger_`-Tabelle nutzen (Quelle: `ChapterDataLoader.cs:439`).
+- [ ] **Schritt 2 — Auslese aller ~1939 Punkte** (offen): Spiel als Entschlüsseler kurz
+  starten, pro Punkt `mesraw title <kandidat> <msg-128>` (bei mehreren Kandidaten den
+  nehmen, der lesbaren Text liefert), mit -128-Decoder entschlüsseln → `hotspot-texts.json`.
+- [ ] **Schritt 3 — Namen ableiten** und `GS1/2/3_Hotspots.json` neu füllen.
+
+### Nachtlauf 24.07.2026 (~04:35): Auslese begonnen, DREI Blocker gefunden
+
+Spiel als Entschlüsseler gestartet (Jana idle ~2 h, sauber, danach wieder geschlossen).
+Auslese per Hand über die Bridge (klammerfrei, weil der Shell-Wrapper `{}` im Inline-
+Befehl mit `EPERM uv_spawn` blockiert — Funktionen/Schleifen inline gehen nicht; nur
+sequenzielle mesraw-Aufrufe). Decoder erneut bestätigt: liefert überall sauberes Deutsch.
+**Aber: mass-benennen ist so NICHT verlässlich möglich.** Gründe:
+
+1. **`place`-Feld ist NICHT die bg-Nummer.** In inspect-tables.json ist `place` fast
+   überall 0 (selten 22). Die alte Schlüssel-Mitte (z. B. „39" in „39/254", „26" in
+   „5/26/242") war die **Laufzeit-`bgCtrl.bg_no`** — die steht OFFLINE nicht zur Verfügung.
+   Der Mod schlägt Namen aber über (bg_no, message) nach → ohne bg kein gültiger Schlüssel.
+2. **Laufzeit-`global_work_.scenario` ≠ mdt-Pfad-Index** bei GS2/GS3 (bei GS1 stimmten
+   sie zufällig überein — deshalb lief GS1 im Test). D. h. selbst wenn man den Mod auf
+   Schlüssel (scenario, message) umbaut, ist die offline abgeleitete Szenario-Nummer nicht
+   die, die der Mod zur Laufzeit sieht. Drei verschiedene Nummerierungen (Tabellenname-
+   Episode/Teil, mdt-Pfad-Index, Laufzeit-scenario) fluchten für GS2/GS3 nicht.
+3. **Viele Tabellen sind Zwischensequenz-Text, keine Objektbeschreibung.** Z. B. GS2
+   `Sce2_0_room000`: msg 130 → „Am Morgen arbeitete ich… an der Probe einer Actionszene…",
+   132 → „Während alle anderen im Personalbereich zu Mittag aßen…". Aus solchen Monologen
+   lässt sich kein Objektname ableiten. Welche Tabellen echte Untersuchungspunkte sind
+   (die der Navigator nutzt) vs. Cutscene-Text, ist offline nicht sauber trennbar.
+
+**Fazit:** Texte offline entschlüsseln = gelöst. Aber die **Schlüssel (Laufzeit-bg_no +
+Laufzeit-scenario)** sind offline nicht ableitbar — sie existieren erst, wenn ein Raum
+im Spiel tatsächlich geladen ist. KEINE Namen produziert (bewusst, um nichts Falsches
+zu erzeugen). Spiel geschlossen. hotspot-texts.json wurde NICHT geschrieben.
+
+**Empfehlung / offene Richtungsentscheidung für Jana:**
+- Prüfen, ob der Bridge-Befehl `loadbg <n>` (lädt einen Hintergrund direkt) auch
+  `bgCtrl.bg_no`, `global_work_.scenario` UND `GSStatic.inspect_data_` setzt. Wenn ja:
+  ein **Szenen-Durchlauf per loadbg** (kein Durchspielen!) liefert je Szene die echten
+  Laufzeit-Schlüssel; kombiniert mit der Offline-Textauslese = korrekte Namen, billig.
+- Wenn `loadbg` das NICHT setzt: entweder eine kleine, saubere C#-Erweiterung im Mod, die
+  beim normalen Szenenwechsel (bg_no/scenario/inspect_data_ vorhanden) je Hotspot
+  bg_no+scenario+message+Text protokolliert; ODER Scope reduzieren.
+- Der Decompile-Ordner (`scratchpad/pwaat-src`, 505 Klassen) und `scenario-map.json`
+  bleiben nützliche Referenz. **Lehre:** Janas „wir wissen noch zu wenig" war korrekt —
+  die Laufzeit-Schlüssel sind der fehlende Baustein.
+
+#### NACHTRAG gleiche Nacht: Blocker #1 und #2 AUFGELÖST
+
+- **`advCtrl.cs:197`**: `scenario_mdt = GSScenario.GetScenarioMdtPath(global_work_.scenario)`.
+  Das Spiel nutzt `global_work_.scenario` DIREKT als Pfad-Index in dieselbe Tabelle wie
+  DebugMdtViewer. Also: **Laufzeit-`scenario` == mdt-Pfad-Index == scenario-map-Wert.**
+  Die alten GS2/GS3-Handnotizen hatten einfach falsche Szenario-Nummern.
+- **scenario-map verifiziert**: „Kulisse" (msg 242) steht in Tabelle `Sce2_0_room006`
+  (Episode 2/Teil 0) → scenario-map-Kandidat 5 (`sc2_0`) → im Test lieferte Szenario 5,
+  Index 114 exakt „…Kulisse für eine Bühne…". Passt. Die alte „26" war die Laufzeit-bg
+  von room006, kein Raum.
+- **Blocker #1 (bg) entfällt**, wenn der Mod auf Schlüssel **`(scenario, message)`**
+  umgestellt wird (statt `(bg, message)`): beide Werte sind zur Laufzeit vorhanden
+  (`global_work_.scenario` + message), und innerhalb eines Szenario-mdt ist `message`
+  eindeutig. `HotspotNameService` bekommt zusätzlich das Schlüsselformat
+  `<scenario>/<message>`.
+- **Blocker #3 (Cutscene-Tabellen)** bleibt reine Qualitätsfrage: aus Erzähltext keinen
+  Objektnamen erfinden → markieren/überspringen. Keine echte Sperre.
+
+**Tragfähiger Plan (validiert):**
+1. Mod: `HotspotNameService` um Schlüssel `<scenario>/<message>` erweitern (Fallback vor
+   `<scenario>/<bg>/<message>`).
+2. Texte offline auslesen (Szenario = scenario-map-Index, Index = message-128, Decoder).
+3. Namen VON HAND aus dem Spielwortlaut ableiten; Cutscene/kein-Objekt markieren.
+4. Neue Namensdateien `GS1/2/3_Hotspots.json` im Format `<scenario>/<message>` füllen.
+5. Bauen, committen, pushen (kein PR).

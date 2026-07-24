@@ -82,6 +82,27 @@ namespace AccessibilityMod.Services
                     return name;
             }
 
+            // Neues, OFFLINE erzeugbares Format: <Szenario>/<Nachricht>.
+            // Warum noetig: Die Hintergrundnummer (bgNo) ist nur zur Laufzeit aus
+            // bgCtrl bekannt und laesst sich aus den statischen Spieldaten NICHT
+            // ableiten. Das Paar (Szenario, Nachricht) dagegen schon: Das Spiel
+            // nutzt global_work_.scenario direkt als Index der Szenario-mdt
+            // (advCtrl.cs: GSScenario.GetScenarioMdtPath(scenario)), und innerhalb
+            // einer Szenariodatei ist die Nachrichten-ID eindeutig. Damit lassen
+            // sich alle Untersuchungstexte offline auslesen und benennen, ohne
+            // jede Szene im Spiel anzusteuern. Steht VOR dem alten bg-Rueckfall,
+            // weil es genauer ist (Szenario statt nur Hintergrund).
+            // "s"-Praefix, damit dieses zweiteilige Format NICHT mit dem alten
+            // zweiteiligen <bg>/<message> kollidiert (beide waeren sonst z. B.
+            // "5/194" — einmal Szenario 5, einmal Hintergrund 5). Mit "s5/194"
+            // ist die Bedeutung eindeutig.
+            if (scenario >= 0)
+            {
+                string sceneMsg = "s" + scenario + "/" + messageId;
+                if (table.TryGetValue(sceneMsg, out name) && !Net35Extensions.IsNullOrWhiteSpace(name))
+                    return name;
+            }
+
             // Rueckfall auf das aeltere Format ohne Szenario. Damit bleiben
             // frueher gepflegte Eintraege gueltig; sie sind ungenauer, aber in
             // aller Regel richtig (ein Bett bleibt ein Bett).

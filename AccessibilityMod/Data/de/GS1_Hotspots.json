@@ -73,5 +73,19 @@
   "39/255": "Schreibtisch",
   "39/256": "Kliententisch",
   "39/257": "Topfpflanze",
-  "39/258": "Bücherregale"
+  "39/258": "Bücherregale",
+
+  "_neuesFormat": "=== Ab hier: Schlüssel s<szenario>/<nachricht> (offline ausgelesen, bg-frei). ===",
+  "_quelle": "Szenario 5 = Studio (sc2_0). Texte per DevBridge mesraw + -128-Decoder aus der dt. Szenario-mdt.",
+
+  "_s5_room003": "=== Studio Eins, Lager-/Umkleidebereich (Szenario 5, room003) ===",
+  "s5/194": "Schild an der Umkleide",
+  "s5/195": "Umkleidetür",
+  "s5/196": "Umkleidefenster",
+  "s5/197": "Lagerraum",
+  "s5/198": "Elektrofahrrad",
+  "s5/199": "Metallgitter",
+  "s5/200": "Abflussgitter",
+  "s5/201": "Essensreste",
+  "s5/202": "Kulisse"
 }
