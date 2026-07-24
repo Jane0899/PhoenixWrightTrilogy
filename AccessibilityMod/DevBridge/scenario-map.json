@@ -1,0 +1,2823 @@
+﻿[
+    {
+        "table":  "Sce1_0_room000a_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  0,
+        "room":  "000a",
+        "variant":  null,
+        "count":  6,
+        "candidates":  1
+    },
+    {
+        "table":  "Sce1_0_room000b_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  0,
+        "room":  "000b",
+        "variant":  null,
+        "count":  5,
+        "candidates":  1
+    },
+    {
+        "table":  "Sce1_0_room001_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  0,
+        "room":  "001",
+        "variant":  null,
+        "count":  12,
+        "candidates":  1
+    },
+    {
+        "table":  "Sce1_0_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  0,
+        "room":  "002",
+        "variant":  null,
+        "count":  2,
+        "candidates":  1
+    },
+    {
+        "table":  "Sce1_0_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  0,
+        "room":  "003",
+        "variant":  null,
+        "count":  5,
+        "candidates":  1
+    },
+    {
+        "table":  "Sce1_0_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  0,
+        "room":  "005",
+        "variant":  null,
+        "count":  6,
+        "candidates":  1
+    },
+    {
+        "table":  "Sce1_2_room000_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  2,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  3
+    },
+    {
+        "table":  "Sce1_2_room000_ck_mess_tbl_2",
+        "game":  1,
+        "episode":  1,
+        "part":  2,
+        "room":  "000",
+        "variant":  "2",
+        "count":  5,
+        "candidates":  3
+    },
+    {
+        "table":  "Sce1_2_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  2,
+        "room":  "002",
+        "variant":  null,
+        "count":  2,
+        "candidates":  3
+    },
+    {
+        "table":  "Sce1_2_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  2,
+        "room":  "003",
+        "variant":  null,
+        "count":  6,
+        "candidates":  3
+    },
+    {
+        "table":  "Sce1_2_room004_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  2,
+        "room":  "004",
+        "variant":  null,
+        "count":  5,
+        "candidates":  3
+    },
+    {
+        "table":  "Sce1_2_room004_ck_mess_tbl_2",
+        "game":  1,
+        "episode":  1,
+        "part":  2,
+        "room":  "004",
+        "variant":  "2",
+        "count":  5,
+        "candidates":  3
+    },
+    {
+        "table":  "Sce1_2_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  1,
+        "part":  2,
+        "room":  "005",
+        "variant":  null,
+        "count":  6,
+        "candidates":  3
+    },
+    {
+        "table":  "Sce1_2_room005_ck_mess_tbl_2",
+        "game":  1,
+        "episode":  1,
+        "part":  2,
+        "room":  "005",
+        "variant":  "2",
+        "count":  6,
+        "candidates":  3
+    },
+    {
+        "table":  "Sce2_0_room000_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  0,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce2_0_room001_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  0,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce2_0_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  0,
+        "room":  "002",
+        "variant":  null,
+        "count":  6,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce2_0_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  0,
+        "room":  "003",
+        "variant":  null,
+        "count":  10,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce2_0_room004_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  0,
+        "room":  "004",
+        "variant":  null,
+        "count":  7,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce2_0_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  0,
+        "room":  "005",
+        "variant":  null,
+        "count":  6,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce2_0_room006_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  0,
+        "room":  "006",
+        "variant":  null,
+        "count":  6,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce2_2_room000_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room000_2_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "000",
+        "variant":  "2",
+        "count":  5,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room001_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "002",
+        "variant":  null,
+        "count":  6,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room002_4_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "002",
+        "variant":  "4",
+        "count":  6,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "003",
+        "variant":  null,
+        "count":  10,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room003_3_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "003",
+        "variant":  "3",
+        "count":  10,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room004_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "004",
+        "variant":  null,
+        "count":  7,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room004_3_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "004",
+        "variant":  "3",
+        "count":  7,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "005",
+        "variant":  null,
+        "count":  6,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room005_2_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "005",
+        "variant":  "2",
+        "count":  6,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room006_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "006",
+        "variant":  null,
+        "count":  6,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room006_3_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "006",
+        "variant":  "3",
+        "count":  6,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room007_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "007",
+        "variant":  null,
+        "count":  9,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room007_2_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "007",
+        "variant":  "2",
+        "count":  9,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room008_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "008",
+        "variant":  null,
+        "count":  7,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room008_2_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  2,
+        "room":  "008",
+        "variant":  "2",
+        "count":  7,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_4_room000_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  4,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_4_room001_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  4,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_4_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  4,
+        "room":  "002",
+        "variant":  null,
+        "count":  6,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_4_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  4,
+        "room":  "003",
+        "variant":  null,
+        "count":  10,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_4_room004_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  4,
+        "room":  "004",
+        "variant":  null,
+        "count":  7,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_4_room004_2_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  4,
+        "room":  "004",
+        "variant":  "2",
+        "count":  7,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_4_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  4,
+        "room":  "005",
+        "variant":  null,
+        "count":  6,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_4_room007_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  4,
+        "room":  "007",
+        "variant":  null,
+        "count":  9,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_4_room008_ck_mess_tbl",
+        "game":  1,
+        "episode":  2,
+        "part":  4,
+        "room":  "008",
+        "variant":  null,
+        "count":  7,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce3_0_room000_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  0,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce3_0_room001_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  0,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce3_0_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  0,
+        "room":  "002",
+        "variant":  null,
+        "count":  4,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce3_0_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  0,
+        "room":  "003",
+        "variant":  null,
+        "count":  7,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce3_0_room003_2_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  0,
+        "room":  "003",
+        "variant":  "2",
+        "count":  6,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce3_0_room004_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  0,
+        "room":  "004",
+        "variant":  null,
+        "count":  6,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce3_0_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  0,
+        "room":  "005",
+        "variant":  null,
+        "count":  3,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce3_0_room007_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  0,
+        "room":  "007",
+        "variant":  null,
+        "count":  6,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce3_0_room009_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  0,
+        "room":  "009",
+        "variant":  null,
+        "count":  5,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce3_2_room000_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_2_room001_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_2_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "002",
+        "variant":  null,
+        "count":  4,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_2_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "003",
+        "variant":  null,
+        "count":  6,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_2_room003_2_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "003",
+        "variant":  "2",
+        "count":  11,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_2_room004_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "004",
+        "variant":  null,
+        "count":  6,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_2_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "005",
+        "variant":  null,
+        "count":  3,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_2_room006_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "006",
+        "variant":  null,
+        "count":  7,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_2_room007_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "007",
+        "variant":  null,
+        "count":  6,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_2_room008_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "008",
+        "variant":  null,
+        "count":  4,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_2_room009_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  2,
+        "room":  "009",
+        "variant":  null,
+        "count":  5,
+        "candidates":  13
+    },
+    {
+        "table":  "Sce3_4_room000_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  4,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  15
+    },
+    {
+        "table":  "Sce3_4_room001_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  4,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  15
+    },
+    {
+        "table":  "Sce3_4_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  4,
+        "room":  "002",
+        "variant":  null,
+        "count":  4,
+        "candidates":  15
+    },
+    {
+        "table":  "Sce3_4_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  4,
+        "room":  "003",
+        "variant":  null,
+        "count":  6,
+        "candidates":  15
+    },
+    {
+        "table":  "Sce3_4_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  4,
+        "room":  "005",
+        "variant":  null,
+        "count":  3,
+        "candidates":  15
+    },
+    {
+        "table":  "Sce3_4_room006_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  4,
+        "room":  "006",
+        "variant":  null,
+        "count":  7,
+        "candidates":  15
+    },
+    {
+        "table":  "Sce3_4_room007_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  4,
+        "room":  "007",
+        "variant":  null,
+        "count":  6,
+        "candidates":  15
+    },
+    {
+        "table":  "Sce3_4_room008_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  4,
+        "room":  "008",
+        "variant":  null,
+        "count":  5,
+        "candidates":  15
+    },
+    {
+        "table":  "Sce3_4_room009_ck_mess_tbl",
+        "game":  1,
+        "episode":  3,
+        "part":  4,
+        "room":  "009",
+        "variant":  null,
+        "count":  5,
+        "candidates":  15
+    },
+    {
+        "table":  "Sce4_0_room000_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  0,
+        "room":  "000",
+        "variant":  null,
+        "count":  7,
+        "candidates":  [
+                           17,
+                           18
+                       ]
+    },
+    {
+        "table":  "Sce4_0_room001_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  0,
+        "room":  "001",
+        "variant":  null,
+        "count":  3,
+        "candidates":  [
+                           17,
+                           18
+                       ]
+    },
+    {
+        "table":  "Sce4_0_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  0,
+        "room":  "002",
+        "variant":  null,
+        "count":  22,
+        "candidates":  [
+                           17,
+                           18
+                       ]
+    },
+    {
+        "table":  "Sce4_0_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  0,
+        "room":  "003",
+        "variant":  null,
+        "count":  13,
+        "candidates":  [
+                           17,
+                           18
+                       ]
+    },
+    {
+        "table":  "Sce4_0_room004_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  0,
+        "room":  "004",
+        "variant":  null,
+        "count":  1,
+        "candidates":  [
+                           17,
+                           18
+                       ]
+    },
+    {
+        "table":  "Sce4_0_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  0,
+        "room":  "005",
+        "variant":  null,
+        "count":  1,
+        "candidates":  [
+                           17,
+                           18
+                       ]
+    },
+    {
+        "table":  "Sce4_0_room006_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  0,
+        "room":  "006",
+        "variant":  null,
+        "count":  12,
+        "candidates":  [
+                           17,
+                           18
+                       ]
+    },
+    {
+        "table":  "Sce4_0_room006_usa_ck_mess_tbl",
+        "game":  1,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  12,
+        "candidates":  {
+
+                       }
+    },
+    {
+        "table":  "Sce4_0_room006_ger_ck_mess_tbl",
+        "game":  1,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  12,
+        "candidates":  {
+
+                       }
+    },
+    {
+        "table":  "Sce4_0_room007_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  0,
+        "room":  "007",
+        "variant":  null,
+        "count":  1,
+        "candidates":  [
+                           17,
+                           18
+                       ]
+    },
+    {
+        "table":  "Sce4_0_room008_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  0,
+        "room":  "008",
+        "variant":  null,
+        "count":  1,
+        "candidates":  [
+                           17,
+                           18
+                       ]
+    },
+    {
+        "table":  "Sce4_2_room000_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  2,
+        "room":  "000",
+        "variant":  null,
+        "count":  7,
+        "candidates":  [
+                           22,
+                           23,
+                           24
+                       ]
+    },
+    {
+        "table":  "Sce4_2_room001_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  2,
+        "room":  "001",
+        "variant":  null,
+        "count":  3,
+        "candidates":  [
+                           22,
+                           23,
+                           24
+                       ]
+    },
+    {
+        "table":  "Sce4_2_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  2,
+        "room":  "002",
+        "variant":  null,
+        "count":  20,
+        "candidates":  [
+                           22,
+                           23,
+                           24
+                       ]
+    },
+    {
+        "table":  "Sce4_2_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  2,
+        "room":  "003",
+        "variant":  null,
+        "count":  13,
+        "candidates":  [
+                           22,
+                           23,
+                           24
+                       ]
+    },
+    {
+        "table":  "Sce4_2_room004_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  2,
+        "room":  "004",
+        "variant":  null,
+        "count":  1,
+        "candidates":  [
+                           22,
+                           23,
+                           24
+                       ]
+    },
+    {
+        "table":  "Sce4_2_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  2,
+        "room":  "005",
+        "variant":  null,
+        "count":  9,
+        "candidates":  [
+                           22,
+                           23,
+                           24
+                       ]
+    },
+    {
+        "table":  "Sce4_2_room006_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  2,
+        "room":  "006",
+        "variant":  null,
+        "count":  12,
+        "candidates":  [
+                           22,
+                           23,
+                           24
+                       ]
+    },
+    {
+        "table":  "Sce4_2_room006_usa_ck_mess_tbl",
+        "game":  1,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  12,
+        "candidates":  {
+
+                       }
+    },
+    {
+        "table":  "Sce4_2_room006_ger_ck_mess_tbl",
+        "game":  1,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  12,
+        "candidates":  {
+
+                       }
+    },
+    {
+        "table":  "Sce4_2_room007_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  2,
+        "room":  "007",
+        "variant":  null,
+        "count":  27,
+        "candidates":  [
+                           22,
+                           23,
+                           24
+                       ]
+    },
+    {
+        "table":  "Sce4_2_room008_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  2,
+        "room":  "008",
+        "variant":  null,
+        "count":  13,
+        "candidates":  [
+                           22,
+                           23,
+                           24
+                       ]
+    },
+    {
+        "table":  "Sce4_4_room000_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  4,
+        "room":  "000",
+        "variant":  null,
+        "count":  7,
+        "candidates":  [
+                           28,
+                           29,
+                           30
+                       ]
+    },
+    {
+        "table":  "Sce4_4_room001_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  4,
+        "room":  "001",
+        "variant":  null,
+        "count":  3,
+        "candidates":  [
+                           28,
+                           29,
+                           30
+                       ]
+    },
+    {
+        "table":  "Sce4_4_room002_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  4,
+        "room":  "002",
+        "variant":  null,
+        "count":  20,
+        "candidates":  [
+                           28,
+                           29,
+                           30
+                       ]
+    },
+    {
+        "table":  "Sce4_4_room003_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  4,
+        "room":  "003",
+        "variant":  null,
+        "count":  14,
+        "candidates":  [
+                           28,
+                           29,
+                           30
+                       ]
+    },
+    {
+        "table":  "Sce4_4_room004_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  4,
+        "room":  "004",
+        "variant":  null,
+        "count":  15,
+        "candidates":  [
+                           28,
+                           29,
+                           30
+                       ]
+    },
+    {
+        "table":  "Sce4_4_room005_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  4,
+        "room":  "005",
+        "variant":  null,
+        "count":  9,
+        "candidates":  [
+                           28,
+                           29,
+                           30
+                       ]
+    },
+    {
+        "table":  "Sce4_4_room006_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  4,
+        "room":  "006",
+        "variant":  null,
+        "count":  12,
+        "candidates":  [
+                           28,
+                           29,
+                           30
+                       ]
+    },
+    {
+        "table":  "Sce4_4_room006_usa_ck_mess_tbl",
+        "game":  1,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  12,
+        "candidates":  {
+
+                       }
+    },
+    {
+        "table":  "Sce4_4_room006_ger_ck_mess_tbl",
+        "game":  1,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  12,
+        "candidates":  {
+
+                       }
+    },
+    {
+        "table":  "Sce4_4_room007_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  4,
+        "room":  "007",
+        "variant":  null,
+        "count":  1,
+        "candidates":  [
+                           28,
+                           29,
+                           30
+                       ]
+    },
+    {
+        "table":  "Sce4_4_room008_ck_mess_tbl",
+        "game":  1,
+        "episode":  4,
+        "part":  4,
+        "room":  "008",
+        "variant":  null,
+        "count":  1,
+        "candidates":  [
+                           28,
+                           29,
+                           30
+                       ]
+    },
+    {
+        "table":  "Sce1_0_room000b_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  0,
+        "room":  "000b",
+        "variant":  null,
+        "count":  6,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room001_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  0,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room003_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  0,
+        "room":  "003",
+        "variant":  null,
+        "count":  7,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room004_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  0,
+        "room":  "004",
+        "variant":  null,
+        "count":  4,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room005a_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  0,
+        "room":  "005a",
+        "variant":  null,
+        "count":  5,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room005c_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  0,
+        "room":  "005c",
+        "variant":  null,
+        "count":  6,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room006_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  0,
+        "room":  "006",
+        "variant":  null,
+        "count":  5,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room007a_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  0,
+        "room":  "007a",
+        "variant":  null,
+        "count":  4,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room007b_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  0,
+        "room":  "007b",
+        "variant":  null,
+        "count":  4,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room007c_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  0,
+        "room":  "007c",
+        "variant":  null,
+        "count":  5,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_2_room000_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  2,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce1_2_room001_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  2,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce1_2_room003_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  2,
+        "room":  "003",
+        "variant":  null,
+        "count":  7,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce1_2_room004_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  2,
+        "room":  "004",
+        "variant":  null,
+        "count":  4,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce1_2_room005_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  2,
+        "room":  "005",
+        "variant":  null,
+        "count":  6,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce1_2_room007a_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  2,
+        "room":  "007a",
+        "variant":  null,
+        "count":  5,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce1_2_room007b_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  2,
+        "room":  "007b",
+        "variant":  null,
+        "count":  6,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce1_2_room006a_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  2,
+        "room":  "006a",
+        "variant":  null,
+        "count":  5,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce1_2_room006b_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  2,
+        "room":  "006b",
+        "variant":  null,
+        "count":  5,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce1_2_room002_ck_mess_tbl",
+        "game":  2,
+        "episode":  1,
+        "part":  2,
+        "room":  "002",
+        "variant":  null,
+        "count":  6,
+        "candidates":  5
+    },
+    {
+        "table":  "Sce2_0_room000_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room001a_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "001a",
+        "variant":  null,
+        "count":  2,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room001b_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "001b",
+        "variant":  null,
+        "count":  2,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room002_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "002",
+        "variant":  null,
+        "count":  8,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room003a_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "003a",
+        "variant":  null,
+        "count":  4,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room003b_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "003b",
+        "variant":  null,
+        "count":  4,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room004a_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "004a",
+        "variant":  null,
+        "count":  10,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room004b_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "004b",
+        "variant":  null,
+        "count":  10,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room005a_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "005a",
+        "variant":  null,
+        "count":  13,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room005b_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "005b",
+        "variant":  null,
+        "count":  13,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room006_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "006",
+        "variant":  null,
+        "count":  15,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room007a_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "007a",
+        "variant":  null,
+        "count":  10,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room007b_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "007b",
+        "variant":  null,
+        "count":  10,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_0_room008_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  0,
+        "room":  "008",
+        "variant":  null,
+        "count":  10,
+        "candidates":  8
+    },
+    {
+        "table":  "Sce2_2_room000_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room001a_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "001a",
+        "variant":  null,
+        "count":  2,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room001b_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "001b",
+        "variant":  null,
+        "count":  2,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room002_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "002",
+        "variant":  null,
+        "count":  8,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room003a_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "003a",
+        "variant":  null,
+        "count":  10,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room003b_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "003b",
+        "variant":  null,
+        "count":  10,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room004_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "004",
+        "variant":  null,
+        "count":  4,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room005a_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "005a",
+        "variant":  null,
+        "count":  14,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room005b_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "005b",
+        "variant":  null,
+        "count":  14,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room005a_us_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  14,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce2_2_room005b_us_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  14,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce2_2_room006_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "006",
+        "variant":  null,
+        "count":  13,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room007_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "007",
+        "variant":  null,
+        "count":  10,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce2_2_room008_ck_mess_tbl",
+        "game":  2,
+        "episode":  2,
+        "part":  2,
+        "room":  "008",
+        "variant":  null,
+        "count":  10,
+        "candidates":  11
+    },
+    {
+        "table":  "Sce3_0_0_room001_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  2,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_0_room002a_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  10,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_0_room002b_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  10,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_0_room003_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_0_room004a_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_0_room004b_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room000_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  5,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room001_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  2,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room002_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  10,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room003a_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room003b_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room004_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room005_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  12,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room006_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  20,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room007_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  7,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room008a_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  4,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_0_1_room008b_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  5,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room000a_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  5,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room000b_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  5,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room001_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  2,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room002_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  10,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room003a_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room003b_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room004_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room006_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  19,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room007_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  7,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room008_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  4,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room009_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  7,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room00b_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_0_room00c_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  6,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room000a_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  5,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room000b_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  5,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room001a_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  2,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room001b_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  2,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room002_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  10,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room003_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room004_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room006_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  19,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room007_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  7,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room008_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  5,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room009a_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  7,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room009b_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce3_2_1_room00a_ck_mess_tbl",
+        "game":  2,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce1_0_room000_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room000b_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "000b",
+        "variant":  null,
+        "count":  5,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room001_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room002_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "002",
+        "variant":  null,
+        "count":  5,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room002b_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "002b",
+        "variant":  null,
+        "count":  5,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room002c_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "002c",
+        "variant":  null,
+        "count":  6,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room003_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "003",
+        "variant":  null,
+        "count":  7,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room003b_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "003b",
+        "variant":  null,
+        "count":  10,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room003c_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "003c",
+        "variant":  null,
+        "count":  10,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room004_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "004",
+        "variant":  null,
+        "count":  5,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room004b_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "004b",
+        "variant":  null,
+        "count":  5,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room007_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "007",
+        "variant":  null,
+        "count":  9,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room007b_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "007b",
+        "variant":  null,
+        "count":  9,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_0_room007c_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  0,
+        "room":  "007c",
+        "variant":  null,
+        "count":  9,
+        "candidates":  2
+    },
+    {
+        "table":  "Sce1_2_room000_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  2,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  4
+    },
+    {
+        "table":  "Sce1_2_room001_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  2,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  4
+    },
+    {
+        "table":  "Sce1_2_room001b_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  2,
+        "room":  "001b",
+        "variant":  null,
+        "count":  2,
+        "candidates":  4
+    },
+    {
+        "table":  "Sce1_2_room003_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  2,
+        "room":  "003",
+        "variant":  null,
+        "count":  10,
+        "candidates":  4
+    },
+    {
+        "table":  "Sce1_2_room003b_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  2,
+        "room":  "003b",
+        "variant":  null,
+        "count":  10,
+        "candidates":  4
+    },
+    {
+        "table":  "Sce1_2_room004_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  2,
+        "room":  "004",
+        "variant":  null,
+        "count":  5,
+        "candidates":  4
+    },
+    {
+        "table":  "Sce1_2_room005_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  2,
+        "room":  "005",
+        "variant":  null,
+        "count":  7,
+        "candidates":  4
+    },
+    {
+        "table":  "Sce1_2_room006_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  2,
+        "room":  "006",
+        "variant":  null,
+        "count":  6,
+        "candidates":  4
+    },
+    {
+        "table":  "Sce1_2_room007_ck_mess_tbl",
+        "game":  3,
+        "episode":  1,
+        "part":  2,
+        "room":  "007",
+        "variant":  null,
+        "count":  9,
+        "candidates":  4
+    },
+    {
+        "table":  "Sce2_0_room000_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  0,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_0_room001_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  0,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_0_room001b_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  0,
+        "room":  "001b",
+        "variant":  null,
+        "count":  2,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_0_room007_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  0,
+        "room":  "007",
+        "variant":  null,
+        "count":  9,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_0_room002_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  0,
+        "room":  "002",
+        "variant":  null,
+        "count":  13,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_0_room002b_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  0,
+        "room":  "002b",
+        "variant":  null,
+        "count":  12,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_0_room003_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  0,
+        "room":  "003",
+        "variant":  null,
+        "count":  7,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_0_room006_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  0,
+        "room":  "006",
+        "variant":  null,
+        "count":  4,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_0_room006b_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  0,
+        "room":  "006b",
+        "variant":  null,
+        "count":  4,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_0_room006c_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  0,
+        "room":  "006c",
+        "variant":  null,
+        "count":  5,
+        "candidates":  7
+    },
+    {
+        "table":  "Sce2_2_room000_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  2,
+        "room":  "000",
+        "variant":  null,
+        "count":  5,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_2_room001_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  2,
+        "room":  "001",
+        "variant":  null,
+        "count":  2,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_2_room001b_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  2,
+        "room":  "001b",
+        "variant":  null,
+        "count":  2,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_2_room002_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  2,
+        "room":  "002",
+        "variant":  null,
+        "count":  12,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_2_room003_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  2,
+        "room":  "003",
+        "variant":  null,
+        "count":  7,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_2_room004_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  2,
+        "room":  "004",
+        "variant":  null,
+        "count":  13,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_2_room005_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  2,
+        "room":  "005",
+        "variant":  null,
+        "count":  12,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_2_room006_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  2,
+        "room":  "006",
+        "variant":  null,
+        "count":  5,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce2_2_room007_ck_mess_tbl",
+        "game":  3,
+        "episode":  2,
+        "part":  2,
+        "room":  "007",
+        "variant":  null,
+        "count":  9,
+        "candidates":  9
+    },
+    {
+        "table":  "Sce4_0_0room001_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  6,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_0_0room003_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  7,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_0_0room004_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_0_0room005_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_0_0room006_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  5,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_0_1room000_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  2,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_0_1room001_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  6,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_0_1room002_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_0_1room003_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  7,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_0_1room008_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_0_1room004_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_0room001_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  6,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_0room002_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_0room003_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  7,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_0room004_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_0room005_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_0room008_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_0room006_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  5,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_0room007_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_1room001_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  6,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_1room002_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_1room002b_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  20,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_1room002c_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_1room003_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  7,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_1room004_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_1room005_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_1room006_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  5,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_1room007_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  8,
+        "candidates":  0
+    },
+    {
+        "table":  "Sce4_2_1room008_ck_mess_tbl",
+        "game":  3,
+        "episode":  null,
+        "part":  null,
+        "room":  null,
+        "variant":  null,
+        "count":  9,
+        "candidates":  0
+    }
+]

@@ -631,3 +631,29 @@ zu erzeugen). Spiel geschlossen. hotspot-texts.json wurde NICHT geschrieben.
   langsam/teuer.
 - Kein weiterer Cron angelegt: Der Skalierungs-Weg ist eine Richtungsentscheidung für
   Jana (Decode-Helfer ja/nein), kein blindes Weitergrinden.
+
+#### 24.07.2026 (Abend): Decode-Helfer freigegeben, GS1 KOMPLETT benannt
+
+Jana hat den Decode-Helfer freigegeben (erst testen + von Hand gegenprüfen, dann auf
+alle anwenden; Namen VERBATIM aus dem Spiel, nicht kürzen/umformulieren). Neue Regeln:
+Todo-Listen automatisch nutzen; fertige Werkzeuge ins Repo (nicht scratchpad).
+
+- **Helfer gebaut + validiert** (`AccessibilityMod/DevBridge/`): `decode-hotspot-texts.ps1`
+  (Auslese über Bridge, argument-korrekter Decoder), `scan-one.ps1` (Szenario-Diagnose),
+  `gen-json.ps1` + `assemble-gs.ps1` (Namensdatei bauen), `scenario-map.json` (Referenz).
+  Decoder-Details: Wert<128 = Steuercode (samt Argumenten via code_proc_arg_count_table
+  überspringen!), Wert>=128 = Zeichen (Unicode = Wert-128); 12416=Leerz., 8341=Bindestr.;
+  erste Anzeigeseite endet bei Code 0/2/3/45. Umlaute/Anführungszeichen korrekt.
+- **Handprobe bestanden**: GS1 `Sce2_0_room002` deckt sich exakt mit alten bestätigten
+  Namen (Haupttor, Wachstation, Übersichtsplan der Studios …).
+- **GS1 fertig**: 636 Punkte, **511 verbatim benannt** (`s<scenario>/<message>`) in
+  `GS1_Hotspots.json` (+ 47 alte bg-Einträge als Rückfall). Alle Szenarien kohärent,
+  gegen Ground-Truth geprüft (Gemälde, Kliententisch, Plastikblumen, Bett, Gourdsee,
+  Polizeirevier …). Build ok. **Verbleibend ~82 ohne Text** (SYSTEM-mdt <128 oder
+  Kandidaten-Fehltreffer) — später.
+- **GS2/GS3 NOCH NICHT** (Task #16): Tabelle→Szenario-Zuordnung offline unzuverlässig
+  (msg-IDs wiederholen sich über Episoden; Tabellenname-Präfix != Laufzeit-Szenario;
+  mehrere Szenarien dekodieren kohärent → nicht disambiguierbar allein per Kohärenz).
+  ChapterDataLoader referenziert ck_mess_tbl nur im Sonderfall; Zuordnung ist vermutlich
+  datengetrieben. Braucht andere Lösung (authoritatives room->scenario ODER kurzer
+  In-Game-Durchlauf, der pro Raum global_work_.scenario + inspect_data_ erfasst).
