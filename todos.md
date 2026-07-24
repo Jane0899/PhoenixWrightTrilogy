@@ -605,3 +605,29 @@ zu erzeugen). Spiel geschlossen. hotspot-texts.json wurde NICHT geschrieben.
 3. Namen VON HAND aus dem Spielwortlaut ableiten; Cutscene/kein-Objekt markieren.
 4. Neue Namensdateien `GS1/2/3_Hotspots.json` im Format `<scenario>/<message>` füllen.
 5. Bauen, committen, pushen (kein PR).
+
+#### Ergebnis Nachtlauf (committet `5bc1819`, gepusht)
+
+- **Mod-Änderung live**: `HotspotNameService` versteht jetzt `s<scenario>/<message>`
+  (bg-frei, rückwärtskompatibel). Build ok (0 Fehler) — WICHTIG: mit
+  `-p:GamePath="D:\SteamLibrary\...\Phoenix Wright Ace Attorney Trilogy"` bauen, weil
+  der csproj-Default auf `C:\Program Files (x86)\Steam\...` zeigt (dort liegt das Spiel
+  NICHT → sonst 815 Referenzfehler).
+- **Pipeline end-to-end bewiesen**: GS1 `Sce2_0_room002` (Szenario 5) dekodiert exakt zu
+  den bekannten Global-Studios-Objekten (Haupttor, Studio-Van, Wachstation, …), deckt
+  sich mit den alten bg-25-Namen. `room003` (Studio-Lager) neu benannt: 9 Punkte
+  (`s5/194`–`s5/202`), im JSON. Umlaut-Codes bestätigt: ü=380, ä=356, ö=374, ß=357,
+  Ü=348, Bindestrich=8341.
+- **Wichtige Erkenntnis zur SKALIERUNG**: Das reine Von-Hand-Dekodieren (Rohwerte lesen,
+  im Kopf zu Text) ist pro Punkt teuer — 1939 Punkte so zu benennen ist über viele
+  Sessions kontingent-prohibitiv. Die mechanische Auslese ist inzwischen VALIDIERT und
+  risikoarm; nur die BENENNUNG braucht Urteil. Der Shell-Wrapper blockiert `{}` inline
+  (`EPERM uv_spawn`), also sind Inline-Schleifen nicht möglich.
+  **Empfehlung/Direktions-Frage an Jana**: einen reinen DECODE-Helfer zulassen (nur
+  Texte auslesen → lesbare Datei `table/scenario/message → deutscher Text`), aus der ich
+  die Namen dann VON HAND ableite. Das trennt „mechanisch entschlüsseln" (validiert,
+  unkritisch) von „benennen" (Urteil, bleibt bei mir) und macht die Menge machbar, ohne
+  falsche Annahmen zu backen. Reines Von-Hand über die Bridge bleibt möglich, ist aber
+  langsam/teuer.
+- Kein weiterer Cron angelegt: Der Skalierungs-Weg ist eine Richtungsentscheidung für
+  Jana (Decode-Helfer ja/nein), kein blindes Weitergrinden.
