@@ -3,6 +3,43 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 26.07.2026 — GS1-Restpunkte geprüft: GS1 ist praktisch VOLLSTÄNDIG
+
+Die „~82 offenen GS1-Punkte" aus dem 24.07.-Protokoll waren **stark überschätzt**.
+Spiel als Decoder gestartet (Bridge Port 48620, keine Tastendrücke, Spielstände
+vorher gesichert nach `~/.claude/backups/pwaat-savedata/2026-07-26_00-41-41/`),
+Kandidaten LIVE aus `scenarios 0` rekonstruiert statt aus der unbrauchbaren
+`scenario-map.json`. Ergebnis der ehrlichen Analyse (`scratchpad/decode-missing-gs1.ps1`):
+
+- **651 Punkt-Instanzen bereits benannt** (511 eindeutige `s<C>/<M>`-Schlüssel).
+- Die „fehlenden" 106 zerfallen fast vollständig in **NICHT-benennbares**:
+  - **~27 Terminator-Einträge `msg=65535`** (0xFFFF = Tabellenende-Sentinel, `place==uint.MaxValue`) — keine echten Punkte, der alte Dump zählte die Endmarken mit.
+  - **36 `_usa`-Punkte** (Ep4 room006, englische Sprachvariante) — für den deutschen Mod irrelevant.
+  - **36 `_ger`-Punkte** (Ep4 room006, Teile 0/2/4) — **waren längst benannt** unter `s18/220–226`, `s22/180–186`, `s28/182–188`; tauchten nur als „fehlend" auf, weil `inspect-tables.json` für die Sprachvarianten-Tabellen Episode/Teil nicht geparst hatte → leere Kandidaten. Gegengeprüft: alle 3 Blöcke existieren mit exaktem Text.
+  - **1 Punkt `item!=255`** (Sce1_0_room001 msg=187 item=13) — Name kommt zur Laufzeit vom Beweisstück (Lösung 1), braucht keinen JSON-Eintrag.
+  - **3 Punkte SYSTEM `msg=44`** (Ep3 room002 ×3, identisch) — laden aus der **verschlüsselten** `sys_mes_g.mdt`; offline nicht dekodierbar (`mesfile` scheitert, weil nur die Szenario-mdt beim Laden entschlüsselt wird). Generische Meldung, geringer Wert → **bewusst übersprungen**.
+  - **1 Punkt `msg=256`** — liefert nur ein Anführungszeichen, Nicht-Punkt.
+- **Echte Neuzugänge: nur 2 verbatim-Punkte** (Kandidaten-Fehltreffer, jetzt via
+  Live-Kandidaten aufgelöst und eindeutig verifiziert): `s1/243` „(Hmm... Ich will
+  wissen, was da drin ist...)" und `s29/225` „(Ich frage mich, was er vorhin
+  geschrieben hat?)". In `GS1_Hotspots.json` ergänzt, Build grün.
+
+**Konsequenz:** GS1 gilt als abgeschlossen. Was übrig ist (3 System-msg=44), ist
+nur mit einem neuen Bridge-Befehl (System-mdt entschlüsselt laden) erreichbar und
+kaum lohnend.
+
+**Werkzeug-/Datenlage-Erkenntnisse (für GS2/GS3 wichtig):**
+- Die im Repo liegende `AccessibilityMod/DevBridge/scenario-map.json` ist
+  **unbrauchbar** — sie enthält nur `"candidates": <ZAHL>` (Anzahl), NICHT die
+  Szenario-Indizes. Die echten Kandidaten-Arrays lagen im inzwischen gelöschten
+  Scratchpad. **Lösung, die sich bewährt hat:** Kandidaten LIVE aus dem Bridge-
+  Befehl `scenarios <title>` rekonstruieren: Tabelle `Sce<Ep>_<Teil>_room<N>` →
+  Datei `sc<Ep>_<Teil>[a-d]` → alle passenden Pfad-Indizes. Das ist zuverlässiger
+  als jede vorab gespeicherte Map und funktioniert für GS2/GS3 genauso.
+- `decode-hotspot-texts.ps1` zeigt noch auf einen **toten Scratchpad-Pfad** für die
+  scenario-map und die Ausgabe — vor Wiederverwendung Pfade fixen bzw. besser die
+  Live-Kandidaten-Logik aus `decode-missing-gs1.ps1` übernehmen.
+
 ## 26.07.2026 — Bug-Melde-Taste (F9) für Janas Testsessions
 
 Jana wollte beim Testen einen gefundenen Fehler per Tastendruck festhalten, damit
