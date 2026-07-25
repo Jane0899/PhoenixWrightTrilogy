@@ -7,6 +7,8 @@
   "system.not_in_mode": "Not in {0} mode",
   "system.unable_to_read_state": "Unknown state",
   "system.loaded": "Press enter to start",
+  "bug_report.saved": "Bug {0} saved",
+  "bug_report.error": "Could not save bug report",
 
   "_section_modes": "=== Mode Names ===",
   "mode.generic": "{0} mode",

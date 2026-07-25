@@ -3,6 +3,29 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 26.07.2026 — Bug-Melde-Taste (F9) für Janas Testsessions
+
+Jana wollte beim Testen einen gefundenen Fehler per Tastendruck festhalten, damit
+ich die genaue Szene bekomme und sie mir im Chat nur noch sagen muss, was hakt.
+
+- **`BugReportService`** (`AccessibilityMod/Services/BugReportService.cs`): schreibt
+  auf **F9** einen Schnappschuss nach `UserData/AccessibilityMod/BugReports/report.txt`
+  (angehängt, fortlaufend nummeriert „=== BUG N ===") plus ein Bildschirmfoto
+  `bug_N_<zeitstempel>.png` daneben. Erfasst: Spiel, Szenario, bg_no/bg_pos_x, aktiver
+  Modus, zuletzt gesprochene Dialogzeile (`DialoguePatches._lastAnnouncedText`), und im
+  Ermittlungsmodus die komplette Punkteliste mit dem exakten Namensschlüssel
+  `s<scenario>/<message>` + Pfeil auf den Punkt, auf dem der Cursor stand. Jedes Feld in
+  eigenem try/catch (wie Bridge-`state`), damit ein fehlender Wert nie die Erfassung
+  verhindert. Bestätigung per Sprache „Bug N gespeichert".
+- **F9** gewählt, weil Funktionstasten layout-unabhängig sind (keine QWERTZ-Falle wie
+  `[ ]`) und F9 von keinem Modus belegt ist. Verdrahtet in `InputManager.ProcessInput()`.
+- **`HotspotNavigator.GetCurrentIndex()`** ergänzt (öffentlicher Accessor für den
+  aktuell gewählten Punkt).
+- Lokalisierung `bug_report.saved` / `bug_report.error` in en + de; übrige Sprachen
+  Fallback Englisch.
+- Build grün (0 Fehler). **Janas Test steht aus** — F9 in einer Ermittlungsszene drücken,
+  dann liegt der Bericht in `UserData/AccessibilityMod/BugReports/`.
+
 ## Offene Punkte
 
 - [ ] **J3 Tastenbelegungs-Menü: zugewiesene Taste wird nicht angesagt** (19.07.2026).

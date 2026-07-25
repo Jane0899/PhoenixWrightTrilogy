@@ -610,6 +610,18 @@ namespace AccessibilityMod.Services
         }
 
         /// <summary>
+        /// Der aktuell ausgewaehlte Punkt (0-basiert), oder -1 wenn keiner steht.
+        /// Gebraucht vom BugReportService: Wenn Jana beim Testen die Bug-Taste
+        /// drueckt, soll der Bericht festhalten, auf welchem Untersuchungspunkt
+        /// sie gerade stand — sonst muesste sie die Stelle nachtraeglich
+        /// beschreiben, was mit Screenreader muehsam ist.
+        /// </summary>
+        public static int GetCurrentIndex()
+        {
+            return _currentIndex;
+        }
+
+        /// <summary>
         /// Lesezugriff auf die geparste Hotspot-Liste. Fuer die DevBridge, damit
         /// die Automatisierung die Punkte aufzaehlen und ihre Bildausschnitte
         /// schneiden kann, ohne die Parselogik ein zweites Mal zu bauen.

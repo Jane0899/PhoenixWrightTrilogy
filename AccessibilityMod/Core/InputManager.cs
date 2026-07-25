@@ -62,6 +62,16 @@ namespace AccessibilityMod.Core
                 AccessibilityState.AnnounceCurrentState();
             }
 
+            // F9 - Bug an der aktuellen Stelle festhalten. Bewusst eine
+            // Funktionstaste: Sie liefert auf JEDEM Tastaturlayout denselben
+            // KeyCode (anders als [ ] oder Satzzeichen, die auf QWERTZ teils
+            // unerreichbar sind, siehe NavigatePreviousPressed). F9 ist zudem
+            // von keinem anderen Modus belegt, funktioniert also global.
+            if (Input.GetKeyDown(KeyCode.F9))
+            {
+                BugReportService.Capture();
+            }
+
             ProcessModeSpecificInput();
         }
 

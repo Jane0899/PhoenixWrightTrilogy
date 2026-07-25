@@ -7,6 +7,8 @@
   "system.not_in_mode": "Nicht im Modus {0}",
   "system.unable_to_read_state": "Unbekannter Zustand",
   "system.loaded": "Drücke Eingabe zum Starten",
+  "bug_report.saved": "Bug {0} gespeichert",
+  "bug_report.error": "Bug-Bericht konnte nicht gespeichert werden",
 
   "_section_modes": "=== Mode Names ===",
   "mode.generic": "Modus {0}",
