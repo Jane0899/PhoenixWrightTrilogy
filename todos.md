@@ -3,6 +3,46 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 26.07.2026 — GS2/GS3 offline NICHT zuverlässig benennbar (bestätigt, mit Beweis)
+
+Versuch, GS2 mit dem Live-Kandidaten-Ansatz zu benennen — **gescheitert, aber jetzt
+mit hartem Beweis, warum**. Reihenfolge der Funde:
+
+1. **decode-missing.ps1 -Game 2**: 677 Punkte, nur 277 „mit Text", 400 ohne. Verdächtig.
+2. **GS2-Szenariodateien sind anders benannt**: `scenarios 1` liefert dreiteilige Namen
+   (`sc1_1_0`, `sc1_3_1`, `sc3_0_0` …), 22 Einträge — nicht das zweiteilige GS1-Schema.
+3. **Kohärenz-Test (Sce1_0_room006, msg 297–300)**: ZWEI Szenarien (s3 und s7) decken
+   ALLE 4 Nachrichten ab, mit **völlig verschiedenem** Inhalt (s3 Dialog, s7
+   „Filmdekoration"-Untersuchung). Ein Raum wird im selben Fall mehrfach besucht →
+   Kohärenz-Abstimmung disambiguiert NICHT. (Deckt sich mit alter Protokoll-Warnung.)
+4. **Ground-Truth-Test gescheitert**: Die bekannten Kurain-Texte (msg 156 „Großer
+   Felsen", 183 „Schriftrolle", 220 „Tatami") kommen in KEINEM mdt-Index an der
+   erwarteten Stelle vor. s2/156 = „Ich… hätte es auch sein können" (Dialog).
+5. **Viewer-Abbildung ist für Titel≠0 inkonsistent**: `mdtpath 1 S` (Titel 1 = GS2)
+   liefert **GS1-Pfade** zurück (36 Einträge mit sc4-Varianten a–d = eindeutig GS1),
+   während `scenarios 1` die richtige GS2-Tabelle (22, dreiteilig) gibt. Also mappen
+   `mesraw`/`mdtpath` die Szenario-ID anders (über GS1?) als `scenarios`. **Kein
+   verlässlicher Ground-Truth vorhanden** (die alten GS2/GS3-Kurznamen stammen vom
+   buggy alten in-game-Dumper und taugen NICHT als Referenz).
+
+**Fazit (endgültig):** Der Mod schlägt zur Laufzeit `s<global_work_.scenario>/<message>`
+nach (HotspotNameService.cs:101/124). Bei GS1 ist `global_work_.scenario` == mdt-Index
+(verifiziert → 511 Keys korrekt). Bei GS2/GS3 ist diese Gleichung **nicht gesichert**,
+und der Debug-Viewer liefert für Titel≠0 keine vertrauenswürdige Szenario→Datei-Abbildung.
+Offline benannte Keys könnten also am falschen Laufzeit-Szenario hängen → FALSCHE Namen.
+**Kein Offline-Benennen von GS2/GS3** (Risiko „nichts erfunden"-Regel).
+
+**Der tragfähige Weg (empfohlen): In-Game-Harvester.** Eine kleine Mod-Erweiterung, die
+bei JEDER Untersuchung eines Hotspots im normalen Spielablauf automatisch
+`s<global_work_.scenario>/<bg>/<message> = <exakter angezeigter Untersuchungstext>` in
+eine Datei schreibt. Beide Werte sind dann GROUND-TRUTH (Laufzeit-Szenario + real
+angezeigter Text), titel-unabhängig, korrekt per Konstruktion. GS2/GS3 (und zur
+Gegenprobe GS1) füllen sich dann von selbst, während gespielt wird — kein Fokusproblem,
+kein erzwungenes Durchspielen. Baustein liegt schon bereit: `DialoguePatches._lastAnnouncedText`
++ `HotspotNavigator` kennen Text und Punkt; der neue F9-BugReportService zeigt das Muster.
+Offene Entscheidung für Jana: Harvester bauen (dann sammeln sich Namen beim Spielen) —
+ja/nein.
+
 ## 26.07.2026 — GS1-Restpunkte geprüft: GS1 ist praktisch VOLLSTÄNDIG
 
 Die „~82 offenen GS1-Punkte" aus dem 24.07.-Protokoll waren **stark überschätzt**.

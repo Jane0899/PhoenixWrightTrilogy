@@ -1,4 +1,4 @@
-# decode-missing.ps1 — findet NICHT benannte Untersuchungspunkte und dekodiert sie.
+# decode-missing.ps1 - findet NICHT benannte Untersuchungspunkte und dekodiert sie.
 #
 # Kernidee (Lehre vom 26.07.2026): Die Kandidaten-Szenarien werden LIVE aus der
 # Bridge rekonstruiert (`scenarios <title>`), NICHT aus einer vorab gespeicherten
@@ -47,7 +47,7 @@ function Send-Bridge([string]$cmd) {
     }
     return ($lines -join "`n")
 }
-if ((Send-Bridge "ping") -ne "pong") { Write-Host "Bridge tot — laeuft das Spiel?"; exit 1 }
+if ((Send-Bridge "ping") -ne "pong") { Write-Host "Bridge tot - laeuft das Spiel?"; exit 1 }
 
 # --- Pfadtabelle -> stem->index (z. B. "sc2_0" -> 5) ----------------------
 $stemToIdx = @{}
