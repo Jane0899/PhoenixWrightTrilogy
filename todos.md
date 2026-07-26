@@ -43,6 +43,23 @@ kein erzwungenes Durchspielen. Baustein liegt schon bereit: `DialoguePatches._la
 Offene Entscheidung für Jana: Harvester bauen (dann sammeln sich Namen beim Spielen) —
 ja/nein.
 
+**UMGESETZT (26.07.2026): Harvester gebaut.** `HotspotNameHarvester`
+(`AccessibilityMod/Services/HotspotNameHarvester.cs`, in `OnUpdate` eingehängt) schreibt
+beim Untersuchen eines Punkts eine Zeile nach
+`UserData/AccessibilityMod/HarvestedNames/harvest.log`:
+`GS<n> s<scenario>/<message> | bg=<bg> | <verbatim Text>`. Er nutzt den aktuell
+gewählten Punkt (Jana navigiert mit den Mod-Tasten → Cursor synchron) und ein
+Erntefenster von ~1,5 s um den Ermittlungsmodus (weil das Dialogfenster den Modus
+kurz aussetzt). Dedup über Titel|scenario|message, auch über Sitzungen (liest die
+Datei beim Start ein). **Schreibt NICHT in GS<n>_Hotspots.json** — reine Sammlung,
+Zusammenführen bleibt Handarbeit.
+- **NOCH ZU VERIFIZIEREN (Janas Gegentest):** Eine GS2/GS3-Ermittlungsszene spielen,
+  Punkte untersuchen, dann prüfen, ob die Zeilen in harvest.log zum gesprochenen Text
+  passen (Schlüssel = richtiger Punkt). Das eine Risiko ist die Paarung
+  „angezeigter Text ↔ aktueller Punkt"; deshalb erst gegenlesen, bevor gemerged wird.
+- Danach: harvest.log dedupen, von Hand sichten, verbatim in GS2/3_Hotspots.json
+  übernehmen (als `s<scenario>/<message>`), bauen, committen.
+
 ## 26.07.2026 — GS1-Restpunkte geprüft: GS1 ist praktisch VOLLSTÄNDIG
 
 Die „~82 offenen GS1-Punkte" aus dem 24.07.-Protokoll waren **stark überschätzt**.

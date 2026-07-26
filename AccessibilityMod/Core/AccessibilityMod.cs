@@ -130,6 +130,11 @@ namespace AccessibilityMod.Core
             DyingMessageNavigator.Update();
             BugSweeperNavigator.Update();
             FirstLaunchDialogPatches.Update();
+
+            // Sammelt beim Spielen die Ground-Truth-Namen von Untersuchungspunkten
+            // (s<scenario>/<message> + verbatim Text). Fuer GS2/GS3, wo die Namen
+            // offline nicht zuverlaessig ableitbar sind (siehe HotspotNameHarvester).
+            HotspotNameHarvester.Update();
         }
 
         public override void OnDeinitializeMelon()
