@@ -76,15 +76,19 @@ namespace AccessibilityMod.Services
 
                 _lastHarvestedText = text;
 
-                // Aktuell gewaehlter Punkt. Jana navigiert mit den Mod-Tasten
-                // ([ ] / Komma-Punkt), die den Spiel-Cursor mitziehen — der
-                // aktuelle Punkt ist damit der gerade untersuchte.
-                int idx = HotspotNavigator.GetCurrentIndex();
-                var list = HotspotNavigator.GetHotspots();
-                if (list == null || idx < 0 || idx >= list.Count)
+                // Schluessel ueber die tatsaechlich angezeigte Nachrichtennummer
+                // (message_work_.now_no), NICHT ueber den Punkt, den der Mod fuer
+                // "aktuell" haelt. Warum: Eine Untersuchung zeigt oft mehrere
+                // Nachrichten (Beschreibung + Banter), und bei ueberlappenden
+                // Punkten untersucht das Spiel evtl. einen anderen als den
+                // angesteuerten. Ueber now_no bekommt JEDE angezeigte Zeile ihre
+                // WAHRE Nummer -> die Untersuchungsbeschreibung landet unter ihrem
+                // richtigen Schluessel, den HotspotNameService spaeter nachschlaegt.
+                // (Erkannt 29.07.2026: die punkt-basierte Variante paarte Banter mit
+                // dem falschen Punkt, z. B. s5/216 bekam eine fremde Dialogzeile.)
+                uint message;
+                if (!TryGetCurrentMessageNo(out message))
                     return;
-
-                uint message = list[idx].MessageId;
 
                 int scenario = SafeScenario();
                 if (scenario < 0)
@@ -164,6 +168,31 @@ namespace AccessibilityMod.Services
                 }
             }
             catch { }
+        }
+
+        /// <summary>
+        /// Liest die aktuell angezeigte Nachrichtennummer (message_work_.now_no).
+        /// Das ist die WAHRE Nummer der gerade sichtbaren Zeile — dieselbe, die als
+        /// Nachrichten-ID eines Untersuchungspunktes auftaucht. false, wenn sie sich
+        /// nicht lesen laesst (dann lieber nichts protokollieren als etwas Falsches).
+        /// </summary>
+        private static bool TryGetCurrentMessageNo(out uint message)
+        {
+            message = 0;
+            try
+            {
+                if (GSStatic.message_work_ == null)
+                    return false;
+                message = GSStatic.message_work_.now_no;
+                // 0 und der Endmarken-Wert sind keine echten Untersuchungstexte.
+                if (message == 0 || message == ushort.MaxValue)
+                    return false;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private static int SafeScenario()

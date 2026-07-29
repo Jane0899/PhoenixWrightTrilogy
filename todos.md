@@ -74,12 +74,22 @@ Erntefenster von ~1,5 s um den Ermittlungsmodus (weil das Dialogfenster den Modu
 kurz aussetzt). Dedup über Titel|scenario|message, auch über Sitzungen (liest die
 Datei beim Start ein). **Schreibt NICHT in GS<n>_Hotspots.json** — reine Sammlung,
 Zusammenführen bleibt Handarbeit.
-- **NOCH ZU VERIFIZIEREN (Janas Gegentest):** Eine GS2/GS3-Ermittlungsszene spielen,
-  Punkte untersuchen, dann prüfen, ob die Zeilen in harvest.log zum gesprochenen Text
-  passen (Schlüssel = richtiger Punkt). Das eine Risiko ist die Paarung
-  „angezeigter Text ↔ aktueller Punkt"; deshalb erst gegenlesen, bevor gemerged wird.
-- Danach: harvest.log dedupen, von Hand sichten, verbatim in GS2/3_Hotspots.json
-  übernehmen (als `s<scenario>/<message>`), bauen, committen.
+- **VERIFIZIERT + Fehler gefunden + behoben (29.07.2026):** Janas erste Testsitzung
+  erzeugte 50 GS1-Zeilen (scenario 5/7). Gegen die verlässliche GS1-Offline-Datei
+  geprüft: die meisten stimmten exakt, ABER einige waren fehlgepaart (z. B. `s5/216`
+  bekam Banter „He, wir Ermittler…" statt der Beschreibung; `s5/220` falsch; `s5/219`
+  fehlte). Ursache: v1 schlüsselte über den vom Mod „aktuell" gehaltenen Punkt —
+  bei mehrzeiligen Untersuchungen (Beschreibung + Banter) und bei Überlappung (J6)
+  landete der falsche Satz unter dem Punkt.
+- **Fix (v2):** Harvester schlüsselt jetzt über `message_work_.now_no` — die
+  TATSÄCHLICH angezeigte Nachrichtennummer (Feld per Reflection im Spiel-Assembly
+  gefunden). Damit bekommt JEDE Zeile ihre wahre Nummer; die Untersuchungsbeschreibung
+  landet unter genau dem Schlüssel, den `HotspotNameService` nachschlägt. Keine
+  Abhängigkeit mehr von `HotspotNavigator`/Cursor. Build grün. Alte (fehlerhafte)
+  `harvest.log` archiviert als `harvest_buggy_pre-nowno.log`, damit der Dedup den
+  Neustart nicht blockiert. **Janas Gegentest von v2 steht aus.**
+- Danach: harvest.log sichten (jetzt korrekt-per-Konstruktion), verbatim in
+  GS2/3_Hotspots.json übernehmen (`s<scenario>/<message>`), bauen, committen.
 
 ## 26.07.2026 — GS1-Restpunkte geprüft: GS1 ist praktisch VOLLSTÄNDIG
 
