@@ -3,6 +3,27 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 29.07.2026 — J6: Punkt 5 steuert immer Punkt 6 an (Überlappung), via F9 gefunden
+
+**Von Jana beim Testen gefunden und per F9 gespeichert** (2 Bug-Berichte, gleicher Ort
+Inspektorenbüro/Global-Studios-Eingang, `bg_no=11`, scenario 5 und 7 — verschiedene
+Tage). Symptom: Steuert sie Punkt 5 an, wird beim Untersuchen immer Punkt 6 ausgelöst.
+
+**Ursache (aus den F9-Daten + inspect-tables.json bestätigt):** Der Mod setzt den Cursor
+auf den **Schwerpunkt** des Punktes; das Spiel untersucht bei Enter den Hotspot unter dem
+Cursor. In `Sce2_0_room005` liegt der Schwerpunkt von Punkt 5 (msg216, Zentrum (684,608),
+breites Band) **innerhalb der Trefferfläche von Punkt 6** (msg219, Viereck ~450–745/565–870).
+Beide Vierecke überlappen dort; das Spiel wählt den Hotspot mit dem **niedrigeren**
+inspect-Index → msg219 statt msg216. Genau dieselbe Konstellation in scenario 7 (msg267/270).
+
+**Fix (`HotspotNavigator.MoveCursorToCurrentHotspot`):** Statt stur den Schwerpunkt zu
+nehmen, sucht `GetSafeCursorPoint` einen Cursorpunkt, der **nur** im Ziel-Viereck liegt
+(in keinem fremden). Schwerpunkt frei → unverändert; sonst Abtastung vom Schwerpunkt
+Richtung der vier Ecken (Even-Odd-Punkt-im-Viereck-Test, auch für konkave Flächen). Für
+den Bug-Fall ergibt das ~(947,582), nur in msg216 → korrekt Punkt 5. Kein Treffer möglich
+(Ziel ganz überdeckt) → Rückfall auf Schwerpunkt (nicht schlechter als bisher). Eckpunkte
+dafür in `HotspotInfo` (X0..Y3) gespeichert. Build grün. **Janas Gegentest steht aus.**
+
 ## 26.07.2026 — GS2/GS3 offline NICHT zuverlässig benennbar (bestätigt, mit Beweis)
 
 Versuch, GS2 mit dem Live-Kandidaten-Ansatz zu benennen — **gescheitert, aber jetzt

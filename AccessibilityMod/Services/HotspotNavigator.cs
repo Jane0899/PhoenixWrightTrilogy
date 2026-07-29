@@ -29,6 +29,23 @@ namespace AccessibilityMod.Services
             public string Description;
 
             /// <summary>
+            /// Die vier Eckpunkte der Trefferflaeche (Spielkoordinaten, wie CenterX/Y).
+            /// Gebraucht, um den Cursor gezielt in DIESEN Punkt zu setzen und nicht
+            /// in einen ueberlappenden Nachbarn: Das Spiel untersucht bei Enter den
+            /// Hotspot unter dem Cursor; liegt der Schwerpunkt eines Punktes zufaellig
+            /// in der Trefferflaeche eines anderen, wird sonst der falsche untersucht
+            /// (von Jana gefunden am 26./29.07.2026: Punkt 5 -> immer Punkt 6).
+            /// </summary>
+            public float X0,
+                Y0,
+                X1,
+                Y1,
+                X2,
+                Y2,
+                X3,
+                Y3;
+
+            /// <summary>
             /// Rohwert des item-Feldes aus INSPECT_DATA. 0 bedeutet "kein Bezug
             /// zu einem Beweisstueck".
             /// </summary>
@@ -276,6 +293,17 @@ namespace AccessibilityMod.Services
                         IsExamined = examined,
                         ItemId = itemId,
                         ItemName = itemName,
+                        // Eckpunkte mitnehmen, damit MoveCursorToCurrentHotspot den
+                        // Cursor in eine Stelle setzen kann, die NUR zu diesem Punkt
+                        // gehoert (siehe Ueberlappungs-Bug).
+                        X0 = data.x0,
+                        Y0 = data.y0,
+                        X1 = data.x1,
+                        Y1 = data.y1,
+                        X2 = data.x2,
+                        Y2 = data.y2,
+                        X3 = data.x3,
+                        Y3 = data.y3,
                     };
                     info.Description = BuildDescription(i + 1, info, posDesc);
                     _hotspots.Add(info);
@@ -564,10 +592,17 @@ namespace AccessibilityMod.Services
                 }
                 catch { }
 
+                // Zielpunkt in Spielkoordinaten bestimmen. Normalerweise der
+                // Schwerpunkt — aber wenn der in der Trefferflaeche eines anderen
+                // Punktes liegt, wuerde das Spiel bei Enter den falschen untersuchen.
+                // Deshalb suchen wir einen Punkt, der NUR zu diesem Hotspot gehoert.
+                float targetX, targetY;
+                GetSafeCursorPoint(hotspot, out targetX, out targetY);
+
                 // Calculate screen position
                 // Game uses 1920x1080 coordinate system, cursor is centered
-                float screenX = hotspot.CenterX - bgOffsetX - 960f;
-                float screenY = 540f - hotspot.CenterY;
+                float screenX = targetX - bgOffsetX - 960f;
+                float screenY = 540f - targetY;
 
                 // Update cursor position in inspectCtrl
                 if (inspectCtrl.instance != null)
@@ -598,6 +633,102 @@ namespace AccessibilityMod.Services
                     $"Error moving cursor: {ex.Message}"
                 );
             }
+        }
+
+        /// <summary>
+        /// Liefert einen Cursorpunkt (Spielkoordinaten), der eindeutig zum Ziel-
+        /// Hotspot gehoert. Hintergrund: Das Spiel untersucht bei Enter den Hotspot
+        /// unter dem Cursor. Trefferflaechen ueberlappen sich manchmal; liegt der
+        /// Schwerpunkt des Ziels in der Flaeche eines anderen Punktes, wuerde der
+        /// falsche untersucht (Bug: Punkt 5 -> immer Punkt 6, weil dessen Flaeche
+        /// den Schwerpunkt von Punkt 5 enthaelt).
+        ///
+        /// Strategie: Ist der Schwerpunkt frei (in keinem fremden Viereck), nimm ihn.
+        /// Sonst taste vom Schwerpunkt in Richtung der vier Ecken ab, bis ein Punkt
+        /// gefunden ist, der im Ziel-Viereck liegt und in keinem fremden. Findet sich
+        /// keiner (Ziel vollstaendig ueberdeckt), bleibt es beim Schwerpunkt — dann
+        /// ist es nicht schlechter als bisher.
+        /// </summary>
+        private static void GetSafeCursorPoint(HotspotInfo target, out float x, out float y)
+        {
+            x = target.CenterX;
+            y = target.CenterY;
+
+            // Schwerpunkt frei? Dann fertig — haeufigster Fall, keine Aenderung.
+            if (!IsInsideAnyOther(x, y, target))
+                return;
+
+            // Ecken des Ziel-Vierecks, in die wir uns vom Schwerpunkt bewegen.
+            float[] vx = { target.X0, target.X1, target.X2, target.X3 };
+            float[] vy = { target.Y0, target.Y1, target.Y2, target.Y3 };
+
+            // Je weiter Richtung Ecke, desto eher raus aus der Ueberlappung. Mehrere
+            // Bruchteile probieren; naeher an der Mitte bevorzugt (kleinstes t zuerst).
+            float[] fractions = { 0.5f, 0.65f, 0.8f, 0.9f, 0.97f };
+            foreach (float t in fractions)
+            {
+                for (int v = 0; v < 4; v++)
+                {
+                    float px = target.CenterX + t * (vx[v] - target.CenterX);
+                    float py = target.CenterY + t * (vy[v] - target.CenterY);
+                    // Muss im Ziel liegen (Ecken koennen konkav sein) UND frei sein.
+                    if (IsPointInQuad(px, py, target) && !IsInsideAnyOther(px, py, target))
+                    {
+                        x = px;
+                        y = py;
+                        return;
+                    }
+                }
+            }
+
+            // Kein eindeutiger Punkt gefunden: Schwerpunkt beibehalten (Rueckfall).
+            AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                $"[Hotspot] Punkt msg={target.MessageId} vollstaendig ueberdeckt - "
+                    + "Cursor bleibt auf Schwerpunkt"
+            );
+        }
+
+        /// <summary>
+        /// Liegt (px,py) in der Trefferflaeche IRGENDEINES anderen sichtbaren Punktes?
+        /// Vergleich ueber DataIndex, damit derselbe Punkt nicht sich selbst zaehlt.
+        /// </summary>
+        private static bool IsInsideAnyOther(float px, float py, HotspotInfo target)
+        {
+            for (int i = 0; i < _hotspots.Count; i++)
+            {
+                var h = _hotspots[i];
+                if (h.DataIndex == target.DataIndex)
+                    continue;
+                if (IsPointInQuad(px, py, h))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Punkt-im-Viereck-Test (Even-Odd-Regel ueber die vier Ecken in Reihenfolge).
+        /// Bewusst nicht auf konvexe Vierecke beschraenkt — die Spieldaten enthalten
+        /// auch konkave Trefferflaechen.
+        /// </summary>
+        private static bool IsPointInQuad(float px, float py, HotspotInfo h)
+        {
+            float[] xs = { h.X0, h.X1, h.X2, h.X3 };
+            float[] ys = { h.Y0, h.Y1, h.Y2, h.Y3 };
+
+            bool inside = false;
+            int j = 3;
+            for (int i = 0; i < 4; i++)
+            {
+                if (
+                    ((ys[i] > py) != (ys[j] > py))
+                    && (px < (xs[j] - xs[i]) * (py - ys[i]) / (ys[j] - ys[i]) + xs[i])
+                )
+                {
+                    inside = !inside;
+                }
+                j = i;
+            }
+            return inside;
         }
 
         public static int GetHotspotCount()
