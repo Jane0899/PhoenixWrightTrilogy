@@ -305,6 +305,32 @@ namespace AccessibilityMod.Services
                         X3 = data.x3,
                         Y3 = data.y3,
                     };
+                    // Identische Duplikate ueberspringen: manche Szenen haben in
+                    // den Spieldaten ZWEI INSPECT_DATA-Eintraege mit derselben
+                    // Nachricht UND (nahezu) derselben Position — z. B. der Studio-
+                    // Van am Haupttor (von Jana gemeldet, Bug 4 vom 30.07.2026:
+                    // "Punkt 4 und 5 sind beide der Van"). Fuer Sehende ist das ein
+                    // Objekt; als zwei identische Punkte ist es fuer die Navigation
+                    // nur verwirrend. WICHTIG: Nur bei gleicher Position zusammen-
+                    // fassen. Gleiche Nachricht an VERSCHIEDENEN Positionen (dasselbe
+                    // Objekt aus zwei Blickwinkeln) bleibt als zwei Punkte erhalten.
+                    bool isDuplicate = false;
+                    for (int k = 0; k < _hotspots.Count; k++)
+                    {
+                        var ex = _hotspots[k];
+                        if (
+                            ex.MessageId == info.MessageId
+                            && Math.Abs(ex.CenterX - info.CenterX) < 15f
+                            && Math.Abs(ex.CenterY - info.CenterY) < 15f
+                        )
+                        {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+                    if (isDuplicate)
+                        continue;
+
                     info.Description = BuildDescription(i + 1, info, posDesc);
                     _hotspots.Add(info);
                 }

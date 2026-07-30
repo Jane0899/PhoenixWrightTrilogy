@@ -3,6 +3,20 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 30.07.2026 — J7: identische Doppel-Punkte (Studio-Van), via F9 (Bug 4) gefunden
+
+Jana: „Punkt 4 und 5 sind beide der Van. Stimmt das?" — Bug 4: GS1 scenario 9, `bg_no=25`
+(Global-Studios-Haupttor). Befund in `Sce2_4_room002`: ZWEI INSPECT_DATA-Einträge mit
+`msg=154` und **exakt identischen** Koordinaten (center (1606,569), gleiches Viereck).
+Screenshot zeigt genau EINEN Van rechts. Also ein echtes Duplikat in den Spieldaten —
+für Sehende unsichtbar, für die Navigation zwei identische „Studio-Van"-Punkte.
+
+**Fix (`HotspotNavigator.RefreshHotspots`):** Beim Aufbau der Liste einen Punkt
+überspringen, wenn schon einer mit gleicher Nachricht UND (nahezu) gleicher Position
+(<15 px) existiert. Gleiche Nachricht an VERSCHIEDENEN Positionen (dasselbe Objekt aus
+zwei Blickwinkeln) bleibt bewusst als zwei Punkte erhalten. Build grün. **Janas
+Gegentest steht aus** (greift erst nach Spiel-Neustart).
+
 ## 29.07.2026 — J6: Punkt 5 steuert immer Punkt 6 an (Überlappung), via F9 gefunden
 
 **Von Jana beim Testen gefunden und per F9 gespeichert** (2 Bug-Berichte, gleicher Ort
