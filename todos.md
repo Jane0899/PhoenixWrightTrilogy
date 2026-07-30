@@ -21,8 +21,30 @@ geraten: 0→o, 1→i, 3→e, **4→a**, 5→s, 7→t, 8→b, 9→g. 2 und 6 (me
 ausgelassen. Die Sicherheitsregel verhindert, dass Normaltext beschädigt wird; ein falsch
 geratenes Ziel (v. a. 1→i vs. l) beträfe nur die ohnehin stilisierten Regisseur-Wörter.
 **Janas Gegentest offen:** Regisseur-Dialoge prüfen, ob alle Wörter korrekt lesbar werden;
-falsche/fehlende Ziffern melden → Mapping nachziehen. (Alternativ könnte ich die exakte
-Ersetzungstabelle offline aus seinen Dialogen dekodieren, wenn das Spiel frei ist.)
+falsche/fehlende Ziffern melden → Mapping nachziehen.
+
+### Nachtrag 30.07.2026: Offline-Dekodierung kann die Tabelle NICHT liefern
+
+Jana wollte die exakte Tabelle offline aus seinen Dialogen ableiten (statt zu raten).
+Ergebnis nach gründlicher Prüfung (Spiel als Decoder, dann geschlossen):
+- **Die Dialog-DATEN sind sauber.** GS1-Szenarien 5–10 (Steel-Samurai-Fall, wo der
+  Regisseur auftritt) dekodiert und durchsucht: KEINE Ziffer im Wortinneren. Der
+  Regisseur sagt in den Daten z. B. „…wir machten eine Pause... ROFL!" (Szen. 8, msg 23)
+  — Netzjargon steht sauber drin, „Gef4hr" NICHT. Die Ziffern entstehen also erst beim
+  **Rendern**.
+- **Im Code keine Ersetzung gefunden.** Assembly-CSharp neu dekompiliert (ilspycmd,
+  `scratchpad/pwaat-src2`): `SalManella` kommt nur im Enum + der Charaktertabelle vor,
+  NICHT in der Text-Render-Logik. Keine `Replace(...'4'...)`-Kette, keine Leet-Tabelle.
+  Der Substitutionsmechanismus zeigt sich nicht offen im Code (evtl. Font-/Code-getrieben).
+- **Folgerung:** Aus den Textdaten allein ist die Ziffer→Buchstabe-Tabelle NICHT
+  ableitbar (Daten sauber). Der einzige BESTÄTIGTE Punkt bleibt 4→a (aus Bug 3).
+- **Tragfähiger Weg:** die Tabelle aus ECHTEN gerenderten Regisseur-Zeilen ableiten —
+  Jana drückt bei ein paar seiner Sätze F9 (fängt last_dialogue mit den Ziffern), oder
+  liest sie vor. Daraus wird die Tabelle exakt bestimmt und `TextNormalizer.LeetMap`
+  finalisiert. Bis dahin bleibt die Standard-Leet-Vermutung aktiv (schadet dank
+  „nur Ziffer-im-Wort"-Regel keinem Normaltext).
+- (Nicht gemacht, geringer Zusatznutzen: alle 36 GS1-Szenarien scannen, um „Ziffer nirgends
+  in Daten" komplett auszuschließen — die Fall-Szenarien des Regisseurs waren aber sauber.)
 
 ## 30.07.2026 — J7: identische Doppel-Punkte (Studio-Van), via F9 (Bug 4) gefunden
 
