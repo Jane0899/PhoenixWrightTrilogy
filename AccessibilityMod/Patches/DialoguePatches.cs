@@ -491,6 +491,12 @@ namespace AccessibilityMod.Patches
                 if (Net35Extensions.IsNullOrWhiteSpace(text))
                     return;
 
+                // "Zahlen-Sprech" des Regisseurs (Sal Manella) fuer den Screenreader
+                // zurueckuebersetzen ("Gef4hr" -> "Gefahr"). Frueh, damit sowohl die
+                // Dublettenerkennung/Speicherung (_lastAnnouncedText) als auch beide
+                // Ausgabepfade (Volltext + Fortsetzung) den lesbaren Text nutzen.
+                text = AccessibilityMod.Utilities.TextNormalizer.FixLeetDigits(text);
+
                 if (text == _lastAnnouncedText)
                 {
 #if DEBUG

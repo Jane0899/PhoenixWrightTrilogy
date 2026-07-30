@@ -3,6 +3,27 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 30.07.2026 — J8: "Zahlen-Sprech" des Regisseurs für Screenreader zurückübersetzen
+
+Jana (aus Bug 3, „vor allem die Dialoge vom Regisseur"): Buchstaben werden durch
+Zahlen ersetzt („Gef4hr" = „Gefahr"). **Kein Dekodierfehler** — das ist die absichtliche
+Leetspeak-Stilisierung des Regisseurs (Sal Manella) in der Vorlage. Für Sehende lesbar,
+für den Screenreader Kauderwelsch → echtes A11y-Problem.
+
+**Fix (`Utilities/TextNormalizer.FixLeetDigits`, eingehängt in `DialoguePatches.TryOutputDialogue`
+direkt nach `CombineLines`):** Ersetzt Leet-Ziffern durch Buchstaben, aber NUR innerhalb
+eines Wortes (Buchstaben-/Ziffernblock mit ≥2 Buchstaben). Echte Zahlen (Uhrzeiten
+„14:24", Daten „22.", „Studio 1", reine Ziffernblöcke) bleiben unangetastet, weil deutsche
+Wörter nie Ziffern im Inneren haben. Greift für beide Ausgabepfade + Speicherung.
+
+**Mapping — nur 4→a ist durch Janas Beispiel BESTÄTIGT**, der Rest ist Standard-Leet und
+geraten: 0→o, 1→i, 3→e, **4→a**, 5→s, 7→t, 8→b, 9→g. 2 und 6 (mehrdeutig) bewusst
+ausgelassen. Die Sicherheitsregel verhindert, dass Normaltext beschädigt wird; ein falsch
+geratenes Ziel (v. a. 1→i vs. l) beträfe nur die ohnehin stilisierten Regisseur-Wörter.
+**Janas Gegentest offen:** Regisseur-Dialoge prüfen, ob alle Wörter korrekt lesbar werden;
+falsche/fehlende Ziffern melden → Mapping nachziehen. (Alternativ könnte ich die exakte
+Ersetzungstabelle offline aus seinen Dialogen dekodieren, wenn das Spiel frei ist.)
+
 ## 30.07.2026 — J7: identische Doppel-Punkte (Studio-Van), via F9 (Bug 4) gefunden
 
 Jana: „Punkt 4 und 5 sind beide der Van. Stimmt das?" — Bug 4: GS1 scenario 9, `bg_no=25`
