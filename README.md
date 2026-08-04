@@ -101,6 +101,7 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for developmen
 The mod supports multiple languages. Currently included translations:
 
 - English
+- German
 - Brazilian Portuguese
 - Chinese (Simplified)
 - Korean
