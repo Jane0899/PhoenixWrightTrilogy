@@ -3,6 +3,25 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 04.08.2026 — Erstes Release des deutschen Forks: v1.3.3-de
+
+- [x] **Release `v1.3.3-de` auf Janas Fork (Jane0899) veröffentlicht.**
+  URL: https://github.com/Jane0899/PhoenixWrightTrilogy/releases/tag/v1.3.3-de
+  - Am Upstream-Release **v1.3.3** (AccessMods) orientiert: gleiche Zip-Struktur
+    (`PWAATAccessibility-<ver>/` mit `AccessibilityMod.dll`, `UnityAccessibilityLib.dll`,
+    `UniversalSpeech.dll`, `nvdaControllerClient.dll`, `MelonLoader.Installer.exe`,
+    `README.md`, `Data/`).
+  - **AccessibilityMod.dll** frisch aus `german-translation` gebaut (Release, GamePath
+    `D:\SteamLibrary\...`). Native Hilfs-DLLs + Installer versionsunabhängig aus dem
+    Upstream-Zip v1.3.3 übernommen.
+  - **Data/** bringt zusätzlich `de/` mit (89 Dateien: Namen, Hotspots GS1–GS3,
+    EvidenceDetails, StaffRoll, strings). Upstream-Sprachen en/ko/pt-BR/zh-Hans bleiben.
+  - **Zip mit `zip` (Schrägstriche) gepackt, NICHT `Compress-Archive`** — PowerShell 5.1
+    schreibt sonst Backslash-Pfade ins Zip (nicht Zip-konform, Entpack-Probleme). Lehre
+    festgehalten, damit künftige Releases das gleich richtig machen.
+  - README um „German" in der Übersetzungsliste ergänzt (Commit `390cc2e`).
+  - Tag zeigt auf `german-translation` (dort liegt die deutsche Arbeit), kein Prerelease.
+
 ## 30.07.2026 — J8: "Zahlen-Sprech" des Regisseurs für Screenreader zurückübersetzen
 
 Jana (aus Bug 3, „vor allem die Dialoge vom Regisseur"): Buchstaben werden durch
