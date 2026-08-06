@@ -7,8 +7,11 @@
   "system.not_in_mode": "Nicht im Modus {0}",
   "system.unable_to_read_state": "Unbekannter Zustand",
   "system.loaded": "Drücke Eingabe zum Starten",
-  "bug_report.saved": "Bug {0} gespeichert",
+  "bug_report.saved": "Bug {0} gespeichert. Beschreibungsfenster wird geöffnet",
   "bug_report.error": "Bug-Bericht konnte nicht gespeichert werden",
+  "bug_report.description_saved": "Beschreibung für Bug {0} gespeichert",
+  "bug_report.description_skipped": "Beschreibung übersprungen",
+  "bug_report.description_error": "Beschreibungsfenster konnte nicht geöffnet werden",
 
   "_section_modes": "=== Mode Names ===",
   "mode.generic": "Modus {0}",

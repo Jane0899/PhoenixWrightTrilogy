@@ -7,8 +7,11 @@
   "system.not_in_mode": "Not in {0} mode",
   "system.unable_to_read_state": "Unknown state",
   "system.loaded": "Press enter to start",
-  "bug_report.saved": "Bug {0} saved",
+  "bug_report.saved": "Bug {0} saved. Opening description window",
   "bug_report.error": "Could not save bug report",
+  "bug_report.description_saved": "Description for bug {0} saved",
+  "bug_report.description_skipped": "Description skipped",
+  "bug_report.description_error": "Could not open description window",
 
   "_section_modes": "=== Mode Names ===",
   "mode.generic": "{0} mode",

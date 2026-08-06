@@ -3,6 +3,42 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 06.08.2026 — Bug-Werkzeug: Beschreibungsfeld bei F9
+
+Jana wollte beim Testen zu einem per F9 erfassten Bug direkt eine kurze Beschreibung
+eintippen koennen, waehrend sie weiterspielt — statt sich zu merken, was an der Stelle
+kaputt war, bis sie nach dem Spielen im Chat berichtet.
+
+**Umsetzung (`Services/BugDescriptionService.cs`, neu):** F9 speichert den Bug-Bericht
+wie bisher sofort (Szene, Hotspot-Liste, Screenshot), stoesst danach aber zusaetzlich
+einen kleinen EXTERNEN Eingabedialog an (PowerShell + System.Windows.Forms, in einem
+eigenen, unsichtbaren Hintergrund-Prozess). Design-Entscheidung, kein Unity-eigenes
+Textfeld:
+- **Zugaenglichkeit:** Ein natives WinForms-Fenster wird von NVDA/JAWS sofort erkannt
+  und vorgelesen (Titel, Beschriftung, Fokus) — ein selbstgebautes Unity-OnGUI-Textfeld
+  waere ungewiss und mehr Aufwand.
+- **Kein Eingabekonflikt mit dem Spiel:** Sobald das Fenster den Tastaturfokus haelt,
+  bekommt das Spiel gar keine Tastendruecke mehr (Windows leitet Eingaben immer an das
+  fokussierte Fenster) — ohne dass wir dem Spiel selbst Eingaben wegfangen muessten.
+- Der Dialog laeuft auf einem Hintergrund-Thread: Das Spiel friert waehrend der Eingabe
+  NICHT ein, Musik/Animation laufen weiter. Enter speichert (AcceptButton), Escape
+  ueberspringt (CancelButton). Ergebnis wird als `description="..."` in den passenden
+  Bug-Block von report.txt eingefuegt (direkt nach der screenshot-Zeile). Sprachausgabe
+  des Ergebnisses laeuft ueber eine neue Hauptthread-Aktionswarteschlange in
+  `Core/CoroutineRunner.cs` (`EnqueueMainThreadAction`), da SpeechManager auf dem
+  Unity-Hauptthread laufen muss, der Dialog aber auf einem Hintergrund-Thread wartet.
+
+Neue Sprachschluessel (de/en): `bug_report.description_saved`,
+`bug_report.description_skipped`, `bug_report.description_error`; `bug_report.saved`
+kuendigt jetzt zusaetzlich an, dass sich das Beschreibungsfenster oeffnet.
+
+**Getestet:** Build fehlerfrei (0 Fehler/Warnungen). PowerShell-Skript-Syntax per
+Parse-Check verifiziert; unsichtbarer Prozess + Standardausgabe-Abfangen isoliert
+bestaetigt (triviales Skript ohne Fenster). **Der eigentliche Dialog (Fenster oeffnen,
+Fokus, Eingabe, Enter/Escape) wurde NICHT interaktiv getestet** — das haette selbst
+ein Fenster geoeffnet und den Fokus gezogen, was laut Uebernahme-Regel erst mit Janas
+Okay passieren darf. Janas Gegentest steht aus, am besten zusammen mit J9.
+
 ## 06.08.2026 — J9: Weit auseinanderliegende Nachrichten-Duplikate blieben unzusammengefasst
 
 Jana (nach Bugs 5+6 vom 04.08.2026, Szenario 11): Zwei Untersuchungspunkte mit

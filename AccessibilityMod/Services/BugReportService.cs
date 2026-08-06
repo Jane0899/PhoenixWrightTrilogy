@@ -94,6 +94,22 @@ namespace AccessibilityMod.Services
                 // Bestaetigung fuer Jana. Lokalisiert, weil sie es hoert; die
                 // Nummer nennt ihr, worauf sie sich im Chat beziehen kann.
                 SpeechManager.Announce(L.Get("bug_report.saved", number));
+
+                // Beschreibungsfenster anstossen: laeuft komplett asynchron auf
+                // einem Hintergrund-Thread (siehe BugDescriptionService), damit
+                // das Spiel waehrend der Eingabe weiterlaeuft. Eigener try/catch,
+                // damit ein Fehler HIER nicht die laengst erfolgreich gespeicherte
+                // Bug-Erfassung im catch unten als Fehlschlag erscheinen laesst.
+                try
+                {
+                    BugDescriptionService.RequestDescriptionAsync(number, reportFile);
+                }
+                catch (Exception exDesc)
+                {
+                    AccessibilityMod.Core.AccessibilityMod.Logger?.Error(
+                        "Beschreibungsdialog konnte nicht gestartet werden: " + exDesc.Message
+                    );
+                }
             }
             catch (Exception ex)
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using AccessibilityMod.Patches;
 using UnityAccessibilityLib;
 using UnityEngine;
@@ -13,6 +14,34 @@ namespace AccessibilityMod.Core
         // Delayed announcement support
         private Coroutine _delayedAnnouncementCoroutine;
         private int _delayedAnnouncementId = 0;
+
+        /// <summary>
+        /// Warteschlange fuer Aktionen, die von einem Hintergrund-Thread aus
+        /// angestossen wurden, aber auf dem Unity-Hauptthread laufen muessen
+        /// (z. B. SpeechManager.Announce). Gebraucht vom BugDescriptionService:
+        /// Der Beschreibungsdialog laeuft in einem eigenen Prozess auf einem
+        /// eigenen Thread, damit das Spiel waehrend der Eingabe nicht einfriert
+        /// — das Ergebnis (die Sprachausgabe "Beschreibung gespeichert") muss
+        /// aber trotzdem ueber Update() auf dem Hauptthread nachgereicht werden.
+        /// Mit lock() abgesichert, da mehrere Hintergrund-Threads gleichzeitig
+        /// einreihen koennten (z. B. zwei Bug-Beschreibungen kurz hintereinander).
+        /// </summary>
+        private readonly object _mainThreadQueueLock = new object();
+        private readonly Queue<Action> _mainThreadActions = new Queue<Action>();
+
+        /// <summary>
+        /// Reiht eine Aktion ein, die beim naechsten Update() auf dem
+        /// Unity-Hauptthread ausgefuehrt wird. Von jedem Thread aus aufrufbar.
+        /// </summary>
+        public void EnqueueMainThreadAction(Action action)
+        {
+            if (action == null)
+                return;
+            lock (_mainThreadQueueLock)
+            {
+                _mainThreadActions.Enqueue(action);
+            }
+        }
 
         // Menu cursor tracking
         private int _lastSelectPlateCursor = -1;
@@ -40,6 +69,35 @@ namespace AccessibilityMod.Core
         void Update()
         {
             TrackMenuCursors();
+            RunPendingMainThreadActions();
+        }
+
+        /// <summary>
+        /// Arbeitet die Warteschlange aus EnqueueMainThreadAction() ab. Jede
+        /// Aktion einzeln in try/catch, damit ein Fehler in einer Ansage nicht
+        /// die anderen wartenden Aktionen (oder den restlichen Update()-Tick)
+        /// mit reisst.
+        /// </summary>
+        private void RunPendingMainThreadActions()
+        {
+            while (true)
+            {
+                Action action;
+                lock (_mainThreadQueueLock)
+                {
+                    if (_mainThreadActions.Count == 0)
+                        break;
+                    action = _mainThreadActions.Dequeue();
+                }
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    AccessibilityMod.Logger?.Error($"Fehler bei Hauptthread-Aktion: {ex.Message}");
+                }
+            }
         }
 
         private void TrackMenuCursors()
