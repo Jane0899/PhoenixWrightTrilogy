@@ -305,24 +305,28 @@ namespace AccessibilityMod.Services
                         X3 = data.x3,
                         Y3 = data.y3,
                     };
-                    // Identische Duplikate ueberspringen: manche Szenen haben in
-                    // den Spieldaten ZWEI INSPECT_DATA-Eintraege mit derselben
-                    // Nachricht UND (nahezu) derselben Position — z. B. der Studio-
-                    // Van am Haupttor (von Jana gemeldet, Bug 4 vom 30.07.2026:
-                    // "Punkt 4 und 5 sind beide der Van"). Fuer Sehende ist das ein
-                    // Objekt; als zwei identische Punkte ist es fuer die Navigation
-                    // nur verwirrend. WICHTIG: Nur bei gleicher Position zusammen-
-                    // fassen. Gleiche Nachricht an VERSCHIEDENEN Positionen (dasselbe
-                    // Objekt aus zwei Blickwinkeln) bleibt als zwei Punkte erhalten.
+                    // Duplikate mit derselben Nachricht IMMER zusammenfassen —
+                    // unabhaengig von der Position. Ursprünglich (Bug 4, Van am
+                    // Haupttor) hatte ich das an einen 15px-Abstand gekoppelt, in der
+                    // Annahme, dieselbe Nachricht an weit entfernten Positionen sei
+                    // dasselbe Objekt aus zwei Blickwinkeln und solle getrennt bleiben.
+                    // Das war falsch: Jana meldete (Bug 5/6, 04.08.2026, Szenario 11),
+                    // dass bei zwei weiter auseinanderliegenden Punkten mit gleicher
+                    // Nachricht (s11/247 "nackte Laubbaeume", s11/248 "Reihe Plastik-
+                    // baenke" — beides Objekte, die sich ueber die Szene erstrecken)
+                    // immer nur EINER untersuchbar war; der andere reagierte auf
+                    // Enter nicht mehr. Grund: inspectCtrl.GetNextInspectNumber()
+                    // (Decompiled/inspectCtrl.cs) ermittelt den "untersucht"-Status
+                    // ausschliesslich ueber die Nachrichten-ID (target_num), nicht
+                    // ueber die Position — das Spiel selbst kennt pro Nachricht nur
+                    // EIN inspect_readed_-Flag. Zwei Punkte mit gleicher Nachricht
+                    // sind fuer das Spiel also immer dasselbe Ziel, egal wie weit sie
+                    // auseinanderliegen; einen zweiten, "toten" Navigationspunkt dafuer
+                    // anzubieten, ist fuer Screenreader-Nutzer nur eine Sackgasse.
                     bool isDuplicate = false;
                     for (int k = 0; k < _hotspots.Count; k++)
                     {
-                        var ex = _hotspots[k];
-                        if (
-                            ex.MessageId == info.MessageId
-                            && Math.Abs(ex.CenterX - info.CenterX) < 15f
-                            && Math.Abs(ex.CenterY - info.CenterY) < 15f
-                        )
+                        if (_hotspots[k].MessageId == info.MessageId)
                         {
                             isDuplicate = true;
                             break;

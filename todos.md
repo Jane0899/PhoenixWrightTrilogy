@@ -3,6 +3,33 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 06.08.2026 — J9: Weit auseinanderliegende Nachrichten-Duplikate blieben unzusammengefasst
+
+Jana (nach Bugs 5+6 vom 04.08.2026, Szenario 11): Zwei Untersuchungspunkte mit
+identischer Nachricht standen weiterhin als zwei getrennte Punkte in der Liste
+(`s11/247` "nackte Laubbaeume" und `s11/248` "Reihe Plastikbaenke", je zweimal).
+**Von beiden liess sich nur einer untersuchen — der andere reagierte auf Enter
+nicht mehr**, ohne erkennbaren Grund. Dadurch stimmte auch die Punktezahl
+("X von Y untersucht") nicht mit dem ueberein, was sie tatsaechlich erledigen
+konnte.
+
+**Ursache gefunden (Decompiled-Referenz, `inspectCtrl.GetNextInspectNumber`):**
+Der "untersucht"-Status wird vom Spiel selbst **ausschliesslich ueber die
+Nachrichten-ID** ermittelt (`target_num` -> `inspect_readed_[0, inspectNo]`),
+nicht ueber die Position der Trefferflaeche. Zwei INSPECT_DATA-Eintraege mit
+derselben Nachricht sind fuer das Spiel IMMER dasselbe Ziel — auch wenn ihre
+Trefferflaechen weit auseinanderliegen (Baumreihe/Bankreihe erstrecken sich
+ueber die Szene). Mein J7-Fix vom 30.07.2026 hatte das Zusammenfassen faelschlich
+an einen 15px-Abstand gekoppelt (Annahme: gleiche Nachricht an unterschiedlicher
+Position = dasselbe Objekt aus zwei Blickwinkeln, absichtlich getrennt lassen).
+Diese Annahme war falsch.
+
+**Fix (`Services/HotspotNavigator.cs`, `RefreshHotspots`):** Zusammenfassen haengt
+jetzt NUR noch an gleicher `MessageId`, der Abstands-Check ist komplett entfernt.
+Damit gibt es pro Nachricht genau einen Navigationspunkt — keine Sackgassen mehr,
+und die Zaehlung entspricht wieder dem tatsaechlichen Spielzustand. Build erfolgreich
+(0 Fehler), noch nicht von Jana gegengetestet.
+
 ## 04.08.2026 — Erstes Release des deutschen Forks: v1.3.3-de
 
 - [x] **Release `v1.3.3-de` auf Janas Fork (Jane0899) veröffentlicht.**
