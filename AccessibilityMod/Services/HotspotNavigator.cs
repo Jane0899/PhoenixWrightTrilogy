@@ -129,6 +129,14 @@ namespace AccessibilityMod.Services
                     if (pice.no == (int)itemId)
                     {
                         string name = pice.name;
+                        // Manche Beweisstueck-Namen enthalten eingebettete Zeilenumbrueche
+                        // (fuer den zweizeiligen Anzeigezustand im Akten-UI, z. B.
+                        // "April May\n(23 Jahre)"). Fuer unsere Ansage und den Bug-Bericht
+                        // wollen wir das als EINE Zeile — sonst reisst es z. B. in
+                        // report.txt eine name="..."-Zeile mitten durch (von Jana in
+                        // Bug 7 gemeldet: Zeile brach mitten im Namen ab).
+                        if (name != null)
+                            name = name.Replace("\r\n", " ").Replace('\n', ' ').Replace('\r', ' ').Trim();
                         return Net35Extensions.IsNullOrWhiteSpace(name) ? null : name;
                     }
                 }

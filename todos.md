@@ -3,6 +3,64 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 07.08.2026 — Beschreibungsfeld erfolgreich genutzt (Bug 7+8), zwei Folgefehler behoben
+
+Das neue F9-Beschreibungsfeld hat beim ersten echten Einsatz funktioniert — Jana konnte
+zu Bug 7 und Bug 8 direkt Text eintippen. Dabei zwei eigene Fehler entdeckt und behoben:
+
+- **Umlaute wurden zu Muell** ("tats�chlich" statt "tatsächlich", "sp�ter" statt
+  "später"): `BugDescriptionService` gab den getippten Text bisher ueber die
+  PowerShell-Standardausgabe zurueck (`Write-Output`), die ueber die Konsolen-
+  Codepage laeuft — die kennt C#s `Process.StandardOutput` nicht zuverlaessig.
+  **Fix:** Ergebnis kommt jetzt ueber eine Datei zurueck, beidseitig explizit
+  als UTF8 kodiert (PowerShell schreibt mit `[System.IO.File]::WriteAllText(...,
+  [System.Text.Encoding]::UTF8)`, C# liest mit `File.ReadAllText(path,
+  Encoding.UTF8)`) — umgeht die Codepage-Frage komplett. Isoliert getestet
+  (Datei-Rundweg mit "äöüß", ohne ein Fenster zu oeffnen): korrekt.
+- **Zeilenumbruch mitten im Beweisstueck-Namen** ("April May (23 Jahre)" riss den
+  Bericht mitten im Namen ab): `piceData.name` kann einen eingebetteten `\n`
+  enthalten (fuer die zweizeilige Akten-Anzeige). `HotspotNavigator.ResolveItemName`
+  entfernt das jetzt (durch Leerzeichen ersetzt).
+
+Build fehlerfrei (0 Fehler/Warnungen). Noch nicht von Jana im echten Dialog
+gegengetestet (bräuchte den offenen Dialog, siehe Übernahme-Regel).
+
+## 07.08.2026 — J10 (Verdacht): "untersucht"-Status bei bestimmten Punkten unzuverlaessig
+
+Aus Bug 7 und Bug 8 (Janas eigene Beschreibungen ueber das neue Eingabefeld):
+
+- **Bug 7** (Szenario 11, bg 72, Punkt 6 = `s11/180` "April May"): "Hier wird mir
+  ein anderer Punkt genannt als der, der tatsächlich angesprungen wird. Lustiger
+  Weise wird der Punkt auch als bereits untersucht angesagt. Irgendwas passt hier
+  nicht."
+- **Bug 8** (Szenario 11, bg 70, Punkt 3 = `s11/44` "Keine Hinweise."): "Hier wird
+  immer wieder gesagt, dass es keine Hinweise gibt, aber der Punkt wird nicht als
+  bereits untersucht abgespeichert. Oder wird der später noch wichtig?"
+
+**Positive Neben-Bestaetigung:** J9 (Duplikate zusammenfassen) wirkt — dieselbe
+Stelle wie Bug 6 (7 Punkte, `s11/248` doppelt) zeigt in Bug 7 jetzt korrekt nur noch
+6 Punkte (Duplikat weg).
+
+**Arbeitshypothese (aus `inspectCtrl.GetNextInspectNumber`/`GetNextCode` in der
+Decompiled-Referenz, noch NICHT live bestaetigt):** Der "untersucht"-Status haengt
+nicht direkt an der Nachrichten-ID, sondern an der Nachricht, bei der das interne
+Nachrichten-Skript beim Abarbeiten zuerst auf echten Anzeigetext (statt Kontroll-
+code) trifft — das Skript kann dabei ueber CODE_35/36/78/2c zu einer ANDEREN
+Nachricht "durchspringen" (vermutlich fuer bedingte Inhalte). Unser Statuscheck
+in `RefreshHotspots()` ruft `GetNextInspectNumber()` isoliert (ausserhalb des
+echten Untersuchen-Ablaufs) auf; wenn diese Sprungaufloesung von Kontext/Spiel-
+zustand abhaengt, kann unser Check einen ANDEREN inspectNo berechnen als der,
+der beim echten Untersuchen tatsaechlich markiert wird — das wuerde erklaeren,
+warum manche Punkte (v. a. generische Fuelltexte wie "Keine Hinweise") nie als
+untersucht gelten, UND warum Ansage und angesteuerter Punkt auseinanderfallen
+koennten (zwei Punkte, die zufaellig denselben Roh-inspectNo-Ausgangspunkt haben).
+
+**Noch offen:** Diese Hypothese ist NICHT durch Live-Daten bestaetigt — dafuer
+braeuchte es einen DevBridge-Zugriff auf ein laufendes Spiel (Aufloesung von
+GetNextInspectNumber fuer s11/44 und s11/180 direkt pruefen). Bevor ich etwas
+patche, das nur auf Verdacht beruht, erst mit Jana klaeren, ob/wann das Spiel
+dafuer noch mal laufen kann.
+
 ## 06.08.2026 — Bug-Werkzeug: Beschreibungsfeld bei F9
 
 Jana wollte beim Testen zu einem per F9 erfassten Bug direkt eine kurze Beschreibung

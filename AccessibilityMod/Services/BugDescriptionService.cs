@@ -120,10 +120,24 @@ namespace AccessibilityMod.Services
             // Skript nicht, falls der Titelaufbau sich mal aendert.
             string title = ("Bug " + bugNumber + " - Beschreibung").Replace("'", "''");
 
+            // Ergebnis kommt ueber eine Datei zurueck, NICHT ueber die Prozess-
+            // Standardausgabe. Grund: Write-Output auf die Konsole laeuft ueber
+            // die Konsolen-Codepage von PowerShell, die C#s Process.StandardOutput
+            // nicht zuverlaessig kennt — bei deutschen Umlauten (ä/ö/ü) kam dabei
+            // Muell heraus ("tats�chlich" statt "tatsächlich", von Jana in Bug 7/8
+            // gemeldet). Eine Datei mit explizit angegebener UTF8-Kodierung auf
+            // beiden Seiten (hier beim Schreiben, in ReadResultFile() beim Lesen)
+            // umgeht das Codepage-Problem komplett.
+            string resultPath = Path.Combine(
+                Path.GetTempPath(),
+                "pwaat_bugdesc_result_" + Guid.NewGuid().ToString("N") + ".txt"
+            );
+            string resultPathEscaped = resultPath.Replace("'", "''");
+
             // WICHTIG: Der Beschreibungstext selbst (was Jana tippt) landet NICHT
-            // in diesem Skript — er kommt erst hinterher ueber die Prozess-
-            // Standardausgabe zurueck. Damit gibt es keinerlei Injection-Risiko
-            // durch Sonderzeichen, die sie eintippt.
+            // in diesem Skript — er kommt erst hinterher ueber die Ergebnisdatei
+            // zurueck. Damit gibt es keinerlei Injection-Risiko durch Sonder-
+            // zeichen, die sie eintippt.
             string script =
                 "Add-Type -AssemblyName System.Windows.Forms\n"
                 + "Add-Type -AssemblyName System.Drawing\n"
@@ -174,8 +188,17 @@ namespace AccessibilityMod.Services
                 // Spielens.
                 + "$form.Add_Shown({ $textBox.Focus() })\n"
                 + "$result = $form.ShowDialog()\n"
-                + "if ($result -eq [System.Windows.Forms.DialogResult]::OK) { Write-Output $textBox.Text }\n";
+                + "if ($result -eq [System.Windows.Forms.DialogResult]::OK) {\n"
+                + "  [System.IO.File]::WriteAllText('"
+                + resultPathEscaped
+                + "', $textBox.Text, [System.Text.Encoding]::UTF8)\n"
+                + "}\n";
 
+            // ASCII genuegt hier: das Skript selbst enthaelt bewusst keine
+            // Umlaute (siehe "ueberspringen" statt "überspringen") - Lehre aus
+            // frueheren PowerShell-5.1-Mojibake-Problemen in diesem Projekt
+            // (siehe decode-missing.ps1). Nur die Ergebnisdatei braucht UTF8,
+            // weil DORT Janas eigener, nicht auf ASCII beschraenkter Text landet.
             File.WriteAllText(scriptPath, script, Encoding.ASCII);
 
             try
@@ -188,24 +211,32 @@ namespace AccessibilityMod.Services
                         + scriptPath
                         + "\"",
                     UseShellExecute = false,
-                    RedirectStandardOutput = true,
                     CreateNoWindow = true,
                 };
 
                 using (Process process = Process.Start(psi))
                 {
-                    string output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
-                    return string.IsNullOrEmpty(output) ? null : output.Trim();
                 }
+
+                if (!File.Exists(resultPath))
+                    return null; // Abgebrochen (Escape/Ueberspringen) - keine Ergebnisdatei geschrieben.
+
+                string text = File.ReadAllText(resultPath, Encoding.UTF8);
+                return string.IsNullOrEmpty(text) ? null : text.Trim();
             }
             finally
             {
                 // Aufraeumen, auch wenn PowerShell fehlschlaegt - keine
-                // Temp-Datei-Leiche pro Bugmeldung.
+                // Temp-Datei-Leichen pro Bugmeldung.
                 try
                 {
                     File.Delete(scriptPath);
+                }
+                catch { }
+                try
+                {
+                    File.Delete(resultPath);
                 }
                 catch { }
             }
