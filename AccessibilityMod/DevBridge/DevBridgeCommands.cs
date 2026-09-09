@@ -66,6 +66,10 @@ namespace AccessibilityMod.DevBridge
                     return CropCurrentBackground(arg);
                 case "fast":
                     return FastForward(arg);
+                case "listtables":
+                    return ListStaticInspectTables(arg);
+                case "sctable":
+                    return DumpStaticInspectTable(arg);
                 default:
                     return "ERROR unbekannter Befehl: " + cmd + " (help zeigt alle)";
             }
@@ -86,8 +90,121 @@ namespace AccessibilityMod.DevBridge
                     "say <text>           - Text ueber den Screenreader ausgeben",
                     "mdtpath <t> <s>      - Nachrichtendatei eines Szenarios anzeigen",
                     "mes <t> <s> <nr> [p] - Text einer Nachricht (Untersuchungstext)",
+                    "listtables <praefix> - Statische INSPECT_DATA-Tabellen der scenario-Klasse auflisten",
+                    "sctable <feldname>   - Eine statische INSPECT_DATA-Tabelle komplett auslesen",
                 }
             );
+        }
+
+        /// <summary>
+        /// Listet alle OEFFENTLICHEN STATISCHEN Felder vom Typ INSPECT_DATA[] auf
+        /// der scenario-Klasse (GS1), deren Name mit dem gegebenen Praefix beginnt.
+        ///
+        /// Warum ueberhaupt? Jede Ermittlungsszene hat ihre INSPECT_DATA-Tabelle
+        /// als fest kompiliertes statisches Feld im Spielcode (z. B.
+        /// "Sce4_0_room001_ck_mess_tbl") — unabhaengig vom aktuellen Spielstand.
+        /// Damit lassen sich Untersuchungspunkt-Daten (Position, item, PLACE-Feld)
+        /// fuer JEDE Szene nachschlagen, ohne dass das Spiel dort tatsaechlich
+        /// gerade steht (kein Speicherstand noetig, keine erneute Durchspielung).
+        /// Entstanden am 09.09.2026, um J11 (place==253-Hypothese fuer Bug 9/10)
+        /// zu verifizieren, ohne Janas Spielstand anzutasten.
+        /// </summary>
+        private static string ListStaticInspectTables(string prefix)
+        {
+            try
+            {
+                var scenarioType = typeof(GSStatic).Assembly.GetType("scenario");
+                if (scenarioType == null)
+                    return "ERROR Typ 'scenario' nicht gefunden";
+
+                var fields = scenarioType.GetFields(
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static
+                );
+
+                StringBuilder sb = new StringBuilder();
+                int count = 0;
+                foreach (var f in fields)
+                {
+                    if (f.FieldType != typeof(INSPECT_DATA[]))
+                        continue;
+                    if (
+                        !string.IsNullOrEmpty(prefix)
+                        && f.Name.IndexOf(prefix, StringComparison.OrdinalIgnoreCase) < 0
+                    )
+                        continue;
+
+                    var arr = f.GetValue(null) as INSPECT_DATA[];
+                    sb.Append(f.Name).Append(" (").Append(arr?.Length ?? 0).Append(" Eintraege)\n");
+                    count++;
+                }
+
+                if (count == 0)
+                    sb.Append("(keine passenden Tabellen gefunden)");
+
+                return sb.ToString().TrimEnd('\n');
+            }
+            catch (Exception ex)
+            {
+                return "ERROR listtables: " + Unwrap(ex).Message;
+            }
+        }
+
+        /// <summary>
+        /// Liest eine einzelne statische INSPECT_DATA-Tabelle komplett aus (Name
+        /// muss exakt passen — siehe "listtables" zum Finden des Namens). Gibt pro
+        /// Zeile message/place/item und die vier Eckpunkte aus, GENAU die Felder,
+        /// die HotspotNavigator.RefreshHotspots auch aus der LAUFENDEN Szene liest.
+        /// </summary>
+        private static string DumpStaticInspectTable(string fieldName)
+        {
+            if (string.IsNullOrEmpty(fieldName))
+                return "ERROR Aufruf: sctable <feldname>";
+
+            try
+            {
+                var scenarioType = typeof(GSStatic).Assembly.GetType("scenario");
+                if (scenarioType == null)
+                    return "ERROR Typ 'scenario' nicht gefunden";
+
+                var field = scenarioType.GetField(
+                    fieldName,
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static
+                );
+                if (field == null || field.FieldType != typeof(INSPECT_DATA[]))
+                    return "ERROR Feld '" + fieldName + "' nicht gefunden (Groß-/Kleinschreibung beachten)";
+
+                var arr = field.GetValue(null) as INSPECT_DATA[];
+                if (arr == null)
+                    return "ERROR Feld ist leer";
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append(fieldName).Append(": ").Append(arr.Length).Append(" Eintraege\n");
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    var d = arr[i];
+                    sb.Append(i)
+                        .Append(": message=")
+                        .Append(d.message)
+                        .Append(" place=")
+                        .Append(d.place)
+                        .Append(" item=")
+                        .Append(d.item)
+                        .Append(" x0=")
+                        .Append(d.x0)
+                        .Append(" y0=")
+                        .Append(d.y0)
+                        .Append(" x2=")
+                        .Append(d.x2)
+                        .Append(" y2=")
+                        .Append(d.y2)
+                        .Append("\n");
+                }
+                return sb.ToString().TrimEnd('\n');
+            }
+            catch (Exception ex)
+            {
+                return "ERROR sctable: " + Unwrap(ex).Message;
+            }
         }
 
         /// <summary>

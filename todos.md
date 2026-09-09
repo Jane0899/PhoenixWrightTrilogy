@@ -10,28 +10,51 @@ gesammelt (Bug 9-18), quer durch Ermittlung, 3D-Beweise, Fingerabdruck, Verhandl
 und Videoband. Code-Analyse (Decompiled-Referenz + aktueller Mod-Code) OHNE
 Spielstart durchgefuehrt; live-gestuetzte Fixes folgen in der naechsten Runde.
 
-### J11 (Bug 9+10): "Geister"-Untersuchungspunkte mit place==253 — FIX ANGEWANDT, Live-Check aussteht
+### J11 (Bug 9+10): Tabellen-Abschlusszeile als Phantompunkt — LIVE VERIFIZIERT UND KORREKT GEFIXT (09.09.2026)
 
 - **Bug 9** (Szenario 17, bg 1): Punkt 6 (`msg=65535`) zeigt scheinbar auf denselben
   Schreibtisch wie Punkt 5, gilt in der Liste als "nicht untersucht", aber beim
   Ansteuern sagt das Spiel "bereits untersucht".
 - **Bug 10** (Szenario 18, bg 113): Gleiches Muster beim Streifenwagen.
-- **Fund in der Decompiled-Referenz** (`inspectCtrl.finger_pos_check`, Assembly-CSharp):
-  Punkte mit `INSPECT_DATA.place == 253` sind im Original-Spiel BEDINGTE Punkte —
-  sie reagieren nur auf Klicks, wenn eine harte, item-spezifische GSFlag-Bedingung
-  erfuellt ist (fest verdrahtete switch-Tabelle im Spielcode, pro Spiel/Item). Bei
-  `item=255` (kein Bezug, wie bei Bug 9/10) trifft KEINE dieser Bedingungen je zu —
-  der Punkt ist fuer das Spiel dauerhaft tot: in KEINER der beiden Pruefschleifen
-  von `finger_pos_check` je ein Treffer. Unser Navigator bot ihn trotzdem als echten,
-  navigierbaren Punkt an — daher der falsche Status und das Verhalten "geht zu Punkt
-  6, untersucht aber eigentlich den darunterliegenden echten Punkt".
-- **Fix:** `HotspotNavigator.RefreshHotspots()` ueberspringt jetzt zusaetzlich zu
-  `place==254` (schon vorher) auch `place==253` — analog zur bereits bestehenden
-  Skip-Logik. Build fehlerfrei.
-- **Noch offen:** Der `place`-Wert dieser konkreten Punkte wurde NICHT live am
-  laufenden Spiel verifiziert (nur aus dem Symptommuster erschlossen) — die
-  Decompiled-Evidenz ist stark, aber nach der J7-Erfahrung (zu enge Annahme beim
-  ersten Versuch) wollen wir das gegenchecken, sobald das Spiel naechstes Mal laeuft.
+- **Erster Verdacht (place==253) WAR FALSCH — per Live-Daten widerlegt.** Dafuer neues,
+  dauerhaftes DevBridge-Werkzeug gebaut: `listtables <praefix>` und
+  `sctable <feldname>` lesen per Reflection die STATISCH KOMPILIERTEN
+  `INSPECT_DATA[]`-Tabellen der `scenario`-Klasse aus (z. B.
+  `Sce4_0_room000_ck_mess_tbl`) — funktioniert OHNE dass das Spiel gerade in der
+  betreffenden Szene steht, weil diese Tabellen fest im Code stehen, nicht vom
+  Spielstand abhaengen. Damit liess sich Bug 9 (`Sce4_0_room000_ck_mess_tbl`,
+  Room 6) und Bug 10 (`Sce4_0_room006_ck_mess_tbl`, Room 24) OHNE Speicherstand-
+  Aenderung exakt nachvollziehen.
+- **Echter Befund:** Jede Raumtabelle endet mit einer literalen Abschlusszeile
+  `message=65535 place=255 item=255 x0=65535 y0=4095 ...` (Terminator, keine echte
+  Nachricht). Der Raum-Init-Code (`sceneNNN_tantei_room_init` im Spielcode) kopiert
+  beim Betreten des Raums die KOMPLETTE Quelltabelle inklusive dieser letzten Zeile
+  in `GSStatic.inspect_data_` hinein. Unser Navigator erkannte bisher nur
+  `place==uint.MaxValue` als Ende-Signal — die Terminator-Zeile mit `place==255`
+  rutschte als zusaetzlicher, kaputter "letzter Punkt" durch: nie als untersucht
+  erkennbar (Phantom-Koordinaten), oft mit gleichem Namen wie der letzte echte Punkt.
+- **Wichtiger Gegenbefund zum ersten Verdacht:** `Sce4_0_room002_ck_mess_tbl` (aus
+  DERSELBEN Szenario-17/18-Gegend) enthaelt ZWEI ECHTE `place==253`-Punkte
+  (`item=18`, `item=19`) — laut `inspectCtrl.finger_pos_check` (Decompiled-Referenz)
+  sind das legitime, bedingt aktive Sammelpunkte, die reagieren, SOLANGE ein
+  bestimmtes GSFlag noch nicht gesetzt ist. Der erste Fix (place==253 IMMER
+  ueberspringen) haette diese echten Punkte dauerhaft unsichtbar gemacht —
+  schlimmer als der Bug, den er beheben sollte.
+- **Finaler Fix (`HotspotNavigator.RefreshHotspots()`):** `place==253` wird NICHT
+  mehr uebersprungen (Rueckbau). Stattdessen bricht die Schleife jetzt bei
+  `place==255` ab (wie beim bestehenden `uint.MaxValue`-Fall) — das ist die
+  tatsaechliche Endemarkierung. `place==254` (disabled) bleibt wie zuvor. Build
+  fehlerfrei, per Live-Reflection auf die echten Tabellen bestaetigt (kein Rateeffekt
+  mehr).
+- **Nebenfund (noch offen, eigenstaendig):** In Bug 5/8s Szenario 11 ist der
+  auffaellige `msg=44`-Punkt (dort immer "Keine Hinweise", nie als untersucht
+  gespeichert) laut `sctable Sce3_0_room002_ck_mess_tbl` ein GANZ NORMALER Punkt mit
+  `place=0` — KEIN Terminator, keine Sentinel-Anomalie. Die Ursache fuer sein
+  Status-Verhalten liegt woanders (Verdacht: Nachricht 44 ist eine im Original-Spiel
+  MEHRFACH wiederverwendete generische "Kein Kommentar"-Nachricht, wodurch der
+  `inspect_readed_`-Status pro NACHRICHT, nicht pro Punkt, mehrdeutig wird) — NICHT
+  weiter verfolgt in dieser Runde, da eine vollstaendige Bestaetigung eine Suche
+  ueber alle ~870 Raumtabellen bräuchte. Für später vorgemerkt.
 
 ### J12 (Bug 11+12+13b): 3D-Beweis sammelt Collider ausserhalb der Spiel-Trefferebene — FIX ANGEWANDT, Live-Check aussteht
 
@@ -130,18 +153,35 @@ hoeren, bei welchem Bild man gerade ist... Ich glaub, das steht da anders rum, o
   Gate eventuell NICHT erfuellt, wodurch 'I' auf eine andere, bildlose Ansage
   ausweicht. Nicht live bestaetigt — braucht Beobachtung waehrend des Spulens.
 
-## Live-Verifikationsrunde noch ausstehend (sobald das Spiel naechstes Mal laeuft)
+## Live-Verifikationsrunde 09.09.2026 — Stand nach Spielstart
 
-Checkliste fuer die naechste Spielsitzung, gebuendelt statt einzeln zu fragen:
-1. J11: `place`-Feld der Punkte aus Bug 9 (s17, Punkt 6) und Bug 10 (s18, Punkt 8)
-   tatsaechlich pruefen (erwartet: 253).
-2. J12: Hotspot-Anzahl in Szenario 19 (bg 8) VOR/NACH dem Layer-Filter vergleichen,
+**J11 erledigt** (siehe oben) — per neuem DevBridge-Werkzeug (`listtables`/`sctable`,
+liest statische Raumtabellen per Reflection, OHNE dass das Spiel in der Szene stehen
+muss) komplett verifiziert und korrigiert, ganz ohne Janas Spielstand anzutasten.
+
+**J12, J13, J16 NICHT erreichbar mit aktuellem Spielstand:** Beide vorhandenen
+Speicherstaende (Slot 1: Episode 5, Tag 3 - 2. Prozess; Slot 2: Episode 5, Tag 2 -
+2. Prozess) liegen bereits HINTER den betroffenen Ermittlungsszenen (Szenario 19/20/25).
+Anders als J11 lassen sich diese drei NICHT per statischer Tabellen-Reflexion pruefen,
+weil sie echten LAUFZEIT-Bühnenzustand brauchen (geladene 3D-Modelle mit echten
+MeshCollidern bzw. die aktive Videoband-UI) — das existiert nur, wenn das Spiel
+tatsaechlich genau dort steht. Einzige Wege: (a) "Episode auswaehlen" vom Titel aus
+komplett neu durchspielen bis Szenario 19-25 (zeitaufwaendig, mehrere Spielabschnitte),
+oder (b) warten, bis Jana diese Szenen von selbst wieder erreicht (naechster
+Durchgang) und dann per F9 frische Live-Daten sammelt. Rueckfrage an Jana gestellt
+(siehe Chat 09.09.2026), welchen Weg sie bevorzugt.
+
+Offene Punkte im Einzelnen, sobald einer der beiden Wege moeglich ist:
+1. J12: Hotspot-Anzahl in Szenario 19 (bg 8) VOR/NACH dem Layer-Filter vergleichen,
    pruefen ob jetzt alle verbleibenden Punkte auf Eingabe reagieren.
-3. J13: `poly_obj_id`/`detail_obj_id`/`current_pice_.no` waehrend 3D-Untersuchung
+2. J13: `poly_obj_id`/`detail_obj_id`/`current_pice_.no` waehrend 3D-Untersuchung
    in Szenario 20 dumpen, um die richtige Namensquelle zu bestimmen.
-4. J14: Neue Fortschritts-Zwischenansagen beim echten Pudern gegenhoeren (Kadenz,
-   Lautstaerke im Verhaeltnis zu anderen Ansagen, Tonfall der 100%-Meldung).
-5. J16: Verhalten von 'I' waehrend des Spulens (ohne sichtbares Ziel) beobachten,
+3. J14: Neue Fortschritts-Zwischenansagen beim echten Pudern gegenhoeren (Kadenz,
+   Lautstaerke im Verhaeltnis zu anderen Ansagen, Tonfall der 100%-Meldung) — dieser
+   Punkt ist mit dem AKTUELLEN Spielstand (Tag 3) grundsaetzlich nicht mehr
+   nachstellbar (Puderphase liegt in der Vergangenheit), NICHT blockierend fuer den
+   Rest, nur beim naechsten natuerlichen Durchgang gegenzuhoeren.
+4. J16: Verhalten von 'I' waehrend des Spulens (ohne sichtbares Ziel) beobachten,
    um IsVideoTapeActive() bei Bedarf zu lockern.
 
 ## 07.08.2026 — Beschreibungsfeld erfolgreich genutzt (Bug 7+8), zwei Folgefehler behoben

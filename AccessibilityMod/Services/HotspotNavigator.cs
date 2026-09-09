@@ -256,28 +256,42 @@ namespace AccessibilityMod.Services
                     if (data == null || data.place == uint.MaxValue)
                         break;
 
+                    // ECHTES Ende-Signal, per Live-Verifikation am 09.09.2026 (neuer
+                    // DevBridge-Befehl "sctable", direkt auf die statisch kompilierten
+                    // Raumtabellen der scenario-Klasse angewendet, KEIN Spielstand
+                    // noetig): Jede Raumtabelle endet mit einer literalen Abschluss-
+                    // Zeile "message=65535 place=255 item=255 x0=65535 y0=4095 ...".
+                    // Der Raum-Init-Code kopiert diese Zeile beim Betreten des Raums
+                    // 1:1 in GSStatic.inspect_data_ mit hinein (die Kopierschleife
+                    // laeuft ueber ALLE Eintraege der Quelltabelle einschliesslich
+                    // ihres letzten, absichtlich unbrauchbaren Abschluss-Elements) —
+                    // erst DANACH bleiben die restlichen der 32 Puffer-Slots auf dem
+                    // echten uint.MaxValue-Ausgangswert (oben schon abgefangen). Ohne
+                    // diesen Fall bot unser Navigator die Abschlusszeile selbst als
+                    // "letzten Punkt" an: examined=0 (an dieser Phantom-Position kann
+                    // das Spiel nie einen Treffer erkennen), oft mit demselben Namen
+                    // wie der letzte echte Punkt (Bug 9+10, 05.09.2026: Szenario 17
+                    // "Schreibtisch" und Szenario 18 "Streifenwagen" zeigten je einen
+                    // zusaetzlichen Punkt 65535, der "nicht untersucht" blieb).
+                    if (data.place == 255)
+                        break;
+
                     // Skip disabled hotspots (place 254)
                     if (data.place == 254)
                         continue;
 
-                    // Skip place==253 hotspots: laut Decompiled-Referenz
-                    // (inspectCtrl.finger_pos_check, erste Schleife) sind das
-                    // BEDINGTE Punkte, die das Spiel nur dann ueberhaupt auf
-                    // Klicks reagieren laesst, wenn ein ganz bestimmtes item
-                    // UND ein ganz bestimmtes GSFlag zutreffen (harte Switch-
-                    // Tabelle im Spielcode, pro Spiel/Item einzeln). Ist die
-                    // Bedingung nicht erfuellt — und bei item=255 (kein Bezug)
-                    // trifft SIE NIE zu, weil 255 in der Switch-Tabelle gar
-                    // nicht vorkommt — bleibt der Punkt fuer das Spiel komplett
-                    // tot: nicht klickbar, taucht in KEINER der beiden Schleifen
-                    // von finger_pos_check als Treffer auf. Wenn wir ihn trotzdem
-                    // navigierbar anbieten, landet Jana auf einem Geisterpunkt:
-                    // Status wirkt falsch (Bug 9/10, 05.09.2026 gemeldet — z. B.
-                    // "Schreibtisch" doppelt in Szenario 17, msg=65535), und beim
-                    // tatsaechlichen Untersuchen reagiert oft der ueberlappende
-                    // ECHTE Punkt darunter statt des erwarteten.
-                    if (data.place == 253)
-                        continue;
+                    // WICHTIG: place==253 wird bewusst NICHT uebersprungen (fruehere
+                    // Fassung dieses Fixes tat das, siehe Git-Historie). Live-Check
+                    // am 09.09.2026 zeigte in Sce4_0_room002_ck_mess_tbl zwei ECHTE,
+                    // bedingt aktive Sammelpunkte mit place==253 (item=18/19) — laut
+                    // inspectCtrl.finger_pos_check (Decompiled-Referenz) reagieren
+                    // die AUF KLICKS, solange ein bestimmtes GSFlag noch NICHT gesetzt
+                    // ist (z. B. ein Beweisstueck, das man einsammeln kann, bevor man
+                    // es woanders schon bekommen hat). Ein pauschales Ueberspringen
+                    // haette Jana genau diese Sammelpunkte dauerhaft unsichtbar
+                    // gemacht — schlimmer als der urspruengliche Verdacht, den es
+                    // beheben sollte. Der tatsaechliche Bug-9/10-Verursacher war die
+                    // Abschlusszeile (place==255) oben, nicht place==253.
 
                     // Calculate center of quadrilateral
                     float centerX = (data.x0 + data.x1 + data.x2 + data.x3) / 4f;
