@@ -3,6 +3,63 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 10.09.2026 — J12 Nachtest: "Lanas Handy" deckt zweiten, eigenstaendigen Fehler auf
+
+Jana bat gezielt darum, das Handy in der 3D-Untersuchung zu pruefen ("da hatte ich
+einige Punkte, die ich nicht anklicken konnte"). Live getestet (gleiches
+Sicherheitsprotokoll wie am 09.09.: Kopie von Janas Spielstand, hinterher per MD5
+bestaetigt 1:1 zurueckgesetzt).
+
+**Bestaetigt: Genau das Objekt aus Bug 11/12.** 10 gemeldete Punkte bei
+`poly_obj_id=9` (deckt sich mit dem hartcodierten Fallback-Namen "Cell Phone (open)"
+im Code). Systematischer Test aller 10 Punkte zeigte: 3 funktionierten (echte
+Dialogzeilen wie "Die Wiederwahltaste..."), der Rest reagierte auf Eingabe nicht
+oder loeste ein verwirrendes Verhalten aus (siehe unten).
+
+**Zweiter, von J12 UNABHAENGIGER Fehler gefunden:** `Evidence3DNavigator.RefreshHotspots()`
+rief `GetComponentsInChildren<MeshCollider>(true)` auf — das `true` bedeutet
+"auch INAKTIVE Objekte einschliessen"! 3D-Beweisstuecke mit mehreren Zustaenden
+(z. B. Handy zugeklappt/aufgeklappt) haben beide Zustaende als Geschwister-
+Hierarchien im selben Modell, von denen nur EINE gerade aktiv ist. Ein inaktiver
+Collider kann von Unitys Physics UNTER KEINEN UMSTAENDEN getroffen werden — der
+Layer-Filter aus J12 half hier nichts, weil diese Collider auf der RICHTIGEN Layer
+lagen, nur eben deaktiviert. Fund bestaetigt durch die Namen der "toten" Collider:
+neben den normalen "atariN"-Punkten tauchten fremde Namen wie "itm04e02_7" auf
+(Reste der jeweils anderen Modell-Variante), alle mit "No hit found after
+exhaustive search" in unserer eigenen Rotations-Verifikation.
+
+**Fix:** `GetComponentsInChildren<MeshCollider>(false)` (nicht mehr `true`) plus
+zusaetzlicher Check auf `collider.enabled` (ein zweites, unabhaengiges Unity-Flag).
+**Ergebnis live bestaetigt: 10 -> 4 Untersuchungspunkte** beim erstmaligen Oeffnen
+des Handys (geschlossener Zustand). Alle 4 sinnvoll navigierbar.
+
+**Neuer, interessanter Nebenbefund (kein Bug, aber Barriere):** Einer der 4 Punkte
+ist die Scharnier-/Aufklapp-Stelle — Eingabe darauf klappt das Handy sichtbar auf
+(per Screenshot bestaetigt) und schaltet auf einen NEUEN Satz von 6 Punkten um
+(Tastatur, Bildschirm etc., jetzt sichtbar). Das ist eine ECHTE, beabsichtigte
+Spielinteraktion, keine Fehlfunktion — nur: **das Spiel gibt dafuer keine eigene
+Sprachzeile aus**, unser Mod meldet den Wechsel nur als generische
+Neustart-Ansage ("10 Untersuchungspunkte" wird zu "6 Untersuchungspunkte" ohne
+Erklaerung, was passiert ist). Fuer Jana klingt das vermutlich wie "nichts ist
+passiert, ploetzlich ist die Liste anders". **Verbesserungsidee, noch nicht
+umgesetzt:** Wenn sich die Hotspot-ANZAHL nach einer Eingabe aendert (Indiz fuer
+einen Modell-Zustandswechsel), eine eigene Ansage bauen ("Das Handy klappt auf.")
+statt der generischen Wiedereintritts-Nachricht.
+
+**Von 6 Punkten im aufgeklappten Zustand funktionierten nur 2 mit echter
+Dialogzeile, 3 taten nichts (OHNE Warnung unserer Rotations-Suche — vermutlich
+Tasten ohne eigenen Untersuchungstext, evtl. auch fuer sehende Spieler ohne
+Reaktion, NICHT zwingend ein Bug), 1 zeigte das oben beschriebene
+Zustandswechsel-Verhalten erneut inkonsistent (mal Reset, mal gar nichts —
+vermutlich weil die Kamerarotation zwischen zwei Anlaeufen nicht zurueckgesetzt
+wird und die Positionsberechnung dadurch leicht abweicht).**
+
+**Fazit:** Der includeInactive-Fix ist ein echter, verifizierter Fortschritt
+(10→4, alle 4 sauber). Die verbleibende Eigenart (Zustandswechsel ohne Ansage,
+gelegentliche Navigations-Unzuverlaessigkeit bei mehreren Kamerawinkeln) ist ein
+tieferliegendes, separates Thema — nicht in dieser Runde geloest, siehe
+Verbesserungsidee oben.
+
 ## 09.09.2026 — Bug 9-18: grosse Sammelrunde nach Wochen-Testsession
 
 Jana hat ueber mehrere Wochen (05.-08.09.2026) mit F9+Beschreibung zehn neue Bugs

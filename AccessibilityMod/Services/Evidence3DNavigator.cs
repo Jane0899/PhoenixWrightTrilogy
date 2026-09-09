@@ -143,8 +143,21 @@ namespace AccessibilityMod.Services
                 if (modelParent == null)
                     return;
 
-                // Find all mesh colliders (these are the hotspots)
-                var colliders = modelParent.GetComponentsInChildren<MeshCollider>(true);
+                // Find all mesh colliders (these are the hotspots).
+                // WICHTIG: includeInactive=FALSE (nicht wie frueher "true")! Viele
+                // 3D-Beweisstuecke haben mehrere Zustaende (z. B. Handy offen/
+                // geschlossen) als GESCHWISTER-Hierarchien im selben Modell, von
+                // denen immer nur eine aktiv ist. Ein inaktiver Collider kann von
+                // Unitys Physics UNTER KEINEN UMSTAENDEN per Raycast/SphereCast
+                // getroffen werden — unabhaengig von Cursor-Position oder Rotation.
+                // Mit includeInactive=true boten wir Collider der jeweils
+                // INAKTIVEN Variante als navigierbare Punkte an, die niemals
+                // reagieren konnten (Live-Befund 10.09.2026 bei "Lanas Handy":
+                // Punkte mit ungewoehnlichen Namen wie "itm04e02_7" neben den
+                // normalen "atariN"-Punkten, alle mit "No hit found after
+                // exhaustive search" — betraf Bug 11: 10 gemeldete Punkte, obwohl
+                // nur ein Teil davon je haette funktionieren koennen).
+                var colliders = modelParent.GetComponentsInChildren<MeshCollider>(false);
 
                 // Layer des Beweisstueck-Objekts: Das Spiel selbst (siehe
                 // scienceInvestigationCtrl.GetSelectingCheckIndex in der
@@ -175,6 +188,19 @@ namespace AccessibilityMod.Services
                 foreach (var collider in colliders)
                 {
                     string colliderName = collider.gameObject.name;
+
+                    // Der COLLIDER selbst kann deaktiviert sein, auch wenn sein
+                    // GameObject aktiv ist (zwei getrennte Unity-Flags) — auch das
+                    // macht ihn fuer Physics.SphereCast unsichtbar.
+                    if (!collider.enabled)
+                    {
+#if DEBUG
+                        AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                            $"[3DNav] Skipping disabled collider: {colliderName}"
+                        );
+#endif
+                        continue;
+                    }
 
                     // Collider auf einer anderen Layer als das Beweisstueck
                     // selbst kann das Spiel nie treffen — raus damit (siehe
