@@ -29,6 +29,22 @@ namespace AccessibilityMod.Patches
                 if (!__instance.is_play)
                     return;
 
+                // WICHTIG: Das Spiel ruft StateMainCoroutine NICHT nur beim ersten
+                // Betreten der 3D-Untersuchung auf, sondern auch erneut, wenn sich
+                // das Modell waehrend der Untersuchung selbst veraendert — z. B.
+                // wenn ein Scharnier-Punkt angeklickt wird und ein Klapp-Handy
+                // aufklappt (Live-Befund 10.09.2026 bei "Lanas Handy": Eingabe auf
+                // dem Scharnier loeste sichtbar das Aufklappen aus UND einen
+                // zweiten StateMainCoroutine-Aufruf mit neuer Punktzahl, OHNE dass
+                // StateCloseCoroutine dazwischen lief). Bisher klang das fuer Jana
+                // wie ein Neustart aus dem Nichts ("ploetzlich andere Punktzahl,
+                // ohne dass sich etwas getan haette") — das Spiel selbst gibt fuer
+                // diesen Zustandswechsel keine eigene Sprachzeile aus.
+                // _wasPlaying VOR dem Ueberschreiben sichern, um zu unterscheiden:
+                // true  = wir waren schon in der 3D-Untersuchung -> Zustandswechsel
+                // false = das ist der ERSTE Eintritt (aus der Gerichtsakte heraus)
+                bool wasAlreadyPlaying = _wasPlaying;
+
                 // Reset tracking
                 _lastHitPointIndex = -1;
                 _wasPlaying = true;
@@ -40,12 +56,16 @@ namespace AccessibilityMod.Patches
                 string evidenceName = Evidence3DNavigator.GetCurrentEvidenceName();
                 int hotspotCount = Evidence3DNavigator.GetHotspotCount();
 
-                string message = L.Get("evidence_3d.opened", evidenceName, hotspotCount);
+                string message = wasAlreadyPlaying
+                    ? L.Get("evidence_3d.state_changed", hotspotCount)
+                    : L.Get("evidence_3d.opened", evidenceName, hotspotCount);
 
                 SpeechManager.Announce(message, GameTextType.Menu);
 
                 AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
-                    $"[3DEvidence] Entered 3D examination mode for: {evidenceName}, {hotspotCount} hotspots"
+                    wasAlreadyPlaying
+                        ? $"[3DEvidence] Model state changed for: {evidenceName}, now {hotspotCount} hotspots"
+                        : $"[3DEvidence] Entered 3D examination mode for: {evidenceName}, {hotspotCount} hotspots"
                 );
             }
             catch (Exception ex)

@@ -41,10 +41,21 @@ Spielinteraktion, keine Fehlfunktion — nur: **das Spiel gibt dafuer keine eige
 Sprachzeile aus**, unser Mod meldet den Wechsel nur als generische
 Neustart-Ansage ("10 Untersuchungspunkte" wird zu "6 Untersuchungspunkte" ohne
 Erklaerung, was passiert ist). Fuer Jana klingt das vermutlich wie "nichts ist
-passiert, ploetzlich ist die Liste anders". **Verbesserungsidee, noch nicht
-umgesetzt:** Wenn sich die Hotspot-ANZAHL nach einer Eingabe aendert (Indiz fuer
-einen Modell-Zustandswechsel), eine eigene Ansage bauen ("Das Handy klappt auf.")
-statt der generischen Wiedereintritts-Nachricht.
+passiert, ploetzlich ist die Liste anders".
+
+**UMGESETZT UND LIVE BESTAETIGT (10.09.2026, Jana bat direkt darum):**
+`ScienceInvestigationPatches.StateMainCoroutine_Postfix` unterscheidet jetzt, ob
+das Spiel die Coroutine zum ALLERERSTEN Mal aufruft (echter Eintritt aus der
+Gerichtsakte) oder ERNEUT waehrend eine 3D-Untersuchung bereits laeuft (Indiz fuer
+einen Modell-Zustandswechsel wie das Aufklappen) — unterschieden ueber
+`_wasPlaying`, das VOR dem Ueberschreiben zwischengespeichert wird. Im zweiten
+Fall neue Ansage `evidence_3d.state_changed`: "Der Gegenstand hat sich veraendert.
+Jetzt {0} Untersuchungspunkte." (de+en) statt der vollen Eintritts-Nachricht mit
+Objektname. Live am Handy-Scharnier getestet: Ansage kam korrekt statt der
+verwirrenden Wiederholung. Bewusst KEIN spezifisches Verb wie "aufklappen"
+verwendet — der Mechanismus gilt fuer JEDES 3D-Beweisstueck mit mehreren
+Zustaenden, nicht nur Klapp-Handys, und wir koennen die genaue Aktion (auf/zu/
+umdrehen/...) nicht zuverlaessig unterscheiden.
 
 **Von 6 Punkten im aufgeklappten Zustand funktionierten nur 2 mit echter
 Dialogzeile, 3 taten nichts (OHNE Warnung unserer Rotations-Suche — vermutlich

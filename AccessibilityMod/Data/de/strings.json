@@ -221,6 +221,7 @@
   "evidence_3d.unable_to_read": "3D-Untersuchungszustand kann nicht gelesen werden",
   "evidence_3d.opened": "3D-Untersuchung: {0}. {1} Untersuchungspunkte. Mit Komma und Punkt zwischen Untersuchungspunkten navigieren. J zoomt hinein, E zoomt heraus.",
   "evidence_3d.exited": "3D-Untersuchung beendet",
+  "evidence_3d.state_changed": "Der Gegenstand hat sich verändert. Jetzt {0} Untersuchungspunkte.",
   "evidence_3d.hotspot": "Untersuchungspunkt",
 
   "_section_dying_message": "=== Dying Message Puzzle ===",
