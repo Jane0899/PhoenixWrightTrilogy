@@ -116,6 +116,47 @@ namespace AccessibilityMod.Patches
         }
 
         /// <summary>
+        /// Liest den aktuellen Puder-Fortschritt (0-100, gedeckelt) direkt aus den
+        /// echten Spieldaten (score_ / Schwelle aus GetThreshold) — dieselben Werte,
+        /// die CheckClear oben schon fuer die Ansage nach einem Pust-Versuch (E)
+        /// nutzt. Public, damit FingerprintNavigator daraus WAEHREND des Puderns
+        /// (nicht erst beim Pust-Versuch) Zwischenansagen bauen kann (Jana, Bug 14,
+        /// 08.09.2026: "fehlt mir eine Ansage, wenn schon genug Puder aufgetragen
+        /// wurde"). Bewusst KEINE eigene Pixel-Schaetzung — die echten Spielwerte
+        /// sind zuverlaessiger als ein selbst geratenes Koordinatensystem.
+        /// Gibt -1 zurueck, wenn der Wert gerade nicht lesbar ist (z. B. Instanz
+        /// nicht vorhanden).
+        /// </summary>
+        public static int GetCurrentScorePercentage()
+        {
+            try
+            {
+                var instance = FingerMiniGame.instance;
+                if (instance == null)
+                    return -1;
+
+                var scoreField = typeof(FingerMiniGame).GetField(
+                    "score_",
+                    BindingFlags.NonPublic | BindingFlags.Instance
+                );
+                if (scoreField == null)
+                    return -1;
+
+                int score = (int)scoreField.GetValue(instance);
+                int threshold = GetThreshold(instance);
+                if (threshold <= 0)
+                    return -1;
+
+                int percentage = (int)((float)score / threshold * 100f);
+                return System.Math.Min(percentage, 100);
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        /// <summary>
         /// Gets the threshold for fingerprint completion using reflection.
         /// </summary>
         private static int GetThreshold(FingerMiniGame instance)

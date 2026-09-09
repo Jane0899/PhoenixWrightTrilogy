@@ -129,9 +129,10 @@
 
   "_section_fingerprint": "=== Fingerprint Mode ===",
   "fingerprint.start": "Fingerprint examination. {0} locations to examine. Use [ and ] to navigate, Enter to examine. Press F1 for hint.",
-  "fingerprint.powder_phase": "Powder phase. Move cursor with arrow keys while pressing Enter to spread powder across the area. Press E to blow when done.",
-  "fingerprint.powder_hint": "Move cursor with arrow keys while pressing Enter to spread powder across the area. Press E to blow away excess and reveal the print.",
-  "fingerprint.powder_state": "Powder phase. Move cursor with arrow keys while pressing Enter to apply powder. Press E to blow when done.",
+  "fingerprint.powder_phase": "Powder phase. Move cursor with arrow keys while holding Enter, or press Enter repeatedly, to spread powder across the area. Press E to blow when done.",
+  "fingerprint.powder_hint": "Move cursor with arrow keys while holding Enter, or press Enter repeatedly, to spread powder across the area. Press E to blow away excess and reveal the print.",
+  "fingerprint.powder_state": "Powder phase. Move cursor with arrow keys while holding Enter, or press Enter repeatedly, to apply powder. Press E to blow when done.",
+  "fingerprint.powder_sufficient": "Enough powder applied. Press E to reveal the print.",
   "fingerprint.comparison_start": "Fingerprint comparison. Use Left/Right to select suspect, E to compare. Press F1 for hint.",
   "fingerprint.comparison_hint": "Use Left/Right to select suspect, E to compare.",
   "fingerprint.comparison_state": "Fingerprint comparison. {0} selected. Press F1 for hint.",

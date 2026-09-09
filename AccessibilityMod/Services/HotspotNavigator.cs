@@ -260,6 +260,25 @@ namespace AccessibilityMod.Services
                     if (data.place == 254)
                         continue;
 
+                    // Skip place==253 hotspots: laut Decompiled-Referenz
+                    // (inspectCtrl.finger_pos_check, erste Schleife) sind das
+                    // BEDINGTE Punkte, die das Spiel nur dann ueberhaupt auf
+                    // Klicks reagieren laesst, wenn ein ganz bestimmtes item
+                    // UND ein ganz bestimmtes GSFlag zutreffen (harte Switch-
+                    // Tabelle im Spielcode, pro Spiel/Item einzeln). Ist die
+                    // Bedingung nicht erfuellt — und bei item=255 (kein Bezug)
+                    // trifft SIE NIE zu, weil 255 in der Switch-Tabelle gar
+                    // nicht vorkommt — bleibt der Punkt fuer das Spiel komplett
+                    // tot: nicht klickbar, taucht in KEINER der beiden Schleifen
+                    // von finger_pos_check als Treffer auf. Wenn wir ihn trotzdem
+                    // navigierbar anbieten, landet Jana auf einem Geisterpunkt:
+                    // Status wirkt falsch (Bug 9/10, 05.09.2026 gemeldet — z. B.
+                    // "Schreibtisch" doppelt in Szenario 17, msg=65535), und beim
+                    // tatsaechlichen Untersuchen reagiert oft der ueberlappende
+                    // ECHTE Punkt darunter statt des erwarteten.
+                    if (data.place == 253)
+                        continue;
+
                     // Calculate center of quadrilateral
                     float centerX = (data.x0 + data.x1 + data.x2 + data.x3) / 4f;
                     float centerY = (data.y0 + data.y1 + data.y2 + data.y3) / 4f;

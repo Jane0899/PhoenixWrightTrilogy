@@ -146,6 +146,23 @@ namespace AccessibilityMod.Services
                 // Find all mesh colliders (these are the hotspots)
                 var colliders = modelParent.GetComponentsInChildren<MeshCollider>(true);
 
+                // Layer des Beweisstueck-Objekts: Das Spiel selbst (siehe
+                // scienceInvestigationCtrl.GetSelectingCheckIndex in der
+                // Decompiled-Referenz) testet Klicks per SphereCast NUR gegen
+                // die Layer-Maske "1 << evidence_manager_.gameObject.layer" —
+                // Collider auf jeder anderen Layer koennen vom Spiel unter
+                // KEINEN Umstaenden getroffen werden, auch nicht per Klick.
+                // GetComponentsInChildren<MeshCollider> sammelt dagegen ALLE
+                // Collider im Modell ein, unabhaengig von deren Layer — darunter
+                // oft rein strukturelle/dekorative Collider, die nie interaktiv
+                // gedacht waren. Bot man die als navigierbare Punkte an, reagierte
+                // Enter dort auf nichts (Bug 11, 05.09.2026: "bei 7 von 10 Punkten
+                // wird gar nichts angesagt, ich kann nicht mal Enter druecken").
+                // Fix: nur Collider auf GENAU der Layer des evidence_manager
+                // beruecksichtigen — exakt die Menge, die das Spiel selbst treffen
+                // kann.
+                int evidenceLayer = modelParent.layer;
+
                 Regex numberRegex = new Regex(@"(\d+)", RegexOptions.Singleline);
                 Regex nukiRegex = new Regex(@"(nuki|nuke)", RegexOptions.IgnoreCase);
 
@@ -158,6 +175,19 @@ namespace AccessibilityMod.Services
                 foreach (var collider in colliders)
                 {
                     string colliderName = collider.gameObject.name;
+
+                    // Collider auf einer anderen Layer als das Beweisstueck
+                    // selbst kann das Spiel nie treffen — raus damit (siehe
+                    // Kommentar bei evidenceLayer oben).
+                    if (collider.gameObject.layer != evidenceLayer)
+                    {
+#if DEBUG
+                        AccessibilityMod.Core.AccessibilityMod.Logger?.Msg(
+                            $"[3DNav] Skipping collider auf falscher Layer ({collider.gameObject.layer} != {evidenceLayer}): {colliderName}"
+                        );
+#endif
+                        continue;
+                    }
 
                     // Skip "nuki" meshes (these are exclusion zones)
                     if (nukiRegex.IsMatch(colliderName))

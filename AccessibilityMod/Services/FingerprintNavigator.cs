@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using AccessibilityMod.Core;
+using AccessibilityMod.Patches;
 using UnityAccessibilityLib;
 using UnityEngine;
 
@@ -191,6 +192,17 @@ namespace AccessibilityMod.Services
         private static bool _wasAtTopEdge = false;
         private static bool _wasAtBottomEdge = false;
 
+        // Fortschritts-Zwischenansagen waehrend der Puderphase (Bug 14, 08.09.2026:
+        // "fehlt mir eine Ansage, wenn auf einer Stelle schon genug Puder aufgetragen
+        // wurde"). Bisher gab es eine Prozentansage NUR nach einem gescheiterten
+        // Pust-Versuch (E-Taste, siehe FingerprintPatches.OnCheckClear) — Jana musste
+        // also blind raten und es einfach mal versuchen. _lastAnnouncedPercentTier
+        // verhindert, dass wir bei jedem Time-Tick erneut denselben Stand ansagen;
+        // _lastPercentCheckTime drosselt die Pruefung selbst (Time.time-basiert,
+        // nicht frame-basiert, damit die Kadenz von der Framerate unabhaengig ist).
+        private static int _lastAnnouncedPercentTier = -1;
+        private static float _lastPercentCheckTime = -1f;
+
         /// <summary>
         /// Called each frame to detect mode changes.
         /// </summary>
@@ -231,6 +243,7 @@ namespace AccessibilityMod.Services
             if (isInPowder)
             {
                 UpdateCursorFeedback();
+                UpdatePowderProgressFeedback();
             }
 
             // Check for comparison phase entry
@@ -257,6 +270,50 @@ namespace AccessibilityMod.Services
             _wasAtRightEdge = false;
             _wasAtTopEdge = false;
             _wasAtBottomEdge = false;
+            _lastAnnouncedPercentTier = -1;
+            _lastPercentCheckTime = -1f;
+        }
+
+        /// <summary>
+        /// Sagt waehrend des Puderns von selbst an, wenn ein neuer 20%-Schritt
+        /// erreicht ist — ohne dass Jana dafuer erst blind E (Pusten) probieren
+        /// muss, um ueberhaupt einen Stand zu erfahren (bisherige Ansage kam nur
+        /// NACH einem Versuch, siehe FingerprintPatches.OnCheckClear). Nutzt
+        /// denselben echten Spielwert (score_/Schwelle), keine eigene Schaetzung.
+        /// Zeitbasiert gedrosselt (nicht bei jedem Frame), damit die Sprachausgabe
+        /// nicht mit anderen Ansagen (Rand/Gitterposition) ueberflutet wird.
+        /// </summary>
+        private static void UpdatePowderProgressFeedback()
+        {
+            float now = Time.time;
+            if (_lastPercentCheckTime >= 0f && now - _lastPercentCheckTime < 1.5f)
+                return;
+            _lastPercentCheckTime = now;
+
+            int percent = FingerprintPatches.GetCurrentScorePercentage();
+            if (percent < 0)
+                return;
+
+            int tier = (percent / 20) * 20; // 0, 20, 40, 60, 80, 100
+            if (tier <= _lastAnnouncedPercentTier || tier <= 0)
+                return;
+
+            _lastAnnouncedPercentTier = tier;
+
+            if (tier >= 100)
+            {
+                SpeechManager.Announce(
+                    L.Get("fingerprint.powder_sufficient"),
+                    GameTextType.Investigation
+                );
+            }
+            else
+            {
+                SpeechManager.Announce(
+                    L.Get("fingerprint.percent_keep_applying", tier),
+                    GameTextType.Investigation
+                );
+            }
         }
 
         private static void UpdateCursorFeedback()

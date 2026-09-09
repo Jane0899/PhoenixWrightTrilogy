@@ -129,9 +129,10 @@
 
   "_section_fingerprint": "=== Fingerprint Mode ===",
   "fingerprint.start": "Fingerabdruck-Untersuchung. {0} Stellen zu untersuchen. Mit Komma und Punkt navigieren, Eingabe zum Untersuchen. F1 für einen Hinweis.",
-  "fingerprint.powder_phase": "Puderphase. Bewege den Cursor mit den Pfeiltasten und halte dabei Eingabe gedrückt, um Puder auf der Fläche zu verteilen. Drücke E zum Pusten, wenn du fertig bist.",
-  "fingerprint.powder_hint": "Bewege den Cursor mit den Pfeiltasten und halte dabei Eingabe gedrückt, um Puder auf der Fläche zu verteilen. Drücke E, um überschüssigen Puder wegzupusten und den Abdruck sichtbar zu machen.",
-  "fingerprint.powder_state": "Puderphase. Bewege den Cursor mit den Pfeiltasten und halte dabei Eingabe gedrückt, um Puder aufzutragen. Drücke E zum Pusten, wenn du fertig bist.",
+  "fingerprint.powder_phase": "Puderphase. Bewege den Cursor mit den Pfeiltasten und halte dabei Eingabe gedrückt, oder drücke Eingabe mehrfach hintereinander, um Puder auf der Fläche zu verteilen. Drücke E zum Pusten, wenn du fertig bist.",
+  "fingerprint.powder_hint": "Bewege den Cursor mit den Pfeiltasten und halte dabei Eingabe gedrückt, oder drücke Eingabe mehrfach hintereinander, um Puder auf der Fläche zu verteilen. Drücke E, um überschüssigen Puder wegzupusten und den Abdruck sichtbar zu machen.",
+  "fingerprint.powder_state": "Puderphase. Bewege den Cursor mit den Pfeiltasten und halte dabei Eingabe gedrückt, oder drücke Eingabe mehrfach hintereinander, um Puder aufzutragen. Drücke E zum Pusten, wenn du fertig bist.",
+  "fingerprint.powder_sufficient": "Genug Puder aufgetragen. Drücke E, um den Abdruck sichtbar zu machen.",
   "fingerprint.comparison_start": "Fingerabdruck-Vergleich. Mit Links/Rechts Verdächtigen auswählen, E zum Vergleichen. F1 für einen Hinweis.",
   "fingerprint.comparison_hint": "Mit Links/Rechts Verdächtigen auswählen, E zum Vergleichen.",
   "fingerprint.comparison_state": "Fingerabdruck-Vergleich. {0} ausgewählt. F1 für einen Hinweis.",

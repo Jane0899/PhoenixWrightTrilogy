@@ -3,6 +3,147 @@
 Arbeitsprotokoll nach dem Muster von `Disco-A11y/todos.md`. Offene Punkte aus Janas
 Test-Sessions als J-Nummern; Erledigtes bleibt abgehakt als Verlauf stehen.
 
+## 09.09.2026 — Bug 9-18: grosse Sammelrunde nach Wochen-Testsession
+
+Jana hat ueber mehrere Wochen (05.-08.09.2026) mit F9+Beschreibung zehn neue Bugs
+gesammelt (Bug 9-18), quer durch Ermittlung, 3D-Beweise, Fingerabdruck, Verhandlung
+und Videoband. Code-Analyse (Decompiled-Referenz + aktueller Mod-Code) OHNE
+Spielstart durchgefuehrt; live-gestuetzte Fixes folgen in der naechsten Runde.
+
+### J11 (Bug 9+10): "Geister"-Untersuchungspunkte mit place==253 — FIX ANGEWANDT, Live-Check aussteht
+
+- **Bug 9** (Szenario 17, bg 1): Punkt 6 (`msg=65535`) zeigt scheinbar auf denselben
+  Schreibtisch wie Punkt 5, gilt in der Liste als "nicht untersucht", aber beim
+  Ansteuern sagt das Spiel "bereits untersucht".
+- **Bug 10** (Szenario 18, bg 113): Gleiches Muster beim Streifenwagen.
+- **Fund in der Decompiled-Referenz** (`inspectCtrl.finger_pos_check`, Assembly-CSharp):
+  Punkte mit `INSPECT_DATA.place == 253` sind im Original-Spiel BEDINGTE Punkte —
+  sie reagieren nur auf Klicks, wenn eine harte, item-spezifische GSFlag-Bedingung
+  erfuellt ist (fest verdrahtete switch-Tabelle im Spielcode, pro Spiel/Item). Bei
+  `item=255` (kein Bezug, wie bei Bug 9/10) trifft KEINE dieser Bedingungen je zu —
+  der Punkt ist fuer das Spiel dauerhaft tot: in KEINER der beiden Pruefschleifen
+  von `finger_pos_check` je ein Treffer. Unser Navigator bot ihn trotzdem als echten,
+  navigierbaren Punkt an — daher der falsche Status und das Verhalten "geht zu Punkt
+  6, untersucht aber eigentlich den darunterliegenden echten Punkt".
+- **Fix:** `HotspotNavigator.RefreshHotspots()` ueberspringt jetzt zusaetzlich zu
+  `place==254` (schon vorher) auch `place==253` — analog zur bereits bestehenden
+  Skip-Logik. Build fehlerfrei.
+- **Noch offen:** Der `place`-Wert dieser konkreten Punkte wurde NICHT live am
+  laufenden Spiel verifiziert (nur aus dem Symptommuster erschlossen) — die
+  Decompiled-Evidenz ist stark, aber nach der J7-Erfahrung (zu enge Annahme beim
+  ersten Versuch) wollen wir das gegenchecken, sobald das Spiel naechstes Mal laeuft.
+
+### J12 (Bug 11+12+13b): 3D-Beweis sammelt Collider ausserhalb der Spiel-Trefferebene — FIX ANGEWANDT, Live-Check aussteht
+
+- **Bug 11** (Szenario 19, bg 8): Bei 7 von 10 Punkten passiert gar nichts, nicht
+  mal Eingabe reagiert.
+- **Bug 12** (gleiche Stelle): Bei allen 4 Punkten (an anderem Objekt) dieselbe Ansage.
+- **Bug 13b** (Szenario 20, bg 8): Keiner von 3 Punkten laesst sich anklicken.
+- **Fund:** `Evidence3DNavigator.RefreshHotspots()` sammelt bisher ALLE MeshCollider
+  im Modell ein (`GetComponentsInChildren<MeshCollider>(true)`), unabhaengig von
+  ihrer Unity-Layer. Das Spiel selbst (`scienceInvestigationCtrl.GetSelectingCheckIndex`,
+  Decompiled-Referenz) testet Klicks aber NUR per SphereCast gegen die Layer-Maske
+  `1 << evidence_manager_.gameObject.layer` — Collider auf jeder anderen Layer koennen
+  vom Spiel unter keinen Umstaenden getroffen werden, egal wo der Cursor steht. Das
+  erklaert direkt "nichts passiert bei Eingabe" (Bug 11/13b): wir boten rein
+  strukturelle/dekorative Collider als navigierbare Punkte an, die das Spiel selbst
+  nie als Treffer erkennt.
+- **Fix:** `RefreshHotspots()` filtert Collider jetzt auf `collider.gameObject.layer
+  == modelParent.layer` (dieselbe Layer wie der evidence_manager) — exakt die Menge,
+  die das Spiel selbst treffen kann. Build fehlerfrei.
+- **Noch offen:** Nicht live geprueft, ob die gefilterte Anzahl danach mit der
+  tatsaechlichen Anzahl echter Punkte uebereinstimmt (Bug 12s "4 identische Punkte"
+  koennte durch den Filter verschwinden, muss aber am laufenden Spiel bestaetigt
+  werden).
+
+### J13 (Bug 13a): Falscher Beweisstueck-Name bei 3D-Untersuchung — NICHT gepatcht, braucht Live-Daten
+
+Bug 13 (Szenario 20, bg 8): Das 3D-Beweisstueck wird als "Mia Fai, 27 Jahre"
+angesagt — das kann laut Jana nicht stimmen (falsches Beweisstueck).
+
+`Evidence3DNavigator.GetCurrentEvidenceName()` liest den Namen zuerst aus
+`recordListCtrl.instance.current_pice_.name` — das spiegelt vermutlich, was zuletzt
+in der GERICHTSAKTEN-Liste ausgewaehlt war, nicht zwingend das Stueck, das GERADE in
+3D untersucht wird. In der Decompiled-Referenz gibt es einen vielversprechenderen
+Kandidaten (`recordListCtrl.instance.detail_obj_id`, wird beim Eintritt in den
+3D-Modus in `scienceInvestigationCtrl.instance.poly_obj_id` uebernommen), aber OB
+diese ID-Raeume mit `piceData.no` (der fuer Investigation-Items bestaetigten
+Aufloesung) uebereinstimmen, ist NICHT bestaetigt. Bewusst NICHT auf Verdacht
+gepatcht (Lehre aus J7: lieber einmal zu wenig raten). Braucht einen Live-Dump von
+`poly_obj_id`/`detail_obj_id`/`current_pice_.no` waehrend der 3D-Untersuchung in
+Szenario 20, um die richtige Aufloesungsquelle zu bestimmen.
+
+### J14 (Bug 14+15): Fingerabdruck-Puderphase — Fortschrittsansage ergaenzt, Positionsansage NICHT umgesetzt
+
+- **Bug 14**: Keine Ansage, wenn an einer Stelle schon genug Puder aufgetragen ist;
+  fehlender Hinweis, dass man Eingabe auch mehrfach druecken (statt nur halten) kann.
+- **Bug 15**: Beim Bewegen mit Pfeiltasten waere eine Ansage schoen, welche Stellen
+  schon Puder haben und welche nicht.
+
+**Umgesetzt:** Es gab bereits eine zuverlaessige, ECHTE Fortschrittsquelle im
+Spielcode selbst (`FingerMiniGame.score_` / Schwelle aus `min_cnt*15`,
+`FingerprintPatches.GetThreshold`) — bisher nur genutzt, NACHDEM Jana E (Pusten)
+gedrueckt und es nicht gereicht hat. Neu (`FingerprintPatches.GetCurrentScorePercentage`,
+public gemacht; `FingerprintNavigator.UpdatePowderProgressFeedback`, alle ~1,5s
+waehrend der Puderphase geprueft): sagt von selbst in 20%-Schritten den Fortschritt
+an, ohne dass Jana dafuer blind E probieren muss, und eine neue Ansage
+"Genug Puder aufgetragen. Druecke E..." beim Erreichen von 100%. Nutzt dieselben
+echten Spielwerte wie die bestehende Pust-Ansage — KEINE eigene Pixel-Schaetzung.
+Ausserdem: `fingerprint.powder_phase`/`powder_hint`/`powder_state` erwaehnen jetzt
+auch "mehrfach druecken" als Alternative zum Halten (de+en). Build fehlerfrei.
+
+**NICHT umgesetzt:** Die POSITIONS-genaue Ansage ("an DIESER Stelle ist schon genug")
+aus Bug 15 braucht eine Zuordnung von Cursor-Koordinaten zu den 3x3-Deckungs-
+Regionen aus `GetRegionalCoverageInfo()` — die Cursor-UI (`MiniGameCursor.cursor_area_size`,
+Y waechst vermutlich nach UNTEN fuer "oben") und die Masken-Textur-Iteration in
+`GetRegionalCoverageInfo` (Kommentar dort: "row 0 is bottom of screen", Y waechst
+vermutlich nach OBEN) koennten unterschiedliche Achsenrichtungen verwenden. Ohne
+Live-Daten waere das Raten — haette hier leicht "oben" und "unten" vertauschen
+koennen. Bewusst zurueckgestellt, um keinen neuen, schwer bemerkbaren Fehler zu bauen.
+
+### J15 (Bug 16+17): Video-Beschreibungen — Rueckfrage bei Jana noch offen
+
+- **Bug 16** (Verhandlung, Szenario 25): Waehrend das Beweisvideo laeuft, wird nichts
+  angesagt. Jana selbst: "Evtl brauchen wir hier eine Beschreibung? Aber frag mich
+  vorher, ob eine Beschreibung notwendig ist." — bewusst NICHT gebaut, erst fragen.
+- **Bug 17** (Inventar, Szenario 25): Video-Gegenstand im Inventar untersucht — Jana
+  wuenscht sich eine Beschreibung wie bei Plaenen/Fotos (EvidenceDetails-Systematik).
+- **Noch offen:** Frage an Jana gestellt (siehe Chat 09.09.2026), ob/wie solche
+  Beschreibungen entstehen sollen (Inhalt kommt vermutlich nur von ihr selbst, da
+  das Video-Bewegtbild nicht automatisch textuell auslesbar ist).
+
+### J16 (Bug 18): Videoband — Bild-Ansage fehlt teils, Steuerungs-Verdacht ausgeraeumt
+
+Bug 18 (Videoband, Szenario 25): "Hier fehlt eine Taste, die man druecken kann um zu
+hoeren, bei welchem Bild man gerade ist... Ich glaub, das steht da anders rum, oder?"
+(zur Reihenfolge J=zurueck, Eingabe=vor).
+
+- **Steuerungs-Verdacht ueberprueft, NICHT bestaetigt:** `video_tape.start` sagt
+  bereits "Eingabe zum Vorspulen, J zum Zuruckspulen" — das deckt sich mit dem, was
+  Jana beschreibt (J=zurueck, Eingabe=vor). Die Ansage-Texte sind also nicht
+  vertauscht; ihre Vermutung war unbegruendet, aber gut, dass sie nachgefragt hat.
+- **Echtes Problem, Ursache noch offen:** Die globale 'I'-Taste (ueberall "aktuellen
+  Zustand ansagen") ist fuer den Videoband-Modus an `VideoTapeNavigator.AnnounceState()`
+  angebunden, das die Bildnummer enthaelt — ABER `IsVideoTapeActive()` (Gate dafuer)
+  verlangt Cursor UND Kollisions-Handler aktiv und "nicht auto_play/nicht IsDetailing".
+  Vermutung: waehrend des reinen Zurueck-/Vorspulens (ohne sichtbares Ziel) ist dieses
+  Gate eventuell NICHT erfuellt, wodurch 'I' auf eine andere, bildlose Ansage
+  ausweicht. Nicht live bestaetigt — braucht Beobachtung waehrend des Spulens.
+
+## Live-Verifikationsrunde noch ausstehend (sobald das Spiel naechstes Mal laeuft)
+
+Checkliste fuer die naechste Spielsitzung, gebuendelt statt einzeln zu fragen:
+1. J11: `place`-Feld der Punkte aus Bug 9 (s17, Punkt 6) und Bug 10 (s18, Punkt 8)
+   tatsaechlich pruefen (erwartet: 253).
+2. J12: Hotspot-Anzahl in Szenario 19 (bg 8) VOR/NACH dem Layer-Filter vergleichen,
+   pruefen ob jetzt alle verbleibenden Punkte auf Eingabe reagieren.
+3. J13: `poly_obj_id`/`detail_obj_id`/`current_pice_.no` waehrend 3D-Untersuchung
+   in Szenario 20 dumpen, um die richtige Namensquelle zu bestimmen.
+4. J14: Neue Fortschritts-Zwischenansagen beim echten Pudern gegenhoeren (Kadenz,
+   Lautstaerke im Verhaeltnis zu anderen Ansagen, Tonfall der 100%-Meldung).
+5. J16: Verhalten von 'I' waehrend des Spulens (ohne sichtbares Ziel) beobachten,
+   um IsVideoTapeActive() bei Bedarf zu lockern.
+
 ## 07.08.2026 — Beschreibungsfeld erfolgreich genutzt (Bug 7+8), zwei Folgefehler behoben
 
 Das neue F9-Beschreibungsfeld hat beim ersten echten Einsatz funktioniert — Jana konnte
