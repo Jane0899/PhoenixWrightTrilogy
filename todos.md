@@ -56,13 +56,13 @@ Spielstart durchgefuehrt; live-gestuetzte Fixes folgen in der naechsten Runde.
   weiter verfolgt in dieser Runde, da eine vollstaendige Bestaetigung eine Suche
   ueber alle ~870 Raumtabellen bräuchte. Für später vorgemerkt.
 
-### J12 (Bug 11+12+13b): 3D-Beweis sammelt Collider ausserhalb der Spiel-Trefferebene — FIX ANGEWANDT, Live-Check aussteht
+### J12 (Bug 11+12+13b): 3D-Beweis sammelt Collider ausserhalb der Spiel-Trefferebene — FIX LIVE BESTAETIGT (09.09.2026)
 
 - **Bug 11** (Szenario 19, bg 8): Bei 7 von 10 Punkten passiert gar nichts, nicht
   mal Eingabe reagiert.
 - **Bug 12** (gleiche Stelle): Bei allen 4 Punkten (an anderem Objekt) dieselbe Ansage.
 - **Bug 13b** (Szenario 20, bg 8): Keiner von 3 Punkten laesst sich anklicken.
-- **Fund:** `Evidence3DNavigator.RefreshHotspots()` sammelt bisher ALLE MeshCollider
+- **Fund:** `Evidence3DNavigator.RefreshHotspots()` sammelte bisher ALLE MeshCollider
   im Modell ein (`GetComponentsInChildren<MeshCollider>(true)`), unabhaengig von
   ihrer Unity-Layer. Das Spiel selbst (`scienceInvestigationCtrl.GetSelectingCheckIndex`,
   Decompiled-Referenz) testet Klicks aber NUR per SphereCast gegen die Layer-Maske
@@ -73,28 +73,52 @@ Spielstart durchgefuehrt; live-gestuetzte Fixes folgen in der naechsten Runde.
   nie als Treffer erkennt.
 - **Fix:** `RefreshHotspots()` filtert Collider jetzt auf `collider.gameObject.layer
   == modelParent.layer` (dieselbe Layer wie der evidence_manager) — exakt die Menge,
-  die das Spiel selbst treffen kann. Build fehlerfrei.
-- **Noch offen:** Nicht live geprueft, ob die gefilterte Anzahl danach mit der
-  tatsaechlichen Anzahl echter Punkte uebereinstimmt (Bug 12s "4 identische Punkte"
-  koennte durch den Filter verschwinden, muss aber am laufenden Spiel bestaetigt
-  werden).
+  die das Spiel selbst treffen kann.
+- **LIVE BESTAETIGT (09.09.2026):** Auf Janas Vorschlag mit einer KOPIE ihres
+  Spielstands getestet (siehe Sicherheitsprotokoll unten) — 3D-Untersuchung ist
+  jederzeit ueber die Gerichtsakte (Tab) erreichbar, kein Story-Fortschritt noetig.
+  Getestet an zwei echten Gegenstaenden (Edgeworths Messer, Trophaee "Koenig der
+  Staatsanwaelte"): Beide zeigen nach dem Layer-Filter korrekt GENAU 1
+  Untersuchungspunkt mit korrektem Namen. Beim Messer zusaetzlich FUNKTIONAL
+  bestaetigt: Navigation zum Punkt + Eingabe loeste eine ECHTE Spieldialogzeile
+  aus ("Auf der Klinge befindet sich immer noch das Blut des Opfers, Bruce
+  Goodman.") — kein toter Klick. Neues DevBridge-Werkzeug `polydata <obj_id>`
+  (liest `polyDataCtrl.instance.obj_table[id-1].col_obj_names`, die vom Spiel
+  selbst definierte Trefferpunkt-Liste) fuer kuenftige Ground-Truth-Vergleiche
+  gebaut, aber `col_obj_names` war bei beiden getesteten Objekten `null` (nicht
+  jedes Objekt nutzt dieses Feld) — der funktionale Test (Enter -> echte
+  Spielreaktion) war hier die aussagekraeftigere Bestaetigung.
 
-### J13 (Bug 13a): Falscher Beweisstueck-Name bei 3D-Untersuchung — NICHT gepatcht, braucht Live-Daten
+### J13 (Bug 13a): Falscher Beweisstueck-Name bei 3D-Untersuchung — WEITERHIN OFFEN
 
 Bug 13 (Szenario 20, bg 8): Das 3D-Beweisstueck wird als "Mia Fai, 27 Jahre"
 angesagt — das kann laut Jana nicht stimmen (falsches Beweisstueck).
 
 `Evidence3DNavigator.GetCurrentEvidenceName()` liest den Namen zuerst aus
-`recordListCtrl.instance.current_pice_.name` — das spiegelt vermutlich, was zuletzt
-in der GERICHTSAKTEN-Liste ausgewaehlt war, nicht zwingend das Stueck, das GERADE in
-3D untersucht wird. In der Decompiled-Referenz gibt es einen vielversprechenderen
-Kandidaten (`recordListCtrl.instance.detail_obj_id`, wird beim Eintritt in den
-3D-Modus in `scienceInvestigationCtrl.instance.poly_obj_id` uebernommen), aber OB
-diese ID-Raeume mit `piceData.no` (der fuer Investigation-Items bestaetigten
-Aufloesung) uebereinstimmen, ist NICHT bestaetigt. Bewusst NICHT auf Verdacht
-gepatcht (Lehre aus J7: lieber einmal zu wenig raten). Braucht einen Live-Dump von
-`poly_obj_id`/`detail_obj_id`/`current_pice_.no` waehrend der 3D-Untersuchung in
-Szenario 20, um die richtige Aufloesungsquelle zu bestimmen.
+`recordListCtrl.instance.current_pice_.name`. Bei den zwei live getesteten
+Gegenstaenden (09.09.2026, ueber die Gerichtsakte aufgerufen) war der Name JEDES
+MAL korrekt ("Edgeworths Messer", "Trophaee..."). **Arbeitshypothese, weiterhin
+unbestaetigt:** `current_pice_` ist vermutlich nur zuverlaessig frisch, wenn die
+3D-Untersuchung UEBER DIE GERICHTSAKTE gestartet wird (wie in unserem Test) — Bug
+13 trat aber vermutlich beim direkten Anklicken eines 3D-Hotspots WAEHREND der
+Ermittlung auf (Szenario 20), ein anderer Einstiegspfad, den wir mit dem aktuellen
+Spielstand nicht nachstellen konnten (dafuer muesste man tatsaechlich in Szenario
+20 stehen, nicht nur irgendein Objekt aus der Gerichtsakte oeffnen). Bewusst NICHT
+gepatcht (Lehre aus J7: lieber einmal zu wenig raten, als etwas auf Verdacht
+kaputt machen). Braucht einen Live-Dump von `poly_obj_id`/`current_pice_.no`
+GENAU in dem Moment, in dem Jana naechstes Mal ueber Investigation (nicht
+Gerichtsakte) in 3D-Modus wechselt — am besten mit F9 an der Stelle selbst.
+
+## Sicherheitsprotokoll fuer die Live-Sitzung vom 09.09.2026
+
+Auf Janas ausdrueckliche Anweisung ("Sichere meine Spielstaende... Kopiere einfach
+einen Spielstand... Mache nichts an meinen Spielstaenden kaputt"):
+1. Vor JEDER Aktion: `systemdata` (die einzige Spielstand-Datei, enthaelt alle
+   Slots) nach `~/.claude/backups/pwaat-savedata/2026-09-09_17-47-33/` gesichert.
+2. Nach Abschluss: Backup-Datei 1:1 ueber die Live-Datei zurueckkopiert.
+3. Per MD5-Pruefsumme VERIFIZIERT (nicht nur angenommen): Live-Datei und Backup
+   sind byteidentisch (`5b5615ecd742b08189354177c6fe7e2c`) — Janas echter
+   Spielstand ist exakt so, wie er vor der Sitzung war.
 
 ### J14 (Bug 14+15): Fingerabdruck-Puderphase — Fortschrittsansage ergaenzt, Positionsansage NICHT umgesetzt
 

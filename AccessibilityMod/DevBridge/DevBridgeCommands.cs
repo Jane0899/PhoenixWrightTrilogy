@@ -70,6 +70,8 @@ namespace AccessibilityMod.DevBridge
                     return ListStaticInspectTables(arg);
                 case "sctable":
                     return DumpStaticInspectTable(arg);
+                case "polydata":
+                    return DumpPolyData(arg);
                 default:
                     return "ERROR unbekannter Befehl: " + cmd + " (help zeigt alle)";
             }
@@ -92,8 +94,67 @@ namespace AccessibilityMod.DevBridge
                     "mes <t> <s> <nr> [p] - Text einer Nachricht (Untersuchungstext)",
                     "listtables <praefix> - Statische INSPECT_DATA-Tabellen der scenario-Klasse auflisten",
                     "sctable <feldname>   - Eine statische INSPECT_DATA-Tabelle komplett auslesen",
+                    "polydata <obj_id>    - Offizielle Collider-Namen (col_obj_names) eines 3D-Beweisstuecks",
                 }
             );
+        }
+
+        /// <summary>
+        /// Liest polyDataCtrl.instance.obj_table[obj_id - 1] aus: common_name,
+        /// prefab_name und vor allem col_obj_names — die vom Spiel selbst
+        /// definierte, offizielle Liste der Collider-NAMEN, die zu diesem
+        /// 3D-Beweisstueck als echte Trefferpunkte gehoeren.
+        ///
+        /// Warum ueberhaupt? Evidence3DNavigator.RefreshHotspots() sammelt
+        /// MeshCollider aus dem geladenen Modell (gefiltert auf die Layer des
+        /// evidence_manager, siehe dortiger Kommentar zu Bug 11). Mit dieser
+        /// Ground-Truth-Liste laesst sich direkt vergleichen, ob die gefundene
+        /// Anzahl/Namen mit dem uebereinstimmen, was das Spiel selbst als
+        /// Trefferpunkte definiert — ohne raten zu muessen. obj_table ist zwar
+        /// ein Instanzfeld von polyDataCtrl, aber mit einem Objekt-Initialisierer
+        /// befuellt (siehe Decompiled-Referenz) und dadurch bereits vorhanden,
+        /// sobald polyDataCtrl.instance existiert — unabhaengig vom Spielstand.
+        /// obj_id ist 1-basiert (siehe scienceInvestigationCtrl.poly_obj_id).
+        /// </summary>
+        private static string DumpPolyData(string arg)
+        {
+            int objId;
+            if (!int.TryParse(arg, out objId) || objId < 1)
+                return "ERROR Aufruf: polydata <obj_id> (1-basiert)";
+
+            try
+            {
+                if (polyDataCtrl.instance == null)
+                    return "ERROR polyDataCtrl.instance ist null";
+
+                var table = polyDataCtrl.instance.obj_table;
+                if (table == null || objId - 1 >= table.Count)
+                    return "ERROR obj_id " + objId + " ausserhalb des Bereichs (0.." + (table?.Count ?? 0) + ")";
+
+                var data = table[objId - 1];
+                if (data == null)
+                    return "ERROR Eintrag ist leer";
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("common_name=").Append(data.common_name).Append("\n");
+                sb.Append("prefab_name=").Append(data.prefab_name).Append("\n");
+                sb.Append("hit_prefab_name=").Append(data.hit_prefab_name).Append("\n");
+                if (data.col_obj_names == null)
+                {
+                    sb.Append("col_obj_names=null (kein Ground-Truth-Vergleich moeglich)");
+                }
+                else
+                {
+                    sb.Append("col_obj_names (").Append(data.col_obj_names.Length).Append("):\n");
+                    for (int i = 0; i < data.col_obj_names.Length; i++)
+                        sb.Append("  ").Append(i).Append(": ").Append(data.col_obj_names[i]).Append("\n");
+                }
+                return sb.ToString().TrimEnd('\n');
+            }
+            catch (Exception ex)
+            {
+                return "ERROR polydata: " + Unwrap(ex).Message;
+            }
         }
 
         /// <summary>
@@ -254,6 +315,21 @@ namespace AccessibilityMod.DevBridge
                 sb.Append("hotspots=");
                 sb.Append(HotspotNavigator.GetHotspotCount());
                 sb.Append("\n");
+            }
+            catch { }
+
+            // poly_obj_id: welches 3D-Beweisstueck (Index in polyDataCtrl.obj_table,
+            // 1-basiert) gerade untersucht wird — falls ueberhaupt. Gebraucht, um
+            // "polydata <id>" auf das RICHTIGE, gerade aktive Objekt anzuwenden,
+            // ohne die ID erst raten zu muessen (J12/J13, 09.09.2026).
+            try
+            {
+                if (scienceInvestigationCtrl.instance != null)
+                {
+                    sb.Append("poly_obj_id=");
+                    sb.Append(scienceInvestigationCtrl.instance.poly_obj_id);
+                    sb.Append("\n");
+                }
             }
             catch { }
 
